@@ -1,0 +1,106 @@
+<link rel="import" href="../polymer/polymer.html">
+<link rel="import" href="../iron-collapse/iron-collapse.html">
+<link rel="stylesheet" href="../bootstrap/dist/css/bootstrap.min.css">
+<link href="../font-awesome/css/font-awesome.min.css" rel="stylesheet" type="text/css">
+
+<!--
+`publication-item`
+Block element representing a publication record
+
+@demo demo/index.html 
+-->
+
+<dom-module id="publication-item">
+  <template>
+    <style>
+      :host {
+        display: block;
+      }
+      .publication-container {
+        padding-left: 15px;
+        margin-top: 5px;
+        margin-bottom: 15px;
+        border-left:1px solid darkgray;
+      }
+      .hyperlink-blue {
+        color:#337ab7;
+      }
+      .external-link:after {
+        content: "\f08e";
+        font-family: "FontAwesome";
+        font-size: 11px;
+        margin-left: 5px;
+        vertical-align: middle;
+      }
+      .collapse {
+        margin-top: 5px;
+      }
+      iron-collapse {
+        margin-top: 5px;
+      }
+      button[pushed] .pubDisplayStatus:before {
+         content:"Hide";
+         display:inline-block;
+         width:31px;
+       }
+      button .pubDisplayStatus:before {
+        content:"Show";
+      }
+    </style>
+    <div class="publication-container">
+      <template is="dom-if" if="{{data}}">
+        <template is="dom-if" if="{{data.title}}">
+          <p><a href="/publication/{{data.publicationId}}"  target='_parent'>{{data.title}}</a></p>
+        </template>
+        <p><span class="hyperlink-blue"><template is="dom-repeat" items="{{data.authors}}" as="author">{{author.lastName}} {{author.initials}}. , </template></span></p>
+        <p>{{data.journal}} {{data.journalResourceLocator.medAbbrev}}, <strong>{{data.volume}}</strong>, {{data.firstPage}} <template is="dom-if" if="{{data.lastPage}}">- {{data.lastPage}}</template> ({{data.publicationYear}}) <template is="dom-repeat" items="{{data.dbXrefs}}" as="xref">[{{_formatXrefLabel(xref.databaseName)}} : <a href="{{xref.resolvedUrl}}" class="external-link" target='_blank'>{{xref.accession}}</a>] </template>
+        </p>
+        <template is="dom-if" if="{{data.abstractText}}">
+          <button id="collapseButton" class="btn btn-primary btn-xs" type="button" on-click="_toggleAbstract">
+            <span class="pubDisplayStatus"> </span>abstract
+          </button>
+          <iron-collapse id="collapse{{data.publicationId}}" opened="{{showAbstract}}">
+            <div class="panel panel-info">
+              <div class="panel-heading">
+                <h3 class="panel-title">Abstract</h3>
+              </div>
+              <div class="panel-body">{{data.abstractText}}</div>
+            </div>
+          </iron-collapse>
+        </template>
+        <template is="dom-if" if="{{!data.abstractText}}">
+          <!--if this loop doesn't work then make a function that returns !abstractText and use it like this if={{containsAbstract()}}-->
+          No Abstract available
+        </template>
+      </template>
+    </div>
+  </template>
+
+  <script>
+    Polymer({
+      is: 'publication-item',
+      properties: {
+        data: {
+          type: Object
+        },
+        showAbstract: {
+          type: Boolean
+        }
+      },
+      _toggleAbstract: function(){
+        this.$$("#collapse"+this.data.publicationId).toggle();
+        this._toggleButton();
+      },
+      _toggleButton: function(){
+        if (this.$$("#collapse"+this.data.publicationId).opened){
+          this.$$("#collapseButton").setAttribute("pushed", null);
+        } else {
+          this.$$("#collapseButton").removeAttribute("pushed");
+        }
+      },
+      _formatXrefLabel: function(name){
+        return name.replace("DOI", "Full text");
+      }
+    });
+  </script>
+</dom-module>
