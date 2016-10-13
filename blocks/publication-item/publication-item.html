@@ -87,6 +87,9 @@ Block element representing a publication record
           type: Boolean
         }
       },
+      attached: function () {
+        this.async(function(){this._toggleButton();},1);
+      },
       _toggleAbstract: function(){
         this.$$("#collapse"+this.data.publicationId).toggle();
         this._toggleButton();
