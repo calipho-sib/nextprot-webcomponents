@@ -1,0 +1,48 @@
+<html><head><link rel="import" href="../polymer/polymer.html">
+
+
+</head><body><dom-module id="quality-label">
+  <template>
+    <style is="quality-label-style">
+      .quality-label-container {
+        display: inline-block;
+      }
+      .colored-label {
+        display:inline-block;
+        padding:1px 3px;
+        margin-bottom: 1px;
+      }
+      .quality-pointer {
+        color:#fff;
+        border-radius: 2px 0px 0px 2px;
+        margin-left: 5px;
+      }
+      .pointer-gold {
+        background: #ba8604;
+      }
+      .pointer-silver {
+        background:#B6BCC5;
+      }
+      .prefixed-label {
+        text-transform: capitalize;
+        border-radius: 0px 2px 2px 0px;
+      }
+      .label-gold {
+        background:#DAA520;
+        color: #fff;
+      }
+      .label-silver {
+        background:#DEDEDE;
+        color:#999;
+      }
+    </style>
+    <template id="menu" is="dom-if" if="{{quality}}">
+      <div class="quality-label-container">
+        <span class$="colored-label quality-pointer pointer-{{quality}}">•</span><span class$="colored-label prefixed-label label-{{quality}}">{{quality}}</span>
+      </div>
+    </template>
+  </template>
+
+  <script>Polymer({is:"quality-label",properties:{quality:{type:String,observer:"_checkQualityValue"}},_checkQualityValue:function(){"gold"!==this.quality&&"silver"!==this.quality&&(this.quality=null)}});</script>
+</dom-module>
+</body></html>
