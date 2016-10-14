@@ -1,15 +1,12 @@
 <link rel="import" href="../polymer/polymer.html">
 <link rel="import" href="../iron-collapse/iron-collapse.html">
-<link rel="stylesheet" href="../bootstrap/dist/css/bootstrap.min.css">
-<link href="../font-awesome/css/font-awesome.min.css" rel="stylesheet" type="text/css">
-
+<link rel="stylesheet" type="text/css" href="../bootstrap/dist/css/bootstrap.min.css">
+<link rel="stylesheet" type="text/css" href="../font-awesome/css/font-awesome.min.css">
 <!--
 `publication-item`
 Block element representing a publication record
-
-@demo demo/index.html 
+@demo demo/index.html
 -->
-
 <dom-module id="publication-item">
   <template>
     <style>
@@ -32,9 +29,6 @@ Block element representing a publication record
         margin-left: 5px;
         vertical-align: middle;
       }
-      .collapse {
-        margin-top: 5px;
-      }
       iron-collapse {
         margin-top: 5px;
       }
@@ -47,14 +41,19 @@ Block element representing a publication record
         content:"Show";
       }
     </style>
-    <div class="publication-container">
       <template is="dom-if" if="{{data}}">
         <template is="dom-if" if="{{data.title}}">
           <p><a href="/publication/{{data.publicationId}}"  target='_parent'>{{data.title}}</a></p>
         </template>
-        <p><span class="hyperlink-blue"><template is="dom-repeat" items="{{data.authors}}" as="author">{{author.lastName}} {{author.initials}}. , </template></span></p>
-        <p>{{data.journal}} {{data.journalResourceLocator.medAbbrev}}, <strong>{{data.volume}}</strong>, {{data.firstPage}} <template is="dom-if" if="{{data.lastPage}}">- {{data.lastPage}}</template> ({{data.publicationYear}}) <template is="dom-repeat" items="{{data.dbXrefs}}" as="xref">[{{_formatXrefLabel(xref.databaseName)}} : <a href="{{xref.resolvedUrl}}" class="external-link" target='_blank'>{{xref.accession}}</a>] </template>
-        </p>
+        <template is="dom-if" if="{{!summary}}">
+          <p><span class="hyperlink-blue"><template is="dom-repeat" items="{{data.authors}}" as="author">{{author.lastName}} {{author.initials}}. , </template></span></p>
+          <p>{{data.journal}} {{data.journalResourceLocator.medAbbrev}}, <strong>{{data.volume}}</strong>, {{data.firstPage}} <template is="dom-if" if="{{data.lastPage}}">- {{data.lastPage}}</template> ({{data.publicationYear}})
+            <template is="dom-repeat" items="{{data.dbXrefs}}" as="xref">[{{_formatXrefLabel(xref.databaseName)}} : <a href="{{xref.resolvedUrl}}" class="external-link" target='_blank'>{{xref.accession}}</a>] </template></p>
+        </template>
+        <template is="dom-if" if="{{summary}}">
+          {{data.authors.0.lastName}} {{data.authors.0.initials}}. <template is="dom-if" if="{{data.authors.1}}"><i>et al.</i></template>
+          , {{data.journal}} {{data.journalResourceLocator.medAbbrev}}, <strong>{{data.volume}}</strong>, {{data.firstPage}} <template is="dom-if" if="{{data.lastPage}}">- {{data.lastPage}}</template> ({{data.publicationYear}})</template>
+        </template>
         <template is="dom-if" if="{{data.abstractText}}">
           <button id="collapseButton" class="btn btn-primary btn-xs" type="button" on-click="_toggleAbstract">
             <span class="pubDisplayStatus"> </span>abstract
@@ -69,11 +68,9 @@ Block element representing a publication record
           </iron-collapse>
         </template>
         <template is="dom-if" if="{{!data.abstractText}}">
-          <!--if this loop doesn't work then make a function that returns !abstractText and use it like this if={{containsAbstract()}}-->
           No Abstract available
         </template>
       </template>
-    </div>
   </template>
 
   <script>
@@ -85,7 +82,14 @@ Block element representing a publication record
         },
         showAbstract: {
           type: Boolean
+        },
+        summary: {
+          type: Boolean,
+          value: false
         }
+      },
+      attached: function () {
+        if (this.showAbstract) this.async(function(){this.$$("#collapseButton").remove();},1);
       },
       _toggleAbstract: function(){
         this.$$("#collapse"+this.data.publicationId).toggle();
