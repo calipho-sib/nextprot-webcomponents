@@ -1,0 +1,321 @@
+<!doctype html>
+<html>
+  <head>
+    <title>publication-item demo</title>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, minimum-scale=1.0, initial-scale=1, user-scalable=yes">
+    <script src="../../webcomponentsjs/webcomponents-lite.js"></script>
+
+    <link rel="import" href="../../iron-demo-helpers/demo-pages-shared-styles.html">
+    <link rel="import" href="../../iron-demo-helpers/demo-snippet.html">
+
+    <link rel="import" href="../publication-item.html">
+
+    <style is="custom-style" include="demo-pages-shared-styles">
+      .vertical-section-container {
+        max-width: 80%;
+      }
+    </style>
+  </head>
+  <body>
+
+    <div class="vertical-section-container centered">
+      <h3>Basic publication-item demo</h3>
+      <demo-snippet>
+        <template>
+          <h4>Detailed mode (deafult)</h4><hr>
+          <publication-item></publication-item>
+        </template>
+      </demo-snippet>
+      <demo-snippet>
+        <template>
+          <h4>Summary mode</h4><hr>
+          <publication-item summary="true"></publication-item>
+        </template>
+      </demo-snippet>
+      <demo-snippet>
+        <template>
+          <h4>Detailed with displayed abstract</h4><hr>
+          <publication-item show-abstract="true"></publication-item>
+        </template>
+      </demo-snippet>
+      <demo-snippet>
+        <template>
+          <h4>Data binding</h4><hr>
+          <script>
+            var elements = document.querySelectorAll("publication-item");
+            var data={
+              "md5": "3f63e416a0b2d9c437323fc68f29dde8",
+              "title": "Glucose tolerance is associated with differential expression of microRNAs in skeletal muscle: results from studies of twins with and without type 2 diabetes.",
+              "abstractText": "We aimed to identify microRNAs (miRNAs) associated with type 2 diabetes and risk of developing the disease in skeletal muscle biopsies from phenotypically well-characterised twins.",
+              "publicationType": "ARTICLE",
+              "publicationDate": "2015-02-01",
+              "textDate": "2015-02",
+              "submission": null,
+              "isLargeScale": false,
+              "isCurated": true,
+              "isComputed": false,
+              "authors": [
+                {
+                  "authorId": 42724757,
+                  "lastName": "Bork-Jensen",
+                  "foreName": "Jette",
+                  "initials": "J",
+                  "suffix": "",
+                  "rank": 0,
+                  "person": true,
+                  "publicationId": 47437551,
+                  "editor": false
+                },
+                {
+                  "authorId": 42724758,
+                  "lastName": "Scheele",
+                  "foreName": "Camilla",
+                  "initials": "C",
+                  "suffix": "",
+                  "rank": 1,
+                  "person": true,
+                  "publicationId": 47437551,
+                  "editor": false
+                },
+                {
+                  "authorId": 42724759,
+                  "lastName": "Christophersen",
+                  "foreName": "Daniel V",
+                  "initials": "DV",
+                  "suffix": "",
+                  "rank": 2,
+                  "person": true,
+                  "publicationId": 47437551,
+                  "editor": false
+                },
+                {
+                  "authorId": 42724760,
+                  "lastName": "Nilsson",
+                  "foreName": "Emma",
+                  "initials": "E",
+                  "suffix": "",
+                  "rank": 3,
+                  "person": true,
+                  "publicationId": 47437551,
+                  "editor": false
+                },
+                {
+                  "authorId": 42724761,
+                  "lastName": "Friedrichsen",
+                  "foreName": "Martin",
+                  "initials": "M",
+                  "suffix": "",
+                  "rank": 4,
+                  "person": true,
+                  "publicationId": 47437551,
+                  "editor": false
+                },
+                {
+                  "authorId": 42724762,
+                  "lastName": "Fernandez-Twinn",
+                  "foreName": "Denise S",
+                  "initials": "DS",
+                  "suffix": "",
+                  "rank": 5,
+                  "person": true,
+                  "publicationId": 47437551,
+                  "editor": false
+                },
+                {
+                  "authorId": 42724763,
+                  "lastName": "Grunnet",
+                  "foreName": "Louise G",
+                  "initials": "LG",
+                  "suffix": "",
+                  "rank": 6,
+                  "person": true,
+                  "publicationId": 47437551,
+                  "editor": false
+                },
+                {
+                  "authorId": 42724764,
+                  "lastName": "Litman",
+                  "foreName": "Thomas",
+                  "initials": "T",
+                  "suffix": "",
+                  "rank": 7,
+                  "person": true,
+                  "publicationId": 47437551,
+                  "editor": false
+                },
+                {
+                  "authorId": 42724765,
+                  "lastName": "Holmstrøm",
+                  "foreName": "Kim",
+                  "initials": "K",
+                  "suffix": "",
+                  "rank": 8,
+                  "person": true,
+                  "publicationId": 47437551,
+                  "editor": false
+                },
+                {
+                  "authorId": 42724766,
+                  "lastName": "Vind",
+                  "foreName": "Birgitte",
+                  "initials": "B",
+                  "suffix": "",
+                  "rank": 9,
+                  "person": true,
+                  "publicationId": 47437551,
+                  "editor": false
+                },
+                {
+                  "authorId": 42724767,
+                  "lastName": "Højlund",
+                  "foreName": "Kurt",
+                  "initials": "K",
+                  "suffix": "",
+                  "rank": 10,
+                  "person": true,
+                  "publicationId": 47437551,
+                  "editor": false
+                },
+                {
+                  "authorId": 42724768,
+                  "lastName": "Beck-Nielsen",
+                  "foreName": "Henning",
+                  "initials": "H",
+                  "suffix": "",
+                  "rank": 11,
+                  "person": true,
+                  "publicationId": 47437551,
+                  "editor": false
+                },
+                {
+                  "authorId": 42724769,
+                  "lastName": "Wojtaszewski",
+                  "foreName": "Jørgen",
+                  "initials": "J",
+                  "suffix": "",
+                  "rank": 12,
+                  "person": true,
+                  "publicationId": 47437551,
+                  "editor": false
+                },
+                {
+                  "authorId": 42724770,
+                  "lastName": "Ozanne",
+                  "foreName": "Susan E",
+                  "initials": "SE",
+                  "suffix": "",
+                  "rank": 13,
+                  "person": true,
+                  "publicationId": 47437551,
+                  "editor": false
+                },
+                {
+                  "authorId": 42724771,
+                  "lastName": "Pedersen",
+                  "foreName": "Bente K",
+                  "initials": "BK",
+                  "suffix": "",
+                  "rank": 14,
+                  "person": true,
+                  "publicationId": 47437551,
+                  "editor": false
+                },
+                {
+                  "authorId": 42724772,
+                  "lastName": "Poulsen",
+                  "foreName": "Pernille",
+                  "initials": "P",
+                  "suffix": "",
+                  "rank": 15,
+                  "person": true,
+                  "publicationId": 47437551,
+                  "editor": false
+                },
+                {
+                  "authorId": 42724773,
+                  "lastName": "Vaag",
+                  "foreName": "Allan",
+                  "initials": "A",
+                  "suffix": "",
+                  "rank": 16,
+                  "person": true,
+                  "publicationId": 47437551,
+                  "editor": false
+                }
+              ],
+              "dbXrefs": [
+                {
+                  "dbXrefId": 47437549,
+                  "accession": "10.1007/s00125-014-3434-2",
+                  "databaseName": "DOI",
+                  "databaseCategory": "Publication databases",
+                  "url": "http://dx.doi.org/",
+                  "linkUrl": "http://dx.doi.org/%s",
+                  "resolvedUrl": "http://dx.doi.org/10.1007/s00125-014-3434-2",
+                  "properties": [],
+                  "publicationId": 47437551
+                },
+                {
+                  "dbXrefId": 47437550,
+                  "accession": "25403480",
+                  "databaseName": "PubMed",
+                  "databaseCategory": "Publication databases",
+                  "url": "http://www.ncbi.nlm.nih.gov/sites/entrez?db=pubmed",
+                  "linkUrl": "http://www.ncbi.nlm.nih.gov/entrez/query.fcgi?db=pubmed&cmd=search&term=%s",
+                  "resolvedUrl": "http://www.ncbi.nlm.nih.gov/entrez/query.fcgi?db=pubmed&cmd=search&term=25403480",
+                  "properties": [],
+                  "publicationId": 47437551
+                }
+              ],
+              "publicationResourceLocator": {
+                "name": "Diabetologia",
+                "firstPage": "363",
+                "lastPage": "373",
+                "volume": "58",
+                "issue": "2",
+                "publicationId": 47437551,
+                "journalId": 3272,
+                "abbrev": "Diabetologia",
+                "medAbbrev": "Diabetologia",
+                "nlmid": "0006777"
+              },
+              "publicationId": 47437551,
+              "editors": [],
+              "localizable": true,
+              "locatedInScientificJournal": true,
+              "locatedInEditedVolumeBook": false,
+              "localizableInBookMedium": true,
+              "publicationYear": "2015",
+              "volume": "58",
+              "issue": "2",
+              "firstPage": "363",
+              "lastPage": "373",
+              "publisherName": "",
+              "publisherCity": "",
+              "journalResourceLocator": {
+                "name": "Diabetologia",
+                "firstPage": "363",
+                "lastPage": "373",
+                "volume": "58",
+                "issue": "2",
+                "publicationId": 47437551,
+                "journalId": 3272,
+                "abbrev": "Diabetologia",
+                "medAbbrev": "Diabetologia",
+                "nlmid": "0006777"
+              },
+              "publicationLocatorName": "Diabetologia"
+            }
+
+            for(var i in elements){
+              elements[i].data = data;
+            }
+
+          </script>
+        </template>
+      </demo-snippet>
+    </div>
+
+  </body>
+</html>
