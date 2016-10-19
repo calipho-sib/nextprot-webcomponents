@@ -1,9 +1,22 @@
 {
-  "name": "quality-label",
-  "description": "Label used to display annotation and evidence qualifier",
-  "main": "quality-label.html",
+  "name": "evidence-item",
+  "description": "Block element representing an evidence record.",
+  "authors": ["marcin.domagalski@sib.swiss"],
+  "keywords": [
+    "web-components",
+    "nextprot-webcomponents",
+    "polymer"
+  ],
+  "main": "evidence-item.html",
+  "repository": {
+    "type": "git",
+    "url": "git://github.com/calipho-sib/nextprot-webocomponents.git#evidence-item"
+  },
+  "homepage": "https://github.com/calipho-sib/nextprot-webcomponents/tree/evidence-item",
   "dependencies": {
-    "polymer": "Polymer/polymer#^1.4.0"
+    "polymer": "Polymer/polymer#^1.4.0",
+    "publication-item": "git://github.com/calipho-sib/nextprot-webocomponents.git#publication-item",
+    "quality-label": "git://github.com/calipho-sib/nextprot-webocomponents.git#quality-label"
   },
   "devDependencies": {
     "iron-component-page": "PolymerElements/iron-component-page#^1.0.0",

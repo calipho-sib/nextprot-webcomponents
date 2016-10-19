@@ -1,4 +1,4 @@
-# \<quality-label\>
+# \<evidence-item\>
 
 Label used to display annotation and evidence qualifier
 
