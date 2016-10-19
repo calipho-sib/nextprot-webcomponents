@@ -1,38 +1,18 @@
-# \<evidence-item\>
+# nextprot-webcomponents
 
-Block element representing an evidence record.
+#### Project draft:
+> https://docs.google.com/presentation/d/1CQWA9btnzEy6dZ8y0UpDMb7AISfWsDz6zuCtBX26XoM/edit?ts=57fcbe56#slide=id.p
 
-## Install the Polymer-CLI
+#### How to develop webcomponents:
+> https://docs.google.com/presentation/d/1Eg6A32MBOGXR5ZxE5n0qy5CWsWy5sqcUIoDtG3M-kSc/edit#slide=id.g137e60f59c_0_88
 
-First, make sure you have the [Polymer CLI](https://www.npmjs.com/package/polymer-cli) installed. Then run `polymer serve` to serve your application locally.
+#### Repository structure:
+> This is central repository for nextprot UI webcomponents. In order to allow fetching and registration of single webcomponents with bower, the repository was divided into "submodules" using git subtree.
+> In summary, master branch contains all webcomponents divided into three categories: core, blocks (building blocks), and molecules.
 
-## Viewing Your Application
+__Additionally, every component has its own branch (branch name is identical as webcomponent name) and should be referenced separately in bower.json__
+__eg. ```"evidence-item": "https://github.com/calipho-sib/nextprot-webcomponents.git#evidence-item""```.__
 
-```
-$ polymer serve
-```
+### License
 
-## Building Your Application
-
-```
-$ polymer build
-```
-
-This will create a `build/` folder with `bundled/` and `unbundled/` sub-folders
-containing a bundled (Vulcanized) and unbundled builds, both run through HTML,
-CSS, and JS optimizers.
-
-You can serve the built versions by giving `polymer serve` a folder to serve
-from:
-
-```
-$ polymer serve build/bundled
-```
-
-## Running Tests
-
-```
-$ polymer test
-```
-
-Your application is already set up to be tested via [web-component-tester](https://github.com/Polymer/web-component-tester). Run `polymer test` to run your application's test suite locally.
+[GNU General Public License](https://www.gnu.org/licenses/gpl-3.0.en.html)
