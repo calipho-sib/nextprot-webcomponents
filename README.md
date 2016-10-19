@@ -15,4 +15,4 @@ __eg. ```"evidence-item": "https://github.com/calipho-sib/nextprot-webcomponents
 
 ### License
 
-[MIT License](http://opensource.org/licenses/MIT)
+[GNU GENERAL PUBLIC LICENSE](https://www.gnu.org/licenses/gpl-3.0.en.html)
