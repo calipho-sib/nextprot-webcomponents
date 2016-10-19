@@ -1,7 +1,7 @@
 <!doctype html>
 
 <html>
-<head>
+  <head>
     <title>evidence-item test</title>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, minimum-scale=1.0, initial-scale=1, user-scalable=yes">
@@ -9,24 +9,24 @@
     <script src="../../web-component-tester/browser.js"></script>
 
     <link rel="import" href="../evidence-item.html">
-</head>
-<body>
+  </head>
+  <body>
 
-<test-fixture id="basic">
-    <template>
+    <test-fixture id="basic">
+      <template>
         <evidence-item></evidence-item>
-    </template>
-</test-fixture>
+      </template>
+    </test-fixture>
 
-<script>
-    suite('evidence-item', function() {
+    <script>
+      suite('evidence-item', function() {
 
         test('instantiating the element works', function() {
-            var element = fixture('basic');
-            assert.equal(element.is, 'evidence-item');
+          var element = fixture('basic');
+          assert.equal(element.is, 'evidence-item');
         });
 
-    });
-</script>
-</body>
+      });
+    </script>
+  </body>
 </html>

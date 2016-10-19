@@ -1,29 +1,29 @@
 <!doctype html>
 <html>
-<head>
-  <title>evidence-item demo</title>
-  <meta charset="utf-8">
-  <meta name="viewport" content="width=device-width, minimum-scale=1.0, initial-scale=1, user-scalable=yes">
-  <script src="../../webcomponentsjs/webcomponents-lite.js"></script>
+  <head>
+    <title>evidence-item demo</title>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, minimum-scale=1.0, initial-scale=1, user-scalable=yes">
+    <script src="../../webcomponentsjs/webcomponents-lite.js"></script>
 
-  <link rel="import" href="../../iron-demo-helpers/demo-pages-shared-styles.html">
-  <link rel="import" href="../../iron-demo-helpers/demo-snippet.html">
+    <link rel="import" href="../../iron-demo-helpers/demo-pages-shared-styles.html">
+    <link rel="import" href="../../iron-demo-helpers/demo-snippet.html">
 
-  <link rel="import" href="../evidence-item.html">
+    <link rel="import" href="../evidence-item.html">
 
-  <style is="custom-style" include="demo-pages-shared-styles">
-    .vertical-section-container {
-      max-width: 80%;
-    }
-  </style>
-</head>
-<body>
+    <style is="custom-style" include="demo-pages-shared-styles">
+      .vertical-section-container {
+        max-width: 80%;
+      }
+    </style>
+  </head>
+  <body>
 
-<div class="vertical-section-container centered">
-  <h3>Basic evidence-item Demo</h3>
-  <demo-snippet>
-    <template>
-      <evidence-item data='{
+    <div class="vertical-section-container centered">
+      <h3>Basic evidence-item Demo</h3>
+      <demo-snippet>
+        <template>
+          <evidence-item data='{
 "resourceId": 2673102,
 "resourceType": "database",
 "resourceAccession": "GO_REF:0000024",
@@ -61,8 +61,8 @@
 "subjectProteinOrigin": null,
 "sourceAccession_TODEBUG": null
 }'
-                     index=1
-                     publication='{
+index=1
+publication='{
           "md5": "3f63e416a0b2d9c437323fc68f29dde8",
           "title": "Glucose tolerance is associated with differential expression of microRNAs in skeletal muscle: results from studies of twins with and without type 2 diabetes.",
           "abstractText": "We aimed to identify microRNAs (miRNAs) associated with type 2 diabetes and risk of developing the disease in skeletal muscle biopsies from phenotypically well-characterised twins.",
@@ -325,9 +325,8 @@
           },
           "publicationLocatorName": "Diabetologia"
           }'></evidence-item>
-    </template>
-  </demo-snippet>
-</div>
-
-</body>
+        </template>
+      </demo-snippet>
+    </div>
+  </body>
 </html>

@@ -1,6 +1,6 @@
 # \<evidence-item\>
 
-Label used to display annotation and evidence qualifier
+Block element representing an evidence record.
 
 ## Install the Polymer-CLI
 
