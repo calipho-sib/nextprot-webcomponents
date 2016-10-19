@@ -2,10 +2,8 @@
 <!--
 `quality-label`
 Label used to display annotation and evidence qualifier
-
 @demo demo/index.html 
 -->
-
 <dom-module id="quality-label">
   <template>
     <style is="quality-label-style">
@@ -58,6 +56,7 @@ Label used to display annotation and evidence qualifier
         }
       },
       _checkQualityValue: function(){
+        this.quality = this.quality.toLowerCase();
         if (this.quality!=='gold' && this.quality!=='silver') this.quality = null;
       }
     });
