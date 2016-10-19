@@ -1,4 +1,4 @@
-# \<overview-section\>
+# \<protein-overview\>
 
 Top page section present on every viewer
 

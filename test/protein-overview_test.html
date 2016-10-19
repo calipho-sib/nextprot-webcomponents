@@ -8,22 +8,22 @@
     <script src="../../webcomponentsjs/webcomponents-lite.js"></script>
     <script src="../../web-component-tester/browser.js"></script>
 
-    <link rel="import" href="../overview-section.html">
+    <link rel="import" href="../protein-overview.html">
   </head>
   <body>
 
     <test-fixture id="basic">
       <template>
-        <overview-section></overview-section>
+        <protein-overview></protein-overview>
       </template>
     </test-fixture>
 
     <script>
-      suite('overview-section', function() {
+      suite('protein-overview', function() {
 
         test('instantiating the element works', function() {
           var element = fixture('basic');
-          assert.equal(element.is, 'overview-section');
+          assert.equal(element.is, 'protein-overview');
         });
 
       });

@@ -1,18 +1,18 @@
 {
-  "name": "overview-section",
-  "description": "Top page section present on every viewer",
+  "name": "protein-overview",
+  "description": "Summary protein information included in every viewer",
   "authors": ["marcin.domagalski@sib.swiss"],
   "keywords": [
     "web-components",
     "nextprot-webcomponents",
     "polymer"
   ],
-  "main": "overview-section.html",
+  "main": "protein-overview.html",
   "repository": {
     "type": "git",
-    "url": "git://github.com/calipho-sib/nextprot-webocomponents.git#overview-section"
+    "url": "git://github.com/calipho-sib/nextprot-webocomponents.git#protein-overview"
   },
-  "homepage": "https://github.com/calipho-sib/nextprot-webcomponents/tree/overview-section",
+  "homepage": "https://github.com/calipho-sib/nextprot-webcomponents/tree/protein-overview",
   "dependencies": {
     "polymer": "Polymer/polymer#^1.4.0",
     "bootstrap": "^3.3.7"
