@@ -1,4 +1,5 @@
 <link rel="import" href="../polymer/polymer.html">
+<link rel="import" href="../publication-item/publication-item.html">
 <!--
 `overview-section`
 Top page section present on every viewer
@@ -13,8 +14,11 @@ Top page section present on every viewer
       dd{
         margin-left:15px;
       }
-      .subsection-title {
+      .grey-text {
         color: grey;
+      }
+      .text-right {
+        text-align:right;
       }
       .paragraph {
         margin:10px 10px;
@@ -32,9 +36,9 @@ Top page section present on every viewer
             {{data.geneName.[0].name}}  →
           </template>
         </template>
-        {{data.entryName}} <!--this should be inline-->
+        {{data.entryName}}
         <template is="dom-repeat" items="{{data.recommendedProteinName}}" as="rpn">
-          <template is="dom-if" if="{{rpn.EC}}">[<template is="dom-repeat" items="{{rpn.EC}}" as="ec"> <a target='_blank' href="{{nxUrl}}/term/{{ec}}">{{ec}}</a> <span hidden$="[[!_checkIfLast(rpn.EC,index)]]">,</span> </template> ] </template>
+          <template is="dom-if" if="{{rpn.EC}}">[<template is="dom-repeat" items="{{rpn.EC}}" as="ec"> {{_linkToEc(ec)}} <span hidden$="[[!_checkIfLast(rpn.EC,index)]]">,</span> </template> ] </template>
           <template is="dom-if" if="{{rpn.mainShortName}}">( {{rpn.mainShortName}} ) </template>
         </template>
       </h3>
@@ -42,171 +46,237 @@ Top page section present on every viewer
     <div id="INFOS-LESS" style="display:block;margin-top:15px;">
       <template is="dom-if" if="{{data.recommendedProteinName.mainSynonymName}}">
         <div id="synonym-less" class="row">
-          <div class="col-md-3 col-xs-3" style="color: grey;text-align:right">Protein also known as :</div>
-          <div class="col-md-9 col-xs-9">{{#recommendedProteinName}}{{#mainSynonymName}}{{name}}{{#if synonym}} ({{synonym}}) {{/if}}{{/mainSynonymName}} {{#if others}} ; {{/if}}{{#others}}{{type}}{{plural names}}:{{#names}} {{name}}{{#unless @last}},{{/unless}}{{/names}}{{#unless @last}}; {{/unless}}{{/others}}{{/recommendedProteinName}}</div>
+          <div class="col-md-3 col-xs-3 grey-text text-right">Protein also known as :</div>
+          <div class="col-md-9 col-xs-9">
+            <template is="dom-repeat" items="{{data.recommendedProteinName}}" as="recommendedProteinName">
+              <template is="dom-repeat" items="{{recommendedProteinName.mainSynonymName}}" as="mainSynonymName">{{mainSynonymName.name}}<template is="dom-if" if="{{mainSynonymName.synonym}}"> ({{mainSynonymName.synonym}}) </template></template>
+              <template is="dom-if" if="{{data.recommendedProteinName.others}}"> ; </template>
+              <template is="dom-repeat" items="{{recommendedProteinName.others}}" as="others">
+                {{others.type}}{{_pluralize(others.names)}}:<template is="dom-repeat" items="{{others.names}}" as="nameArray"> {{nameArray.name}}<template is="dom-if" if="{{!_checkIfLast(others.names,index)}}">,</template></template>
+                <template is="dom-if" if="{{!_checkIfLast(others,index)}}">; </template>
+              </template>
+            </template>
+          </div>
         </div>
       </template>
       <template is="dom-if" if="{{!data.recommendedProteinName.mainSynonymName&&data.recommendedProteinName.others}}">
       <div id="synonym-other-less" class="row">
-        <div class="col-md-3 col-xs-3" style="color: grey;text-align:right">Protein also known as :</div>
-        <div class="col-md-9 col-xs-9">{{#recommendedProteinName}}{{#others}} {{type}}{{plural names}}:{{#names}}{{name}}{{#unless @last}},{{/unless}}{{/names}}{{#unless @last}}; {{/unless}}{{/others}}{{/recommendedProteinName}}</div>
+        <div class="col-md-3 col-xs-3 grey-text text-right">Protein also known as :</div>
+        <div class="col-md-9 col-xs-9">
+          <template is="dom-repeat" items="{{data.recommendedProteinName}}" as="recommendedProteinName">
+            <template is="dom-repeat" items="{{recommendedProteinName.others}}" as="others">
+              {{others.type}}{{_pluralize(others.names)}}:<template is="dom-repeat" items="{{others.names}}" as="nameArray">{{nameArray.name}}<template is="dom-if" if="{{!_checkIfLast(others.names,index)}}">,</template></template>
+              <template is="dom-if" if="{{!_checkIfLast(others,index)}}">; </template>
+            </template>
+          </template>
+        </div>
       </div>
       </template>
-
       <template is="dom-if" if="{{data.cleavage}}">
       <div id="cleavage-less" class="row">
-        <div class="col-md-3 col-xs-3" style="color: grey;text-align:right">Cleaved into :</div>
-        <div class="col-md-6 col-xs-6">{{#cleavage}}{{#names}}<span>{{name}}{{#unless @last}}; {{/unless}}</span>{{/names}}{{/cleavage}}</div>
+        <div class="col-md-3 col-xs-3 grey-text text-right">Cleaved into :</div>
+        <div class="col-md-6 col-xs-6">
+          <template is="dom-repeat" items="{{data.cleavage}}" as="cleavage">
+            <template is="dom-repeat" items="{{cleavage.names}}" as="nameArray"><span>{{nameArray.name}}<template is="dom-if" if="{{!_checkIfLast(cleavage.names,index)}}">; </template></span></template>
+          </template>
+        </div>
       </div>
       </template>
       <div id="gene-less" class="row">
         <template is="dom-if" if="{{data.geneName}}">
           <template is="dom-if" if="{{data.geneName.0.name}}">
-            <div class="col-md-3 col-xs-3" style="color: grey;text-align:right">Gene name :</div>
+            <div class="col-md-3 col-xs-3 grey-text text-right">Gene name :</div>
             <div class="col-md-6 col-xs-6" >
               <template is="dom-repeat" items="{{data.geneName}}" as="gn">{{gn.name}}<span hidden$="[[!_checkIfLast(geneName,index)]]">; </span></template></div>
           </template>
           <template is="dom-if" if="{{!data.geneName.0.name}}">
-            <div class="col-md-3 col-xs-3" style="color: grey;text-align:right">ORF name :</div>
+            <div class="col-md-3 col-xs-3 grey-text text-right">ORF name :</div>
             <div class="col-md-6 col-xs-6">{{data.geneName.0.orf.0.name}}</div>
           </template>
         </template>
         <template is="dom-if" if="{{!data.geneName}}">
-          <div class="col-md-3 col-xs-3" style="color: grey;text-align:right">Gene name :</div>
+          <div class="col-md-3 col-xs-3 grey-text text-right">Gene name :</div>
           <div class="col-md-6 col-xs-6" >None assigned yet</div>
         </template>
       </div>
-      {{#if families}}
-      <div id="family-less" class="row">
-        <div class="col-md-3 col-xs-3 subsection-title" style="color: grey;text-align:right">Family name :</div>
-        <div class="col-md-6 col-xs-6">{{#families}}<span>{{#superfamily}}{{{link_to "term"}}}{{/superfamily}}{{#if family}}{{#if superfamily}} >> {{/if}}{{#family}} {{{link_to "term"}}} {{/family}}{{/if}}{{#if subfamily}}{{#if family}} >> {{/if}}{{#subfamily}}{{{link_to "term"}}} {{/subfamily}}{{/if}}</span>{{/families}}</div>
-      </div>
-      {{/if}}
+      <template is="dom-if" if="{{data.families}}">
+        <div id="family-less" class="row">
+          <div class="col-md-3 col-xs-3 grey-text text-right">Family name :</div>
+          <div class="col-md-6 col-xs-6">
+            <template is="dom-repeat" items="{{data.families}" as="familyroot"><span>
+              <template is="dom-repeat" items="{{familyroot.superfamily}" as="superfamily">{{_linkToTerm(superfamily)}}</template>
+              <template is="dom-if" if="{{familyroot.family}}">
+                <template is="dom-if" if="{{familyroot.superfamily}}"> >> </template>
+                <template is="dom-repeat" items="{{familyroot.family}" as="family"> {{_linkToTerm(family)}} </template>
+              </template>
+              <template is="dom-if" if="{{familyroot.subfamily}}">
+                <template is="dom-if" if="{{familyroot.family}}"> >> </template>
+                <template is="dom-repeat" items="{{familyroot.subfamily}" as="subfamily">{{_linkToTerm(subfamily)}}</template>
+              </template></span>
+            </template>
+          </div>
+        </div>
+      </template>
     </div>
     <div id="INFOS-FULL" style="display:none">
       <div id="protein-full" class="row">
-        <div class="col-md-1 col-xs-2 text-uppercase subsection-title">Protein</div>
+        <div class="col-md-1 col-xs-2 text-uppercase grey-text">Protein</div>
         <div class="col-md-9 col-xs-8">
           <dl>
             <dt>Recommended name</dt>
-            {{#recommendedProteinName}}
-            <dd>{{name}} {{#if EC}}[{{#EC}} {{{link_to "EC"}}} {{#unless @last}},{{/unless}} {{/EC}} ] {{/if}}{{#synonyms}} {{#if short}}<span><span style="color:grey">Short: </span> {{#short}}{{this}}{{#unless @last}} , {{/unless}}{{/short}}</span>{{/if}}{{/synonyms}}</dd>
-            {{/recommendedProteinName}}
-            {{#if alternativeProteinNames}}
-            {{#alternativeProteinNames}}
-            <dt>{{type}}{{plural names}}</dt>
-            {{#names}}
-            <dd> {{name}}
-              {{#synonyms}}{{#if EC}}[{{#EC}} {{{link_to "EC"}}} {{#unless @last}},{{/unless}} {{/EC}} ] {{/if}} {{#if short}}<span><span style="color:grey">Short: </span> {{#short}}{{this}}{{#unless @last}} , {{/unless}}{{/short}}</span>{{/if}}{{/synonyms}}
+            <template is="dom-repeat" items="{{data.recommendedProteinName}}" as="recommendedProteinName">
+            <dd>{{recommendedProteinName.name}}
+              <template is="dom-if" if="{{recommendedProteinName.EC}}">[
+                <template is="dom-repeat" items="{{recommendedProteinName.EC}}" as="ec"> {{_linkToEc(ec)}} <template is="dom-if" if="{{!_checkIfLast(recommendedProteinName.EC,index)}}">,</template> </template> ] </template>
+              <template is="dom-repeat" items="{{recommendedProteinName.synonyms}}" as="synonym">
+                <template is="dom-if" if="{{synonym.short}}"><span><span  class="grey-text">Short: </span>
+                  <template is="dom-repeat" items="{{synonyms.short}}" as="short">{{short}}<template is="dom-if" if="{{!_checkIfLast(synonym.short,index)}}">,</template></template></span></template>
+              </template>
             </dd>
-            {{/names}}
-            {{/alternativeProteinNames}}
-            {{/if}}
-            {{#if functionalRegionNames}}
-            {{#functionalRegionNames}}
-            <dt>Include the following {{names.length}} functional region{{plural names}}</dt>
-            {{#names}}
-            <dd> {{name}}
-              {{#synonyms}}{{#if EC}}[{{#EC}} {{{link_to "EC"}}} {{#unless @last}},{{/unless}} {{/EC}} ] {{/if}} {{#if full}}<span><span style="color:grey">Alternative name{{plural full}}:</span> {{#full}}{{this}}{{#unless @last}} ; {{/unless}}{{/full}}</span>{{/if}}{{/synonyms}}
-            </dd>
-            {{/names}}
-            {{/functionalRegionNames}}
-            {{/if}}
-            {{#if cleavage}}
-            {{#cleavage}}
-            <dt>Cleaved into the following {{names.length}} chain{{plural names}}</dt>
-            {{#names}}
-            <dd>{{name}} {{#synonyms}}{{#if EC}}[{{#EC}} {{{link_to "EC"}}} {{#unless @last}},{{/unless}} {{/EC}} ] {{/if}} {{#if full}}<span><span style="color:grey">Alternative name{{plural full}}:</span> {{#full}}{{this}}{{#unless @last}} ; {{/unless}}{{/full}}</span>{{/if}}{{/synonyms}}</dd>
-            {{/names}}
-            {{/cleavage}}
-            {{/if}}
-            {{#if isoforms}}
-            <dt>Spliced into the following {{isoforms.length}} isoform{{plural isoforms}}</dt>
-            {{#isoforms}}
-            <dd>{{name}} {{#if synonyms}}<span style="color:grey"> Alternative name{{plural synonyms}}: </span>{{#synonyms}}{{name}}{{#unless @last}} ; {{/unless}}{{/synonyms}}{{/if}}</dd>
-            {{/isoforms}}
-            {{/if}}
+            </template>
+            <template is="dom-if" if="{{data.alternativeProteinNames}}">
+              <template is="dom-repeat" items="{{data.alternativeProteinName}}" as="alternativeProteinNames">
+                <dt>{{alternativeProteinNames.type}}{{_pluralize(alternativeProteinNames.names)}}</dt>
+                <template is="dom-repeat" items="{{alternativeProteinName.names}}" as="name">
+                <dd> {{name.name}}
+                  <template is="dom-repeat" items="{{name.synonyms}}" as="synonym">
+                    <template is="dom-if" if="{{synonym.EC}}">[<template is="dom-repeat" items="{{synonyms.EC}}" as="ec"> {{_linkToEc(ec)}} <template is="dom-if" if="{{!_checkIfLast(synonym.EC,index)}}">,</template></template> ]</template>
+                    <template is="dom-if" if="{{synonym.short}}"><span><span class="grey-text">Short: </span> <template is="dom-repeat" items="{{synonyms.short}}" as="short">{{short}}<template is="dom-if" if="{{!_checkIfLast(synonym.short,index)}}">,</template></template></span></template>
+                  </template>
+                </dd>
+                </template>
+              </template>
+            </template>
+            <template is="dom-if" if="{{data.functionalRegionNames}}">
+              <template is="dom-repeat" items="{{data.functionalRegionNames}}" as="functionalRegionName">
+              <dt>Include the following {{functionalRegionNames.names.length}} functional region{{_pluralize(functionalRegionNames.names)}}</dt>
+                <template is="dom-repeat" items="{{functionalRegionName.names}}" as="regionName">
+                  <dd> {{regionName.name}}
+                    <template is="dom-repeat" items="{{regionName.synonyms}}" as="synonym">
+                      <template is="dom-if" if="{{synonym.EC}}">[<template is="dom-repeat" items="{{synonyms.EC}}" as="ec"> {{_linkToEc(ec)}}
+                        <template is="dom-if" if="{{!_checkIfLast(synonym.EC,index)}}">,</template>
+                      </template> ]</template>
+                      <template is="dom-repeat" items="{{synonyms.full}}" as="full">
+                        <span><span class="grey-text">Alternative name{{_pluralize(full)}}:</span> <template is="dom-repeat" items="{{full}}" as="f">{{f}}
+                          <template is="dom-if" if="{{!_checkIfLast(full.f,index)}}"> ; </template>
+                        </template></span></template>
+                    </template>
+                  </dd>
+                </template>
+              </template>
+            </template>
+            <template is="dom-if" if="{{data.cleavage}}">
+              <template is="dom-repeat" items="{{data.cleavage}}" as="cleavage">
+                <dt>Cleaved into the following {{cleavage.names.length}} chain{{plural cleavage.names}}</dt>
+                <template is="dom-repeat" items="{{cleavage.names}}" as="cleavageName">
+                  <dd>{{cleavageName.name}}
+                    <template is="dom-repeat" items="{{cleavage.synonyms}}" as="synonym">
+                      <template is="dom-if" if="{{cleavage.EC}}">[<template is="dom-repeat" items="{{cleavage.EC}}" as="ec"> {{_linkToEc(ec)}}
+                        <template is="dom-if" if="{{!_checkIfLast(cleavage.EC,index)}}">,</template> </template> ]
+                      </template>
+                      <template is="dom-if" if="{{cleavage.full}}">
+                        <span><span class="grey-text">Alternative name{{plural cleavage.full}}:</span>
+                        <template is="dom-repeat" items="{{cleavage.full}}" as="full">{{full}}
+                          <template is="dom-if" if="{{!_checkIfLast(cleavage.full,index)}}"> ; </template>
+                        </template></span>
+                      </template>
+                    </template>
+                  </dd>
+                </template>
+              </template>
+            </template>
+            <template is="dom-if" if="{{data.isoforms}}">
+              <dt>Spliced into the following {{isoforms.length}} isoform{{_pluralize(isoforms)}}</dt>
+              <template is="dom-repeat" items="{{data.isoforms}}" as="isoform">
+                <dd>{{isoform.name}}
+                  <template is="dom-if" if="{{isoform.synonyms}}">
+                    <span class="grey-text"> Alternative name{{_pluralize(isoform.synonyms)}}: </span>
+                    <template is="dom-repeat" items="{{isoform.synonyms}}" as="synonym">{{synonym.name}}<template is="dom-if" if="{{!_checkIfLast(isoform.synonyms,index)}}"> ; </template></template>
+                  </template></dd>
+              </template>
+            </template>
           </dl>
         </div>
       </div>
       <div id="gene-full" class="row">
-        <div class="col-md-1 col-xs-2 text-uppercase subsection-title">Gene</div>
+        <div class="col-md-1 col-xs-2 text-uppercase grey-text">Gene</div>
         <div class="col-md-9 col-xs-8">
           <dl>
-            {{#if geneName}}
-            {{#geneName}}
-            {{#if name}}
-            <dt>Recommended name</dt>
-            <dd>{{name}}</dd>
-            {{/if}}
-            {{#if synonyms}}
-            <dt>Alternative name{{plural synonyms}}</dt>
-            {{#synonyms}}
-            <dd> {{name}}</dd>
-            {{/synonyms}}
-            {{/if}}
-            {{#if orf}}
-            <dt>ORF name{{plural orf}}</dt>
-            {{#orf}}
-            <dd> {{name}}</dd>
-            {{/orf}}
-            {{/if}}
-            {{#unless @last}}
-            <br>
-            {{/unless}}
-            {{/geneName}}
-            {{else}}
-            <dt>Recommended name</dt>
-            <dd>None assigned yet</dd>
-            {{/if}}
+            <template is="dom-if" if="{{data.geneName}}">
+              <template is="dom-repeat" items="{{geneName.geneName}}" as="geneName">
+                <template is="dom-if" if="{{geneName.name}}">
+                  <dt>Recommended name</dt>
+                  <dd>{{geneName.name}}</dd>
+                </template>
+                <template is="dom-if" if="{{geneName.synonyms}}">
+                  <dt>Alternative name{{_pluralize(geneName.synonyms)}}</dt>
+                  <template is="dom-repeat" items="{{geneName.synonyms}}" as="synonym">
+                    <dd> {{synonym.name}}</dd>
+                  </template>
+                </template>
+                <template is="dom-if" if="{{geneName.orf}}">
+                  <dt>ORF name{{_pluralize(geneName.orf)}}</dt>
+                  <template is="dom-repeat" items="{{geneName.orf}}" as="orf">
+                    <dd> {{orf.name}}</dd>
+                  </template>
+                </template>
+                <template is="dom-if" if="{{!_checkIfLast(data.geneName,index)}}">
+                  <br>
+                </template>
+              </template>
+            </template>
+            <template is="dom-if" if="{{!data.geneName}}">
+              <dt>Recommended name</dt>
+              <dd>None assigned yet</dd>
+            </template>
           </dl>
         </div>
       </div>
-      {{#if families}}
+      <template is="dom-if" if="{{data.families}}">
       <div id="family-full" class="row">
-        <div class="col-md-1 col-xs-2 text-uppercase subsection-title">Family</div>
+        <div class="col-md-1 col-xs-2 text-uppercase grey-text">Family</div>
         <div class="col-md-9 col-xs-8">
           <dl>
-            {{#families}}
-            {{#if superfamily}}
-            {{#superfamily}}
-            <dt>Superfamily</dt>
-            <dd>{{{link_to "term"}}}</dd>
-            {{/superfamily}}
-            {{/if}}
-            {{#if family}}
-            {{#family}}
-            <dt>Family</dt>
-            <dd>{{{link_to "term"}}}</dd>
-            {{/family}}
-            {{/if}}
-            {{#if subfamily}}
-            {{#subfamily}}
-            <dt>Subfamily</dt>
-            <dd>{{{link_to "term"}}}</dd>
-            {{/subfamily}}
-            {{/if}}
-            {{/families}}
+            <template is="dom-repeat" items="{{data.families}}" as="familyroot">
+              <template is="dom-if" if="{{familyroot.superfamily}}">
+                <template is="dom-repeat" items="{{familyroot.superfamily}}" as="superfamily">
+                  <dt>Superfamily</dt>
+                  <dd>{{{link_to "term"}}}</dd>
+                </template>
+              </template>
+              <template is="dom-if" if="{{familyroot.family}}">
+                <template is="dom-repeat" items="{{familyroot.family}}" as="family">
+                  <dt>Family</dt>
+                  <dd>{{_linkToTerm(family.accession, family.name)}}</dd>
+                </template>
+              </template>
+              <template is="dom-if" if="{{familyroot.subfamily}}">
+                <template is="dom-repeat" items="{{familyroot.subfamily}}" as="subfamily">
+                  <dt>Subfamily</dt>
+                  <dd>{{_linkToTerm(subfamily.accession, subfamily.name)}}</dd>
+                </template>
+              </template>
+            </template>
           </dl>
         </div>
       </div>
-      {{/if}}
+      </template>
       <div id="History-full" class="row">
-        <div class="col-md-1 col-xs-2 text-uppercase subsection-title">History</div>
+        <div class="col-md-1 col-xs-2 text-uppercase grey-text">History</div>
         <div class="col-md-9 col-xs-8">
           <dl>
             <dt>neXtProt</dt>
-            <dd>Integrated {{integDate}}</dd>
-            <dd>Last updated {{lastUpdate}}</dd>
+            <dd>Integrated {{data.integDate}}</dd>
+            <dd>Last updated {{data.lastUpdate}}</dd>
             <dt>UniProtKB</dt>
-            <dd>Integrated {{UniprotIntegDate}}</dd>
-            <dd>Last updated {{UniprotLastUpdate}}</dd>
-            <dd>Entry version {{version}}</dd>
-            {{#if lastSeqUpdate}}
-            <dd>Last sequence update {{lastSeqUpdate}}</dd>
-            {{/if}}
-            <dd>Sequence version {{seqVersion}}</dd>
-            <dd>{{#accessionNumber}}{{{link_to "history"}}}{{/accessionNumber}}</dd>
+            <dd>Integrated {{data.UniprotIntegDate}}</dd>
+            <dd>Last updated {{data.UniprotLastUpdate}}</dd>
+            <dd>Entry version {{data.version}}</dd>
+            <template is="dom-if" if="{{data.lastSeqUpdate}}">
+              <dd>Last sequence update {{data.lastSeqUpdate}}</dd>
+            </template>
+            <dd>Sequence version {{data.seqVersion}}</dd>
+            <dd><template is="dom-if" if="{{data.accessionNumber}}">{{_linkToHistory(data.accessionNumber)}}</template></dd>
           </dl>
         </div>
       </div>
@@ -226,6 +296,21 @@ Top page section present on every viewer
         _checkIfLast: function(array,index){
           if(array.length-1===index) return true;
           return false;
+        },
+        _linkToEc: function(ec){
+          var url = this.nxUrl + "/term/" + ec;
+          return "<a target='_blank' href='" + url + "'> EC " + ec + " </a>";
+        },
+        _linkToHistory: function(accession){
+          var url = "http://www.uniprot.org/uniprot/" + accession.slice(3) + "?version=*";
+          return "<a target='_blank' href='" + url + "'>Complete UniProtKB history</a>";
+        },
+        _linkToTerm: function(accession, name){
+          var url = this.nxUrl + "/term/" + accession;
+          return "<a target='_blank' href='" + url + "'>" + name + "</a>";
+        },
+        _pluralize: function(item){
+          return item.length > 1 ? item+"s" : item;
         }
       }
     });
