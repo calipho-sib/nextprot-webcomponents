@@ -1,7 +1,9 @@
 {
   "name": "protein-overview",
   "description": "Summary protein information included in every viewer",
-  "authors": ["marcin.domagalski@sib.swiss"],
+  "authors": [
+    "marcin.domagalski@sib.swiss"
+  ],
   "keywords": [
     "web-components",
     "nextprot-webcomponents",
@@ -15,7 +17,9 @@
   "homepage": "https://github.com/calipho-sib/nextprot-webcomponents/tree/protein-overview",
   "dependencies": {
     "polymer": "Polymer/polymer#^1.4.0",
-    "bootstrap": "^3.3.7"
+    "iron-collapse": "PolymerElements/iron-collapse#^1.2.1",
+    "bootstrap": "^3.3.7",
+    "nextprot-js": "nextprot#^0.0.87"
   },
   "devDependencies": {
     "iron-component-page": "PolymerElements/iron-component-page#^1.0.0",
