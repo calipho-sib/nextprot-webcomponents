@@ -12,6 +12,9 @@
     <link rel="import" href="../keywords-section.html">
 
     <style is="custom-style" include="demo-pages-shared-styles">
+      .vertical-section-container {
+        max-width: 80%;
+      }
     </style>
   </head>
   <body>
@@ -20,7 +23,7 @@
       <h3>Basic keywords-section Demo</h3>
       <demo-snippet>
         <template>
-          <keywords-section></keywords-section>
+          <keywords-section categories='["Biological process","Molecular function", "Technical term"]' exceptions='["KW-0002", "KW-0181", "KW-0903", "KW-0374", "KW-0582"]'></keywords-section>
         </template>
       </demo-snippet>
     </div>
