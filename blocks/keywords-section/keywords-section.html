@@ -1,0 +1,61 @@
+<link rel="import" href="../polymer/polymer.html">
+<!--<link rel="import" href="../section-header/section-header.html">-->
+<!--
+`keywords-section`
+Keywords section present on function, medical, sequence, and structures pages.
+@demo demo/index.html 
+-->
+<dom-module id="keywords-section">
+  <template>
+    <style>
+      :host {
+        display: block;
+      }
+      hr:not(:last-child) {
+        margin:0px 50px 5px;
+      }
+    </style>
+    <!--<section-header title="keywords" count="{{count}}"></section-header>-->
+    <div class="category-main">
+      <template is="dom-repeat" items="{{data}}" as="category">
+        <div class="row category-row">
+          <div class="col-lg-2 col-md-2 col-sm-12 col-xs-12">
+            <h4 class="hidden-sm hidden-xs annotation-category-title text-align-right"> {{category.key}}</h4>
+            <h4 class="hidden-lg hidden-md annotation-category-title text-align-left"> {{category.key}}</h4>
+          </div>
+          <div class="col-lg-10 col-md-10 col-sm-12 col-xs-12">
+            <template id="menu" is="dom-repeat" items="{{data.category}}" as="annotation">
+              <div class="row annotation-row">
+                <div class="annotation-title-container">
+                  <p class="annotation-title">{{annotation.cvTermName}}</p>
+                  <div class="annotation-labels col-md-6 col-sm-6 col-xs-6">
+                    <button class="btn btn-sm btn-info" type="button" data-toggle="collapse" data-target="#{{annotation.cvTermAccessionCode}}" aria-expanded="false" aria-controls="{{annotation.cvTermAccessionCode}}">Definition</button>
+                    <a class="accession-code-link btn btn-sm selectable" href="/db/term/{{annotation.cvTermAccessionCode}}">{{annotation.cvTermAccessionCode}}</a>
+                  </div>
+                </div>
+              </div>
+              <div class="collapse" id="{{annotation.cvTermAccessionCode}}">
+                <div class="well blue-well">
+                  {{annotation.cvTermDescription}}
+                </div>
+              </div>
+            </template>
+          </div>
+        </div>
+      </template>
+    </div>
+  </template>
+  <script>
+    Polymer({
+      is: 'keywords-section',
+      properties: {
+        data: {
+          type: Object
+        },
+        count: {
+          type: Number
+        }
+      }
+    });
+  </script>
+</dom-module>
