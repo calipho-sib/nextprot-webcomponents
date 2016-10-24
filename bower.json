@@ -1,0 +1,28 @@
+{
+  "name": "keywords-section",
+  "description": "Keywords section present on function, medical, sequence, and structures pages.",
+  "license": "GNU GPL",
+  "authors": [
+    "marcin.domagalski@sib.swiss"
+  ],
+  "keywords": [
+    "web-components",
+    "nextprot-webcomponents",
+    "polymer"
+  ],
+  "main": "keywords-section.html",
+  "repository": {
+    "type": "git",
+    "url": "git://github.com/calipho-sib/nextprot-webocomponents.git#keywords-section"
+  },
+  "homepage": "https://github.com/calipho-sib/nextprot-webcomponents/tree/keywords-section",
+  "dependencies": {
+    "polymer": "Polymer/polymer#^1.4.0"
+  },
+  "devDependencies": {
+    "iron-component-page": "PolymerElements/iron-component-page#^1.0.0",
+    "iron-demo-helpers": "PolymerElements/iron-demo-helpers#^1.0.0",
+    "web-component-tester": "^4.0.0",
+    "webcomponentsjs": "webcomponents/webcomponentsjs#^0.7.0"
+  }
+}
