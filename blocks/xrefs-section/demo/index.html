@@ -12,18 +12,21 @@
     <link rel="import" href="../xrefs-section.html">
 
     <style is="custom-style" include="demo-pages-shared-styles">
+      .vertical-section-container {
+        max-width: 80%;
+      }
     </style>
   </head>
   <body>
-
     <div class="vertical-section-container centered">
       <h3>Basic xrefs-section Demo</h3>
       <demo-snippet>
         <template>
-          <xrefs-section></xrefs-section>
+          <xrefs-section categories='["BRENDA", "CAZy", "KEGGPathway", "MEROPS", "PeroxiBase",
+          "BioCyc", "Reactome","Pathway_Interaction_DB", "REBASE", "TCDB", "GeneWiki", "SABIO-RK",
+          "GenomeRNAi", "GuidetoPHARMACOLOGY", "PRO","MoonProt","ESTHER"]'></xrefs-section>
         </template>
       </demo-snippet>
     </div>
-
   </body>
 </html>
