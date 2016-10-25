@@ -1,34 +1,376 @@
 <link rel="import" href="../polymer/polymer.html">
-
+<script src="../nextprot-js/dist/nextprot.bundle.js"></script>
+<link rel="stylesheet" type="text/css" href="../bootstrap/dist/css/bootstrap.min.css" async>
+<link rel="stylesheet" type="text/css" href="../font-awesome/css/font-awesome.min.css" async>
 <!--
 `xrefs-section`
 Exteranl links section present in function, medical, expression, interactins, sequence, proteomics and structures views.
-
 @demo demo/index.html 
 -->
-
 <dom-module id="xrefs-section">
   <template>
     <style>
       :host {
         display: block;
+        font-family: "Lato", "Helvetica Neue", "Helvetica", sans-serif;
+      }
+      .category-header {
+        border-bottom: 1px solid #E7EAEC;
+        margin-bottom: 15px;
+        padding-bottom: 5px;
+      }
+      .category-title {
+        display:inline-block;
+        vertical-align:middle;
+      }
+      .category-main {
+        margin-top:20px;
+      }
+      .badge-container {
+        display:inline-block;
+      }
+      .counter-badge {
+        border-radius:70%;
+        border: 2px solid black;
+        color:#C50063;
+        background-color:white;
+        padding:8px 8px;
+        margin-right:10px;
+        vertical-align:middle;
+        min-width:32px;
+      }
+      .annotation-category-title {
+        font-weight: 500;
+        text-transform: uppercase;
+        margin-top: 8px;
+        color: #888888;
+        font-size: 14px;
+      }
+      .annotation-row {
+        margin-bottom:5px;
+        margin-left:0px;
+      }
+      .annotation-title-container {
+        font-size:1em;
+        overflow:hidden;
+        text-overflow:ellipsis;
+      }
+      .annotation-title {
+        float: left;
+        padding:2px 20px 0px;
+        margin-bottom:0px;
+      }
+      .prefix-label {
+        margin: 0px;
+        color: white;
+        border:1px solid #C50063;
+        background-color:rgba(197, 0, 99, 0.75);
+      }
+      .suffix-label {
+        margin: 0px;
+        font-weight: 300;
+        margin-left: 5px;
+        padding:1px 5px;
+        border-radius:0px 3px 3px 0px;
+        background-color: #f4f4f4;
+        color: #999;
+        border: 1px solid #999;
+        font-size: 12px;
+        line-height: 18px;
+      }
+      .extLink:after {
+        content: "\f08e";
+        font-family: "FontAwesome";
+        font-size: 11px;
+        margin-left: 5px;
+        vertical-align: middle;
+      }
+      .selectable {
+        -webkit-touch-callout: text; /* iOS Safari */
+        -webkit-user-select: text;   /* Chrome/Safari/Opera */
+        -khtml-user-select: text;    /* Konqueror */
+        -moz-user-select: text;      /* Firefox */
+        -ms-user-select: text;       /* IE/Edge */
+        user-select: text;           /* non-prefixed version, currently
+                                  not supported by any browser */
+      }
+      .no-padding {
+        padding: 0;
       }
     </style>
-    <h2>Hello [[prop1]]</h2>
+    <div id="xrefs-header" class="category-header">
+      <div class="badge-container">
+        <span class="badge counter-badge">{{count}}</span>
+      </div>
+      <h4 id="xrefs-title" class="category-title">Further external links</h4>
+    </div>
+    <div class="category-main">
+      <template is="dom-repeat" items="{{data}}" as="category">
+      <div class="row">
+        <div class="col-lg-4 col-md-2 col-sm-12 col-xs-12">
+          <h4 class="hidden-sm hidden-xs annotation-category-title text-align-right"> {{_getKeys(category)}}</h4>
+          <h4 class="hidden-lg hidden-md annotation-category-title text-align-left"> {{_getKeys(category)}}</h4>
+        </div>
+        <div class="col-lg-8 col-md-10 col-sm-12 col-xs-12">
+          <template is="dom-repeat" items="{{_getValues(category)}}" as="annotations">
+            <template is="dom-repeat" items="{{annotations}}" as="annotation">
+              <div class="row annotation-row">
+                <div class="col-md-3 col-sm-3 col-xs-4 annotation-title-container">
+                  <p class="annotation-title">{{annotation.name}}</p>
+                </div>
+                <div class="col-md-9 col-sm-9 col-xs-8">
+                  <template is="dom-repeat" items="{{annotation.xrefs}}" as="xref">
+                  <div class="btn-group hidden-xs" role="group">
+                    <template is="dom-if" if="{{xref.prefix}}">
+                      <label class="btn btn-xs prefix-label">{{xref.prefix}}</label>
+                    </template>
+                    <a class="btn btn-xs selectable extLink" href="{{xref.url}}" target="_blank">{{xref.accession}}</a>
+                    <template is="dom-if" if="{{xref.sufix}}">
+                      <label class="suffix-label">{{xref.suffix}}</label>
+                    </template>
+                  </div>
+                  <div class="row hidden-lg hidden-md hidden-sm">
+                    <div class="btn-group col-xs-12 no-padding" role="group">
+                      <template is="dom-if" if="{{xref.prefix}}">
+                        <label class="btn btn-xs prefix-label">{{xref.prefix}}</label>
+                      </template>
+                      <a class="btn btn-xs selectable extLink" href="{{xref.url}}" target="_blank">{{xref.accession}}</a>
+                      <template is="dom-if" if="{{xref.sufix}}">
+                        <label class="suffix-label">{{xref.suffix}}</label>
+                      </template>
+                    </div>
+                  </div>
+                  </template>
+                </div>
+              </div>
+            </template>
+          </template>
+        </div>
+      </div>
+        <template is="dom-if" if="{_checkIfLast(data,index)}}">
+          <hr class="bottom-line">
+        </template>
+      </template>
+    </div>
   </template>
-
   <script>
     Polymer({
-
       is: 'xrefs-section',
-
       properties: {
-        prop1: {
-          type: String,
-          value: 'xrefs-section',
-        },
+        categories: {
+          type: Array
+        }
+      },
+      created: function(){
+        var nx = new Nextprot.Client("neXtprot overview loader", "Calipho Group");
+        var nxEntryName = nx.getEntryName();
+        var self=this;
+        nx.getAnnotationsByCategory(nxEntryName, "xref")
+          .then(function (data) {
+            var xrefList = self.getXrefByView(Object.keys(data.xrefs).map(function(k) { return data.xrefs[k] }));
+          }).catch(function (err) {
+            // catch any error that happened so far
+            console.log("Argh, broken: " + err.message);
+            console.log("Error at line : " + err.stack);
+          });
+      },
+      getXrefByView: function(list) {
+        this.count = 0;
+        this.data = [];
+        var dataObject = {};
+        var self = this;
+        list.forEach(function (k) {
+          if (self.categories.indexOf(k.databaseName) >= 0) {
+            if (dataObject[k.databaseCategory]) dataObject[k.databaseCategory].push(k);
+            else dataObject[k.databaseCategory] = [k];
+          }
+        });
+        //sort data alphabetically
+        self.data = Object.keys(dataObject).map(function (key) {
+          var temp = {};
+          temp[key] = dataObject[key];
+          return temp
+        });
+
+        self.data.sort(this._sortAlpha);
+        this.data = this.data.map(function(t){
+          t[Object.keys(t)[0]] = self._filterExceptions(t[Object.keys(t)[0]]);
+          return t;
+        });
+        self.data.forEach(function(x){
+          var cat = x[Object.keys(x)[0]];
+          cat.forEach(function(x2){self.count+=1;})
+          cat.sort(function (a,b){
+            var dbA = a.name.toUpperCase();
+            var dbB = b.name.toUpperCase();
+            var prefA = a.xrefs[0].prefix.toUpperCase();
+            var prefB = b.xrefs[0].prefix.toUpperCase();
+            var accA = a.xrefs[0].accession.toUpperCase();
+            var accB = b.xrefs[0].accession.toUpperCase();
+            if (dbA < dbB) return -1;
+            else if (dbA > dbB) return 1;
+            else if (prefA < prefB) return -1;
+            else if (prefA > prefB) return 1;
+            else if (accA < accB) return -1;
+            else if (accA > accB) return 1;
+            else return 0;
+          })
+        })
+      },
+      _filterExceptions: function(typeList) {
+        var newTypeList = [];
+        for (elem in typeList){
+          if (typeList[elem].databaseName === "Ensembl"){
+            if (typeList[elem].accession.startsWith("ENST")){
+              if (typeList[elem].properties) {
+                var ensembl = {
+                  name: typeList[elem].databaseName,
+                  xrefs : [{
+                    accession: typeList[elem].accession,
+                    url : typeList[elem].resolvedUrl,
+                    prefix : "Transcript",
+                    suffix : ""
+                  }]
+                };
+                typeList[elem].properties.forEach(function(p){
+                  if (p.name === "nxmapped protein sequence ID") {
+                    var result = $.grep(typeList, function(e){ return e.accession == p.value; })[0];
+                    ensembl.xrefs.push({
+                      accession: result.accession,
+                      url : result.resolvedUrl,
+                      prefix : "Protein",
+                      suffix : ""
+                    });
+                  }
+                })
+                typeList[elem].properties.forEach(function(p){
+                  if (p.name === "nxmapped gene ID") {
+                    var result = $.grep(typeList, function(e){ return e.accession == p.value; })[0];
+                    ensembl.xrefs.push({
+                      accession: result.accession,
+                      url : result.resolvedUrl,
+                      prefix : "Gene",
+                      suffix : ""
+                    });
+                  }
+                })
+                newTypeList.push(ensembl);
+              }
+            }
+          }
+          else if (typeList[elem].databaseName === "EMBL"){ //TODO
+            if (typeList[elem].properties.length > 0) {
+              var molType = $.grep(typeList[elem].properties, function(e){ return e.name === "molecule type"; })[0];
+              var addInfos = $.grep(typeList[elem].properties, function(e){ return e.name === "status"})[0];
+              var suffix = addInfos ? status[addInfos.value] : "";
+              var embl = {
+                name: typeList[elem].databaseName,
+                xrefs : []
+              };
+              if (molType.value === "mRNA") {
+                embl.xrefs.push({
+                  accession: typeList[elem].accession,
+                  url : typeList[elem].resolvedUrl,
+                  prefix : "mRNA",
+                  suffix : ""
+                })
+                var translationID = $.grep(typeList[elem].properties, function(e){ return e.name === "protein sequence ID"; })[0].value;
+                var translation = $.grep(typeList, function(e){ return e.accession == translationID; })[0];
+                embl.xrefs.push({
+                  accession: translation.accession,
+                  url : translation.resolvedUrl,
+                  prefix : "Translation",
+                  suffix : suffix
+                })
+              }
+              else if (molType.value === "protein") {
+                var geneIDs = $.grep(typeList[elem].properties, function(e){ return e.name === "genomic sequence ID"; });
+                geneIDs.forEach(function(g){
+                  var gene = $.grep(typeList, function(e){ return e.accession == g.value; })[0];
+                  embl.xrefs.push({
+                    accession: gene.accession,
+                    url : gene.resolvedUrl,
+                    prefix : "Genomic DNA",
+                    suffix : ""
+                  })
+                })
+                embl.xrefs.push({
+                  accession: typeList[elem].accession,
+                  url : typeList[elem].resolvedUrl,
+                  prefix : "Translation",
+                  suffix : suffix
+                })
+              }
+              else if (molType.value === "Genomic_DNA" && addInfos.value) {
+                var geneIDs = $.grep(typeList[elem].properties, function(e){ return e.name === "genomic sequence ID"; });
+                embl.xrefs.push({
+                  accession: typeList[elem].accession,
+                  url : typeList[elem].resolvedUrl,
+                  prefix : "Genomic DNA",
+                  suffix : suffix
+                })
+              }
+              newTypeList.push(embl);
+            }
+          }
+          else if (typeList[elem].databaseName === "RefSeq"){ //TODO
+            if (typeList[elem].properties.length > 0) {
+              var nucleotideID = $.grep(typeList[elem].properties, function(e){ return e.name === "nucleotide sequence ID"; })[0].value;
+              var refseq = {
+                name: typeList[elem].databaseName,
+                xrefs : [{
+                  accession: typeList[elem].accession,
+                  url : typeList[elem].resolvedUrl,
+                  prefix : "Protein",
+                  suffix : ""
+                }]
+              };
+              var nucleotide = $.grep(typeList, function(e){ return e.accession == nucleotideID; })[0];
+              refseq.xrefs.push({
+                accession: nucleotide.accession,
+                url : nucleotide.resolvedUrl,
+                prefix : "Nucleotide sequence",
+                suffix : ""
+              });
+              newTypeList.push(refseq);
+            }
+          }
+          else {
+            var suffix = "";
+            if (typeList[elem].properties.length>0){
+              var addInfos = $.grep(typeList[elem].properties, function(e){ return e.name === "entry name" || e.name === "isoform ID" || e.name === "gene designation" || e.name === "taxonomic scope"; })[0];
+              suffix = addInfos ? addInfos.value : "";
+            }
+            newTypeList.push({
+              name: typeList[elem].databaseName,
+              xrefs : [{
+                accession: typeList[elem].accession,
+                url : typeList[elem].resolvedUrl,
+                prefix : "",
+                suffix : suffix
+              }]
+            })
+          }
+
+        }
+        return newTypeList;
+      },
+      _sortAlpha: function(a,b){
+        var textA = Object.keys(a)[0].toUpperCase();
+        var textB = Object.keys(b)[0].toUpperCase();
+        return (textA < textB) ? -1 : (textA > textB) ? 1 : 0;
+      },
+      _getKeys: function(obj){
+        return Object.keys(obj);
+      },
+      _getValues: function(obj){
+        return Object.values(obj);
       },
 
+      _checkIfLast: function(array,index){
+        if(array.length-1===index) return true;
+        return false;
+      },
     });
   </script>
 </dom-module>
