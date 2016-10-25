@@ -1,0 +1,34 @@
+<link rel="import" href="../polymer/polymer.html">
+
+<!--
+`generic-annotation-item`
+Annotation section used in function, medical, and expression views.
+
+@demo demo/index.html 
+-->
+
+<dom-module id="generic-annotation-item">
+  <template>
+    <style>
+      :host {
+        display: block;
+      }
+    </style>
+    <h2>Hello [[prop1]]</h2>
+  </template>
+
+  <script>
+    Polymer({
+
+      is: 'generic-annotation-item',
+
+      properties: {
+        prop1: {
+          type: String,
+          value: 'generic-annotation-item',
+        },
+      },
+
+    });
+  </script>
+</dom-module>
