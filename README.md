@@ -1,4 +1,4 @@
-# \<generic-annotation-item\>
+# \<generic-annotation-section\>
 
 Annotation section used in function, medical, and expression views.
 

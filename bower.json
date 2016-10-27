@@ -1,9 +1,22 @@
 {
-  "name": "generic-annotation-item",
+  "name": "generic-annotation-section",
   "description": "Annotation section used in function, medical, and expression views.",
-  "main": "generic-annotation-item.html",
+  "authors": ["marcin.domagalski@sib.swiss"],
+  "keywords": [
+    "web-components",
+    "nextprot-webcomponents",
+    "polymer"
+  ],
+  "main": "generic-annotation-section.html",
+  "repository": {
+    "type": "git",
+    "url": "git://github.com/calipho-sib/nextprot-webcomponents.git#generic-annotation-section"
+  },
+  "homepage": "https://github.com/calipho-sib/nextprot-webcomponents/tree/generic-annotation-section",
   "dependencies": {
-    "polymer": "Polymer/polymer#^1.4.0"
+    "polymer": "Polymer/polymer#^1.4.0",
+    "iron-collapse": "PolymerElements/iron-collapse#^1.2.1",
+    "evidence-item": "git://github.com/calipho-sib/nextprot-webcomponents.git#evidence-item"
   },
   "devDependencies": {
     "iron-component-page": "PolymerElements/iron-component-page#^1.0.0",
