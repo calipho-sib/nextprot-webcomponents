@@ -10,13 +10,13 @@
   "main": "evidence-item.html",
   "repository": {
     "type": "git",
-    "url": "git://github.com/calipho-sib/nextprot-webocomponents.git#evidence-item"
+    "url": "git://github.com/calipho-sib/nextprot-webcomponents.git#evidence-item"
   },
   "homepage": "https://github.com/calipho-sib/nextprot-webcomponents/tree/evidence-item",
   "dependencies": {
     "polymer": "Polymer/polymer#^1.4.0",
-    "publication-item": "git://github.com/calipho-sib/nextprot-webocomponents.git#publication-item",
-    "quality-label": "git://github.com/calipho-sib/nextprot-webocomponents.git#quality-label"
+    "publication-item": "git://github.com/calipho-sib/nextprot-webcomponents.git#publication-item",
+    "quality-label": "git://github.com/calipho-sib/nextprot-webcomponents.git#quality-label"
   },
   "devDependencies": {
     "iron-component-page": "PolymerElements/iron-component-page#^1.0.0",
