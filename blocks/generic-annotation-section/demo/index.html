@@ -1,0 +1,42 @@
+<!doctype html>
+<html>
+  <head>
+    <title>generic-annotation-section demo</title>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, minimum-scale=1.0, initial-scale=1, user-scalable=yes">
+    <script src="../../webcomponentsjs/webcomponents-lite.js"></script>
+
+    <link rel="import" href="../../iron-demo-helpers/demo-pages-shared-styles.html">
+    <link rel="import" href="../../iron-demo-helpers/demo-snippet.html">
+
+    <link rel="import" href="../generic-annotation-section.html">
+
+    <style is="custom-style" include="demo-pages-shared-styles">
+      .vertical-section-container {
+        max-width: 80%;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="vertical-section-container centered">
+      <h3>Basic generic-annotation-section demo</h3>
+      <demo-snippet>
+        <template>
+          <generic-annotation-section section="function" categories='[
+          "FUNCTION-INFO",
+          "CATALYTIC-ACTIVITY",
+          "COFACTOR",
+          "ENZYME-REGULATION",
+          "GO-MOLECULAR-FUNCTION",
+          "GO-BIOLOGICAL-PROCESS",
+          "PATHWAY",
+          "ALLERGEN",
+          "CAUTION",
+          "MISCELLANEOUS"
+          ]'></generic-annotation-section>
+        </template>
+      </demo-snippet>
+    </div>
+
+  </body>
+</html>

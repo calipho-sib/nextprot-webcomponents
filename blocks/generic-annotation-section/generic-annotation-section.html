@@ -1,0 +1,268 @@
+<link rel="import" href="../polymer/polymer.html">
+<link rel="import" href="../iron-collapse/iron-collapse.html">
+<link rel="import" href="../evidence-item/evidence-item.html">
+<script src="../nextprot-js/dist/nextprot.bundle.js"></script>
+<link rel="stylesheet" type="text/css" href="../bootstrap/dist/css/bootstrap.min.css" async>
+<!--
+`generic-annotation-section`
+Annotation section used in function, medical, and expression views.
+@demo demo/index.html 
+-->
+<dom-module id="generic-annotation-section">
+  <template>
+    <style>
+      :host {
+        display: block;
+      }
+      .category-header {
+        border-bottom: 1px solid #E7EAEC;
+        margin-bottom: 15px;
+        padding-bottom: 5px;
+      }
+      .category-title {
+        text-transform: capitalize;
+        display:inline-block;
+        vertical-align:middle;
+      }
+      .category-main {
+        margin-top:20px;
+      }
+      .category-row {
+        border-bottom: 1px solid #E7EAEC;
+        margin: 15px 8px;
+        padding-bottom: 5px;
+      }
+      .badge-container {
+        display:inline-block;
+      }
+      .counter-badge {
+        border-radius:70%;
+        border: 2px solid black;
+        color:#C50063;
+        background-color:white;
+        padding:8px 8px;
+        margin-right:10px;
+        vertical-align:middle;
+        min-width:32px;
+      }
+      .annotation-category-title {
+        font-weight:200;
+        text-transform: uppercase;
+        margin-top:2px;
+      }
+      .annotation-category-title {
+        font-weight:200;
+        text-transform: uppercase;
+        margin-top:2px;
+      }
+      .annotation-row {
+        margin-bottom:5px;
+        margin-left:0px;
+      }
+      .annotation-title-container {
+        font-size:1em;
+        overflow:hidden;
+        text-overflow:ellipsis;
+      }
+      .annotation-title {
+        float: left;
+        padding:2px 20px 0px;
+        margin-bottom:0px;
+      }
+    </style>
+    <div id="{{section}}-header" class="category-header">
+      <div class="badge-container">
+        <span class="badge counter-badge">{{count}}</span>
+      </div>
+      <h4 id="{{section}}-title" class="category-title">{{section}}</h4>
+    </div>
+    <div class="category-main">
+      <template is="dom-repeat" items="{{_toArray(data)}}" as="category">
+        <div class="row category-row">
+          <div class="col-lg-1 col-md-12 col-sm-12 col-xs-12">
+            <h4 class="hidden-sm hidden-xs annotation-category-title text-align-right"> {{category.name}}</h4>
+            <h4 class="hidden-lg hidden-md annotation-category-title text-align-left"> {{category.name}}</h4>
+          </div>
+          <div class="col-lg-11 col-md-10 col-sm-12 col-xs-12">
+            <template is="dom-repeat" items="{{_toArray(category.value)}}" as="annotation">
+              <div class="row annotation-row">
+                <div class="col-lg-10 col-md-10 col-sm-9 col-xs-9">
+                  <div class="annotation-title-container">
+                    <template is="dom-if" if="{{annotation.value.cvTermAccessionCode}}">
+                      <p class="annotation-title col-lg-9 col-sm-7 col-xs-6">{{_boldPattern(annotation.value.description, "Contributes to")}}</p>
+                      <div class="annotation-labels col-lg-3 col-md-4 col-sm-5 col-xs-6">
+                        <button class="btn btn-sm btn-info" type="button" data-toggle="collapse" data-target="#collapse{{substring cvTermAccessionCode 3}}" aria-expanded="false" aria-controls="collapse{{substring cvTermAccessionCode 3}}">Definition</button>
+                        <a class="accession-code-link btn btn-sm selectable" href="/term/{{annotation.value.cvTermAccessionCode}}">{{annotation.value.cvTermAccessionCode}}</a>
+                      </div>
+                    </template>
+                    <template is="dom-if" if="{{annotation.value.parentXref}}">
+                      <p class="annotation-title col-lg-9 col-sm-7 col-xs-6">{{annotation.value.description}}</p>
+                      <div class="col-lg-3 col-md-4 col-sm-5 col-xs-6 right">
+                        <a class="accession-code-link btn btn-sm selectable" href="{{parentXref.resolvedUrl}}">{{annotation.value.parentXref.accession}}</a>
+                      </div>
+                    </template>
+                    <template is="dom-if" if="{{!annotation.value.cvTermAccessionCode&&!annotation.value.parentXref}}">
+                      <p class="annotation-title">{{annotation.value.description}}</p>
+                    </template>
+                  </div>
+                  <div class="collapse" id="collapse{{substring cvTermAccessionCode 3}}">
+                    <div class="well blue-well">
+                      {{annotation.value.cvTermDescription}}
+                    </div>
+                  </div>
+                  <div class="collapse hidden-xs {{id}} evidence-container">
+                    <template is="dom-repeat" items="{{_toArray(annotation.value.evidence)}}" as="evidence">
+                      <evidence-item data="{{evidence}}"></evidence-item>
+                      <!--{{> evidence source=assignedBy}}
+                      {{> publication parentId=../id}}-->
+                    </template>
+                  </div>
+                </div>
+                <div class="col-lg-2 col-md-3 col-sm-3 col-xs-3">
+                  <div class="show-references-button">
+                    <a class="btn" type="button" data-toggle="collapse" data-target=".{{id}}" aria-expanded="false" aria-controls="{{id}}">
+                      <p class="show-references-button-counter">{{evidences.length}}</p>
+                      <p class="show-references-button-label">ref</p>
+                    </a><div class="reference-label-container">
+                    <template is="dom-repeat" items="{{annotation.value.evidenceSources}}" as="source">
+                      <div class="reference-label">{{source}}</div>
+                    </template>
+                  </div>
+                  </div>
+                </div>
+              </div>
+            <div class="collapse hidden-lg hidden-md hidden-sm {{id}} evidence-container">
+              <template is="dom-repeat" items="{{_toArray(annotation.value.evidence)}}" as="evidence">
+                <evidence-item data="{{evidence}}"></evidence-item>
+                <!--{{> evidence source=db}}-->
+              </template>
+
+            </div>
+            </template>
+          </div>
+        </div>
+      </template>
+    </div>
+  </template>
+
+  <script>
+    Polymer({
+      is: 'generic-annotation-section',
+      properties: {
+        categories: {
+          type: Array
+        },
+        section: {
+            type: String
+        }
+      },
+      attached: function(){
+        var nx = new Nextprot.Client("neXtprot annotation loader", "Calipho Group");
+        var apiCall = [];
+        this.categories.forEach(function(a){apiCall.push(nx.getAnnotationsByCategory(nx.getEntryName(), a))});
+        var self = this;
+        Promise.all(apiCall)
+          .then(function (categories) {
+            self.annotationsByCategory = categories;
+            self.getAnnotationsByView();
+          }).catch(function (err) {
+            // catch any error that happened so far
+            console.log("Argh, broken: " + err.message);
+            console.log("Error at line : " + err.stack);
+          });
+      },
+      getAnnotationsByView: function(){
+        var data_xrefs = [];
+        var data_publi = [];
+        var data_annot = [];
+        this.count = 0;
+        this.annotationsByCategory.forEach(function(d){
+          Object.assign(data_xrefs, d.xrefs);
+          Object.assign(data_publi, d.publi);
+          $.merge(data_annot, d.annot);
+        });
+        data = {};
+        var self = this;
+        data_annot.forEach(function (a) {
+          if (a.category=="function") a.category="overview";
+          if (a.description) a.description=a.description.charAt(0).toUpperCase()+ a.description.slice(1);
+          if (a.cvTermName) a.cvTermName=a.cvTermName.charAt(0).toUpperCase()+a.cvTermName.slice(1);
+          if (!data.hasOwnProperty(a.category)) data[a.category]=[];
+          a.evidences.forEach(function(obj){if(obj.negativeEvidence==true) a.description = "<b>Not </b>"+a.description});
+
+          data[a.category].push({
+            id: a.annotationId,
+            description: a.description || a.cvTermName,
+            category: a.category.toUpperCase(),
+            cvTermAccessionCode: a.cvTermAccessionCode,
+            cvTermDescription: a.cvTermDescription,
+            parentXref: a.parentXref,
+            evidences: a.evidences ? self._getEvidence(a.evidences, data_xrefs, data_publi) : [],
+            evidenceSources: self._getUniqueListOfEvidenceSources(a.evidences)
+          });
+        });
+        Object.keys(data).forEach(function(d){self.count+=data[d].length;});
+        this.data = data;
+      },
+      _getEvidence: function(ev, xrefs, publi){
+        function getUrl(id){
+          if (xrefs.hasOwnProperty(id)) {
+            return xrefs[id].resolvedUrl;
+          }
+          return "";
+        }
+        var self = this;
+        return ev.map(function(e){
+          return {
+            "codeName": e.evidenceCodeName,
+            "accession": e.resourceAccession,
+            "assignedBy": e.assignedBy,
+            "db": e.resourceDb,
+            "negative": e.negativeEvidence,
+            "url": getUrl(e.resourceId),
+            "publication": self._getPublication(publi[e.publicationMD5])
+          }
+        })
+      },
+      _getPublication: function(pub){
+        if(pub){
+          return {
+            publicationId: pub.publicationId,
+            localUrl: "/publications/"+pub.publicationId,
+            title: pub.title,
+            authors: pub.authors,
+            journalResourceLocator: pub.journalResourceLocator,
+            firstPage: pub.firstPage,
+            lastPage: pub.lastPage,
+            publicationYear: pub.publicationYear,
+            dbXrefs: pub.dbXrefs,
+            abstractText: pub.abstractText
+          }
+        }
+      },
+      _getUniqueListOfEvidenceSources: function(evidenceList){
+        var evidenceSourceList = [];
+        evidenceList.forEach(function(evidence){
+          if(evidenceSourceList.indexOf(evidence.assignedBy) < 0) {
+            evidenceSourceList.push(evidence.assignedBy);
+          }
+        });
+        return evidenceSourceList;
+      },
+      _toArray: function(obj) {
+        if (typeof obj === 'object') {
+          return Object.keys(obj).map(function(key) {
+            return {
+              name: key,
+              value: obj[key]
+            };
+          });
+        }
+        return null;
+      },
+      _boldPattern: function(str, pattern){
+        return str.replace(pattern, '<b>'+pattern+'</b>');
+      }
+    });
+  </script>
+</dom-module>
