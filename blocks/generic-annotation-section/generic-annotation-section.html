@@ -69,6 +69,56 @@ Annotation section used in function, medical, and expression views.
         padding:2px 20px 0px;
         margin-bottom:0px;
       }
+      .annotation-labels {
+        float: right;
+      }
+      .reference-label-container {
+        display: inline;
+        float: left;
+        margin-left: 2px;
+      }
+      .reference-label {
+        clear: both;
+        float: left;
+        zoom:75%;
+        background-color:#dedede;
+        color:#999;margin: 2px;
+        padding: 2px 6px;
+        border-radius: 2px;
+      }
+      .show-references-button a {
+        float: left;
+        padding:5px 10px;
+        background-color:#dedede;
+      }
+      .show-references-button-counter {
+        color:#999;
+        padding:0px;
+        margin:0px;
+        font-size:1.5em;
+        font-weight:700;
+        line-height:1em
+      }
+      .show-references-button-label {
+        color:#999;
+        padding:0px 5px 0px;
+        margin:0px;
+        font-size:0.9em;
+        line-height:1em;
+      }
+      .blue-well {
+        background-color:rgba(91, 192, 222, 0.2);
+        margin:20px;
+      }
+      .text-align-right {
+        text-align: right;
+      }
+      .text-align-left {
+        text-align: left;
+      }
+      .grey-x {
+        color: #999;
+      }
     </style>
     <div id="{{section}}-header" class="category-header">
       <div class="badge-container">
@@ -88,56 +138,64 @@ Annotation section used in function, medical, and expression views.
               <div class="row annotation-row">
                 <div class="col-lg-10 col-md-10 col-sm-9 col-xs-9">
                   <div class="annotation-title-container">
+                    <template is="dom-if" if="{{_isNewPathwayCategory(category.name, annotation.value.evidenceSources)}}">
+                      <div class="grey-x">According to {{_formatEvidenceSourceName(annotation.value.evidenceSources)}}, this protein belongs to following pathway:</div>
+                    </template>
                     <template is="dom-if" if="{{annotation.value.cvTermAccessionCode}}">
-                      <p class="annotation-title col-lg-9 col-sm-7 col-xs-6">{{_boldPattern(annotation.value.description, "Contributes to")}}</p>
+                      <p class="annotation-title col-lg-9 col-sm-7 col-xs-6" inner-h-t-m-l="{{_boldPattern(annotation.value.description, 'Contributes to')}}"></p>
                       <div class="annotation-labels col-lg-3 col-md-4 col-sm-5 col-xs-6">
-                        <button class="btn btn-sm btn-info" type="button" data-toggle="collapse" data-target="#collapse{{substring cvTermAccessionCode 3}}" aria-expanded="false" aria-controls="collapse{{substring cvTermAccessionCode 3}}">Definition</button>
+                        <button id="description-button-{{annotation.value.id}}" class="btn btn-sm btn-info" type="button" on-click="_toggle">Definition</button>
                         <a class="accession-code-link btn btn-sm selectable" href="/term/{{annotation.value.cvTermAccessionCode}}">{{annotation.value.cvTermAccessionCode}}</a>
                       </div>
                     </template>
                     <template is="dom-if" if="{{annotation.value.parentXref}}">
                       <p class="annotation-title col-lg-9 col-sm-7 col-xs-6">{{annotation.value.description}}</p>
                       <div class="col-lg-3 col-md-4 col-sm-5 col-xs-6 right">
-                        <a class="accession-code-link btn btn-sm selectable" href="{{parentXref.resolvedUrl}}">{{annotation.value.parentXref.accession}}</a>
+                        <a class="accession-code-link btn btn-sm selectable" href="{{annotation.value.parentXref.resolvedUrl}}">{{annotation.value.parentXref.accession}}</a>
                       </div>
                     </template>
-                    <template is="dom-if" if="{{!annotation.value.cvTermAccessionCode&&!annotation.value.parentXref}}">
+                    <template is="dom-if" if="{{!_checkIfContainsAccessionOrXref(annotation.value)}}">
                       <p class="annotation-title">{{annotation.value.description}}</p>
                     </template>
                   </div>
-                  <div class="collapse" id="collapse{{substring cvTermAccessionCode 3}}">
+                  <iron-collapse id="description-container-{{annotation.value.id}}">
                     <div class="well blue-well">
                       {{annotation.value.cvTermDescription}}
                     </div>
-                  </div>
-                  <div class="collapse hidden-xs {{id}} evidence-container">
-                    <template is="dom-repeat" items="{{_toArray(annotation.value.evidence)}}" as="evidence">
-                      <evidence-item data="{{evidence}}"></evidence-item>
-                      <!--{{> evidence source=assignedBy}}
-                      {{> publication parentId=../id}}-->
-                    </template>
-                  </div>
+                  </iron-collapse>
+                  <iron-collapse id="evidences-container-{{annotation.value.id}}">
+                    <div class="evidences-container hidden-xs">
+                      <template is="dom-repeat" items="{{annotation.value.evidences}}" as="evidence">
+                        <evidence-item data="{{evidence}}" index="{{_getIndex(index)}}"></evidence-item>
+                      </template>
+                    </div>
+                  </iron-collapse>
                 </div>
                 <div class="col-lg-2 col-md-3 col-sm-3 col-xs-3">
                   <div class="show-references-button">
-                    <a class="btn" type="button" data-toggle="collapse" data-target=".{{id}}" aria-expanded="false" aria-controls="{{id}}">
-                      <p class="show-references-button-counter">{{evidences.length}}</p>
+                    <a id="evidences-button-{{annotation.value.id}}" class="btn hidden-xs hidden-sm" on-click="_toggle">
+                      <p class="show-references-button-counter">{{_countItems(annotation.value.evidences)}}</p>
                       <p class="show-references-button-label">ref</p>
-                    </a><div class="reference-label-container">
-                    <template is="dom-repeat" items="{{annotation.value.evidenceSources}}" as="source">
-                      <div class="reference-label">{{source}}</div>
-                    </template>
-                  </div>
+                    </a>
+                    <a id="evidences-button-sm-{{annotation.value.id}}" class="btn hidden-xl hidden-lg hidden-md" on-click="_toggle">
+                      <p class="show-references-button-counter">{{_countItems(annotation.value.evidences)}}</p>
+                      <p class="show-references-button-label">ref</p>
+                    </a>
+                    <div class="reference-label-container">
+                      <template is="dom-repeat" items="{{annotation.value.evidenceSources}}" as="source">
+                        <div class="reference-label">{{source}}</div>
+                      </template>
+                    </div>
                   </div>
                 </div>
               </div>
-            <div class="collapse hidden-lg hidden-md hidden-sm {{id}} evidence-container">
-              <template is="dom-repeat" items="{{_toArray(annotation.value.evidence)}}" as="evidence">
-                <evidence-item data="{{evidence}}"></evidence-item>
-                <!--{{> evidence source=db}}-->
-              </template>
-
-            </div>
+            <iron-collapse id="evidences-container-sm-{{annotation.value.id}}" opened>
+              <div class="evidence-container hidden-lg hidden-md">
+                <template is="dom-repeat" items="{{annotation.value.evidences}}" as="evidence">
+                  <evidence-item data="{{evidence}}" index="{{index+1}}"></evidence-item>
+                </template>
+              </div>
+            </iron-collapse>
             </template>
           </div>
         </div>
@@ -214,10 +272,10 @@ Annotation section used in function, medical, and expression views.
         var self = this;
         return ev.map(function(e){
           return {
-            "codeName": e.evidenceCodeName,
-            "accession": e.resourceAccession,
+            "evidenceCodeName": e.evidenceCodeName,
+            "resourceAccession": e.resourceAccession,
             "assignedBy": e.assignedBy,
-            "db": e.resourceDb,
+            "resourceDb": e.resourceDb,
             "negative": e.negativeEvidence,
             "url": getUrl(e.resourceId),
             "publication": self._getPublication(publi[e.publicationMD5])
@@ -249,6 +307,9 @@ Annotation section used in function, medical, and expression views.
         });
         return evidenceSourceList;
       },
+      _checkIfContainsAccessionOrXref: function(annotation){
+        return Boolean(annotation.cvTermAccessionCode || annotation.parentXref);
+      },
       _toArray: function(obj) {
         if (typeof obj === 'object') {
           return Object.keys(obj).map(function(key) {
@@ -260,8 +321,28 @@ Annotation section used in function, medical, and expression views.
         }
         return null;
       },
+      _getIndex: function(index){
+        return index+1;
+      },
+      _countItems: function(obj){
+        return obj.length;
+      },
+      _toggle: function(mouseEvent){
+        var srcElementId = mouseEvent.srcElement.id || mouseEvent.srcElement.parentNode.id;
+        this.$$("#"+srcElementId.replace('button','container')).toggle();
+      },
       _boldPattern: function(str, pattern){
-        return str.replace(pattern, '<b>'+pattern+'</b>');
+        return str.replace(pattern, "<b>"+pattern+"</b>");
+      },
+      _isNewPathwayCategory: function(category, name){
+        if (category=="pathway" && this.pathwayCategory!=new String(name).split('_')[0]) {
+          this.pathwayCategory = new String(name).split('_')[0];
+          return true;
+        }
+        return false;
+      },
+      _formatEvidenceSourceName: function(name){
+        return new String(name).split('_')[0];
       }
     });
   </script>
