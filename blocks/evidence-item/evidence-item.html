@@ -42,21 +42,28 @@ Block element representing an evidence record.
             .evidence-publication{
                 padding-left: 10px;
             }
+            .ext-link:after {
+                content: "\f08e";
+                font-family: "FontAwesome";
+                font-size: 11px;
+                margin-left: 5px;
+                vertical-align: middle;
+            }
         </style>
         <template is="dom-if" if="{{data.evidenceCodeName}}">
             <div class="evidence-container">
-                <div class="evidence-arrow">&#10549;</div>  Evidence {{index}}
-                <span class="colored-label evidence-code-name">{{data.evidenceCodeName}}</span><span class="colored-label evidence-source">{{data.resourceDb}}</span>
+                <div class="evidence-arrow">&#10549;</div>  Evidence {{index}}:
+                <span class="colored-label evidence-code-name">{{data.evidenceCodeName}}</span><span class="colored-label evidence-source">{{_getSource()}}</span>
                 <quality-label quality={{data.qualityQualifier}}></quality-label>
             </div>
             <template id="menu" is="dom-if" if="{{data.resourceAccession}}">
                 <div class="evidence-accession">
-                    <p><a href="{{url}}" class="extLink" target='_blank'>{{data.resourceAccession}}</a></p>
+                    <p><a href="{{data.url}}" class="ext-link" target='_blank'>{{data.resourceAccession}}</a></p>
                 </div>
             </template>
-            <template id="menu" is="dom-if" if="{{publication}}">
+            <template id="menu" is="dom-if" if="{{data.publication}}">
                 <div class="evidence-publication">
-                    <publication-item data="{{publication}}"></publication-item>
+                    <publication-item data="{{data.publication}}"></publication-item>
                 </div>
             </template>
         </template>
@@ -68,16 +75,12 @@ Block element representing an evidence record.
                 data: {
                     type: Object
                 },
-                url: {
-                    type: String,
-                    value: "http://search.nextprot.org"
-                },
                 index: {
                     type: Number
-                },
-                publication: {
-                    type: Object
                 }
+            },
+            _getSource: function(){
+                return this.data.resourceDb || this.data.assignedBy;
             }
         });
     </script>
