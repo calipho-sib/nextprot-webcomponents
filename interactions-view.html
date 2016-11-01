@@ -1,0 +1,34 @@
+<link rel="import" href="../polymer/polymer.html">
+
+<!--
+`interactions-view`
+View listing protein interaction annotations.
+
+@demo demo/index.html 
+-->
+
+<dom-module id="interactions-view">
+  <template>
+    <style>
+      :host {
+        display: block;
+      }
+    </style>
+    <h2>Hello [[prop1]]</h2>
+  </template>
+
+  <script>
+    Polymer({
+
+      is: 'interactions-view',
+
+      properties: {
+        prop1: {
+          type: String,
+          value: 'interactions-view',
+        },
+      },
+
+    });
+  </script>
+</dom-module>
