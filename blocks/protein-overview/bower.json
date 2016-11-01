@@ -12,7 +12,7 @@
   "main": "protein-overview.html",
   "repository": {
     "type": "git",
-    "url": "git://github.com/calipho-sib/nextprot-webocomponents.git#protein-overview"
+    "url": "git://github.com/calipho-sib/nextprot-webcomponents.git#protein-overview"
   },
   "homepage": "https://github.com/calipho-sib/nextprot-webcomponents/tree/protein-overview",
   "dependencies": {
