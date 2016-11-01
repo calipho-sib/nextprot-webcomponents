@@ -1,4 +1,5 @@
 <link rel="import" href="../polymer/polymer.html">
+<<<<<<< HEAD
 
 <!--
 `function-view`
@@ -7,28 +8,94 @@ View listing protein function annotations.
 @demo demo/index.html 
 -->
 
+=======
+<link rel="import" href="../protein-overview/protein-overview.html">
+<link rel="import" href="../generic-annotation-section/generic-annotation-section.html">
+<link rel="import" href="../keywords-section/keywords-section.html">
+<link rel="import" href="../xrefs-section/xrefs-section.html">
+<link rel="stylesheet" type="text/css" href="../bootstrap/dist/css/bootstrap.min.css" async>
+<!--
+`function-view`
+View listing protein function annotations.
+@demo demo/index.html 
+-->
+>>>>>>> fa811d7e3e59e26f0abe59bcb08efe0e82036154
 <dom-module id="function-view">
   <template>
     <style>
       :host {
         display: block;
+        background:#ECF0F1;
+        overflow-y: auto;
+      }
+      body{
+      }
+      .row {
+        margin: 0px 20px 15px;
+      }
+      #nx-overview {
+        background:#fff;
+        margin-top:10px;
+        margin-bottom:10px;
+        border: 1px solid #cfd9db;
+        border-radius:4px;
+      }
+      #nx-refs {
+        background-color:white;
+        margin-bottom:20px;
+      }
+      #nx-annotations {
+        background:#fff;
+        padding:5px 15px;
+        border: 1px solid #cfd9db;
+        border-radius:4px;
+      }
+      #nx-keywords {
+        background:#fff;
+        padding:5px 15px;
+        border: 1px solid #cfd9db;
+        border-radius:4px;
+      }
+      #nx-xrefs {
+        background:#fff;
+        padding:5px 15px;
+        border: 1px solid #cfd9db;
+        border-radius:4px;
       }
     </style>
-    <h2>Hello [[prop1]]</h2>
+    <div class="row">
+      <div id="nx-overview" class="col-md-12">
+        <protein-overview></protein-overview>
+      </div>
+    </div>
+    <div class="row">
+      <div id="nx-annotations" class="col-md-12">
+        <generic-annotation-section section="function"
+                                    categories='["FUNCTION-INFO", "CATALYTIC-ACTIVITY", "COFACTOR",
+                                    "ENZYME-REGULATION", "GO-MOLECULAR-FUNCTION", "GO-BIOLOGICAL-PROCESS",
+                                    "PATHWAY", "ALLERGEN", "CAUTION", "MISCELLANEOUS"]'>
+        </generic-annotation-section>
+      </div>
+    </div>
+    <div class="row">
+      <div id="nx-keywords" class="col-md-12">
+        <keywords-section categories='["Biological process","Molecular function", "Technical term"]'
+                          exceptions='["KW-0002", "KW-0181", "KW-0903", "KW-0374", "KW-0582"]'>
+        </keywords-section>
+      </div>
+    </div>
+    <div class="row">
+      <div id="nx-xrefs" class="col-md-12">
+        <xrefs-section categories='["BRENDA", "CAZy", "KEGGPathway", "MEROPS", "PeroxiBase",
+          "BioCyc", "Reactome","Pathway_Interaction_DB", "REBASE", "TCDB", "GeneWiki", "SABIO-RK",
+          "GenomeRNAi", "GuidetoPHARMACOLOGY", "PRO","MoonProt","ESTHER"]'>
+        </xrefs-section>
+      </div>
+    </div>
   </template>
-
   <script>
     Polymer({
-
-      is: 'function-view',
-
-      properties: {
-        prop1: {
-          type: String,
-          value: 'function-view',
-        },
-      },
-
+      is: 'function-view'
     });
   </script>
 </dom-module>

@@ -1,9 +1,25 @@
 {
   "name": "function-view",
   "description": "View listing protein function annotations.",
+  "authors": ["marcin.domagalski@sib.swiss"],
+  "keywords": [
+    "web-components",
+    "nextprot-webcomponents",
+    "polymer"
+  ],
   "main": "function-view.html",
+  "repository": {
+    "type": "git",
+    "url": "git://github.com/calipho-sib/nextprot-webocomponents.git#function-view"
+  },
+  "homepage": "https://github.com/calipho-sib/nextprot-webcomponents/tree/function-view",
   "dependencies": {
-    "polymer": "Polymer/polymer#^1.4.0"
+    "polymer": "Polymer/polymer#^1.4.0",
+    "protein-overview": "git://github.com/calipho-sib/nextprot-webcomponents.git#protein-overview",
+    "generic-annotation-section": "git://github.com/calipho-sib/nextprot-webcomponents.git#generic-annotation-section",
+    "keywords-section": "git://github.com/calipho-sib/nextprot-webcomponents.git#keywords-section",
+    "xrefs-section": "git://github.com/calipho-sib/nextprot-webcomponents.git#xrefs-section",
+    "bootstrap": "^3.3.7"
   },
   "devDependencies": {
     "iron-component-page": "PolymerElements/iron-component-page#^1.0.0",
