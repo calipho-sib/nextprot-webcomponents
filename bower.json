@@ -10,7 +10,7 @@
   "main": "publication-item.html",
   "repository": {
     "type": "git",
-    "url": "git://github.com/calipho-sib/nextprot-webocomponents.git#publication-item"
+    "url": "git://github.com/calipho-sib/nextprot-webcomponents.git#publication-item"
   },
   "homepage": "https://github.com/calipho-sib/nextprot-webcomponents/tree/publication-item",
   "dependencies": {
