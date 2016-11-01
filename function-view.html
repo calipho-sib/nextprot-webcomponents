@@ -1,0 +1,34 @@
+<link rel="import" href="../polymer/polymer.html">
+
+<!--
+`function-view`
+View listing protein function annotations.
+
+@demo demo/index.html 
+-->
+
+<dom-module id="function-view">
+  <template>
+    <style>
+      :host {
+        display: block;
+      }
+    </style>
+    <h2>Hello [[prop1]]</h2>
+  </template>
+
+  <script>
+    Polymer({
+
+      is: 'function-view',
+
+      properties: {
+        prop1: {
+          type: String,
+          value: 'function-view',
+        },
+      },
+
+    });
+  </script>
+</dom-module>
