@@ -55,22 +55,21 @@ View listing protein interaction annotations.
     <div class="row">
       <div id="nx-annotations" class="col-md-12">
         <generic-annotation-section section="function"
-                                    categories='["SMALL-MOLECULE-INTERACTION", "INTERACTION-INFO", "BINARY-INTERACTION"]'>
+                                    categories='["INTERACTION-INFO", "BINARY-INTERACTION"]'>
         </generic-annotation-section>
+        <!--filterAnnot:{annot-> (annot.getAnnotationCategory() == AnnotationCategory.MISCELLANEOUS &&
+        !annot.getMiscellaneousSubCategory().equals('interaction'))? false:true;-->
       </div>
     </div>
     <div class="row">
       <div id="nx-keywords" class="col-md-12">
-        <keywords-section categories='["Biological process","Molecular function", "Technical term"]'
-                          exceptions='["KW-0002", "KW-0181", "KW-0903", "KW-0374", "KW-0582"]'>
+        <keywords-section categories='[Ligand"]'>
         </keywords-section>
       </div>
     </div>
     <div class="row">
       <div id="nx-xrefs" class="col-md-12">
-        <xrefs-section categories='["BRENDA", "CAZy", "KEGGPathway", "MEROPS", "PeroxiBase",
-          "BioCyc", "Reactome","Pathway_Interaction_DB", "REBASE", "TCDB", "GeneWiki", "SABIO-RK",
-          "GenomeRNAi", "GuidetoPHARMACOLOGY", "PRO","MoonProt","ESTHER"]'>
+        <xrefs-section categories='["BindingDB","DIP","IntAct","MINT","STRING","SignaLink", "BioGrid"]'>
         </xrefs-section>
       </div>
     </div>
