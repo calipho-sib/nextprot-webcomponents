@@ -13,7 +13,7 @@
   "main": "keywords-section.html",
   "repository": {
     "type": "git",
-    "url": "git://github.com/calipho-sib/nextprot-webocomponents.git#keywords-section"
+    "url": "git://github.com/calipho-sib/nextprot-webcomponents.git#keywords-section"
   },
   "homepage": "https://github.com/calipho-sib/nextprot-webcomponents/tree/keywords-section",
   "dependencies": {
