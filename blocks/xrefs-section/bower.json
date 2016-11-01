@@ -13,7 +13,7 @@
   "main": "xrefs-section.html",
   "repository": {
     "type": "git",
-    "url": "git://github.com/calipho-sib/nextprot-webocomponents.git#xrefs-section"
+    "url": "git://github.com/calipho-sib/nextprot-webcomponents.git#xrefs-section"
   },
   "homepage": "https://github.com/calipho-sib/nextprot-webcomponents/tree/xrefs-section",
   "dependencies": {
