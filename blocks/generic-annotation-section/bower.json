@@ -16,7 +16,8 @@
   "dependencies": {
     "polymer": "Polymer/polymer#^1.4.0",
     "iron-collapse": "PolymerElements/iron-collapse#^1.2.1",
-    "evidence-item": "git://github.com/calipho-sib/nextprot-webcomponents.git#evidence-item"
+    "evidence-item": "git://github.com/calipho-sib/nextprot-webcomponents.git#evidence-item",
+    "paper-spinner": "PolymerElements/paper-spinner#^1.2.1"
   },
   "devDependencies": {
     "iron-component-page": "PolymerElements/iron-component-page#^1.0.0",

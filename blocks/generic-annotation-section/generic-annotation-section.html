@@ -1,5 +1,6 @@
 <link rel="import" href="../polymer/polymer.html">
 <link rel="import" href="../iron-collapse/iron-collapse.html">
+<link rel="import" href="../paper-spinner/paper-spinner-lite.html">
 <link rel="import" href="../evidence-item/evidence-item.html">
 <script src="../nextprot-js/dist/nextprot.bundle.js"></script>
 <link rel="stylesheet" type="text/css" href="../bootstrap/dist/css/bootstrap.min.css" async>
@@ -13,6 +14,13 @@ Annotation section used in function, medical, and expression views.
     <style>
       :host {
         display: block;
+        --paper-spinner-stroke-width: 2px;
+      }
+      paper-spinner-lite {
+        vertical-align: middle;
+        margin: 0 0 0 10px;
+        height: 24px;
+        width: 24px;
       }
       .category-header {
         border-bottom: 1px solid #E7EAEC;
@@ -121,10 +129,13 @@ Annotation section used in function, medical, and expression views.
       }
     </style>
     <div id="{{section}}-header" class="category-header">
-      <div class="badge-container">
-        <span class="badge counter-badge">{{count}}</span>
-      </div>
+      <template is="dom-if" if="{{count}}">
+        <div class="badge-container">
+          <span class="badge counter-badge">{{count}}</span>
+        </div>
+      </template>
       <h4 id="{{section}}-title" class="category-title">{{section}}</h4>
+      <paper-spinner-lite id="spinner" active></paper-spinner-lite>
     </div>
     <div class="category-main">
       <template is="dom-repeat" items="{{_toArray(data)}}" as="category">
@@ -223,6 +234,7 @@ Annotation section used in function, medical, and expression views.
           .then(function (categories) {
             self.annotationsByCategory = categories;
             self.getAnnotationsByView();
+            self.$.spinner.removeAttribute('active');
           }).catch(function (err) {
             // catch any error that happened so far
             console.log("Argh, broken: " + err.message);
