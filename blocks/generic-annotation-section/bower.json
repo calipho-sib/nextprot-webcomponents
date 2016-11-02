@@ -18,6 +18,7 @@
     "nextprot-js": "nextprot#^0.0.88",
     "iron-collapse": "PolymerElements/iron-collapse#^1.2.1",
     "evidence-item": "git://github.com/calipho-sib/nextprot-webcomponents.git#evidence-item",
+    "quality-label": "git://github.com/calipho-sib/nextprot-webcomponents.git#quality-label",
     "paper-spinner": "PolymerElements/paper-spinner#^1.2.1"
   },
   "devDependencies": {
