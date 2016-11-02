@@ -15,6 +15,7 @@
   "homepage": "https://github.com/calipho-sib/nextprot-webcomponents/tree/generic-annotation-section",
   "dependencies": {
     "polymer": "Polymer/polymer#^1.4.0",
+    "nextprot-js": "nextprot#^0.0.88",
     "iron-collapse": "PolymerElements/iron-collapse#^1.2.1",
     "evidence-item": "git://github.com/calipho-sib/nextprot-webcomponents.git#evidence-item",
     "paper-spinner": "PolymerElements/paper-spinner#^1.2.1"
