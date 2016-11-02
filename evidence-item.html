@@ -9,19 +9,17 @@ Block element representing an evidence record.
 <dom-module id="evidence-item">
     <template>
         <style>
+            :host {
+                display: block;
+                padding-left: 10px;
+            }
             .evidence-container {
                 margin: 15px 0 0 0;
-                padding-left: 10px;
             }
             .evidence-arrow {
                 transform:rotate(180deg);
                 display:inline-block;
                 font-weight: 900;
-            }
-            .colored-label {
-                display:inline-block;
-                padding:1px 3px;
-                margin-bottom: 1px;
             }
             .evidence-code-name {
                 background-color:#7cba0f;
@@ -35,12 +33,19 @@ Block element representing an evidence record.
                 border-radius: 0px 2px 2px 0px;
             }
             .evidence-accession {
-                border-left:1px solid darkgray;
-                padding: 0px 15px;
-                margin:5px 10px;
+                margin-top: 5px;
+                padding: 0px 17px;
             }
             .evidence-publication{
-                padding-left: 10px;
+                margin-top: 5px;
+                padding-left: 17px;
+            }
+            .colored-label {
+                padding:1px 3px;
+                margin-bottom: 1px;
+            }
+            .border-left {
+                border-left: 1px solid #ddd;
             }
             .ext-link:after {
                 content: "\f08e";
@@ -57,12 +62,12 @@ Block element representing an evidence record.
                 <quality-label quality={{data.qualityQualifier}}></quality-label>
             </div>
             <template id="menu" is="dom-if" if="{{data.resourceAccession}}">
-                <div class="evidence-accession">
+                <div class="evidence-accession border-left">
                     <p><a href="{{data.url}}" class="ext-link" target='_blank'>{{data.resourceAccession}}</a></p>
                 </div>
             </template>
             <template id="menu" is="dom-if" if="{{data.publication}}">
-                <div class="evidence-publication">
+                <div class="evidence-publication border-left">
                     <publication-item data="{{data.publication}}"></publication-item>
                 </div>
             </template>
