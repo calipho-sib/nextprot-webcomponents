@@ -40,6 +40,10 @@ Block element representing a publication record
       button .pubDisplayStatus:before {
         content:"Show";
       }
+      #abstractHeader {
+        color: #666;
+        padding-bottom: 10px;
+      }
     </style>
       <template is="dom-if" if="{{data}}">
         <template is="dom-if" if="{{data.title}}">
@@ -55,16 +59,12 @@ Block element representing a publication record
           , {{data.journal}} {{data.journalResourceLocator.medAbbrev}}, <strong>{{data.volume}}</strong>, {{data.firstPage}} <template is="dom-if" if="{{data.lastPage}}">- {{data.lastPage}}</template> ({{data.publicationYear}})</template>
         </template>
         <template is="dom-if" if="{{data.abstractText}}">
-          <button id="collapseButton" class="btn btn-primary btn-xs" type="button" on-click="_toggleAbstract">
+          <button id="collapseButton" class="btn btn-primary btn-xs" type="button" on-tap="_toggleAbstract">
             <span class="pubDisplayStatus"> </span>abstract
           </button>
           <iron-collapse id="collapse{{data.publicationId}}" opened="{{showAbstract}}">
-            <div class="panel panel-info">
-              <div class="panel-heading">
-                <h3 class="panel-title">Abstract</h3>
-              </div>
-              <div class="panel-body">{{data.abstractText}}</div>
-            </div>
+            <div id="abstractHeader" hidden>Abstract</div>
+            {{data.abstractText}}
           </iron-collapse>
         </template>
         <template is="dom-if" if="{{!data.abstractText}}">
@@ -81,7 +81,8 @@ Block element representing a publication record
           type: Object
         },
         showAbstract: {
-          type: Boolean
+          type: Boolean,
+          value: false
         },
         summary: {
           type: Boolean,
@@ -89,7 +90,12 @@ Block element representing a publication record
         }
       },
       attached: function () {
-        if (this.showAbstract) this.async(function(){this.$$("#collapseButton").remove();},1);
+        if (this.showAbstract) {
+          this.async(function(){
+            this.$$("#abstractHeader").removeAttribute("hidden");
+            this.$$("#collapseButton").remove();
+          },1);
+        }
       },
       _toggleAbstract: function(){
         this.$$("#collapse"+this.data.publicationId).toggle();
