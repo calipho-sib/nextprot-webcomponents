@@ -304,7 +304,7 @@ Top page section present on every viewer
       </div>
     </div>
     </iron-collapse>
-    <p class="paragraph">{{data.proteineEvidence}}. {{data.proteineEvidenceCaution}}</p>
+    <p class="paragraph"><template is="dom-if" if="{{data.proteineEvidence}}">{{data.proteineEvidence}}. {{data.proteineEvidenceCaution}}</template></p>
   </template>
   <script>
     Polymer({
@@ -334,6 +334,9 @@ Top page section present on every viewer
         var self=this;
         nx.getProteinOverview().then(function (data) {
           self._loadData(data, this.nxEntryName, this.nxUrl);
+        }, function(error){
+          var responseText = JSON.parse(error.responseText);
+          self.$.proteinTitle.innerHTML = "<h3>"+responseText.message+"</h3>";
         });
       },
       _loadData: function(overview, nxEntryName, nxUrl){
