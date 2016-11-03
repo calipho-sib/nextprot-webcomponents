@@ -18,8 +18,9 @@
   "dependencies": {
     "polymer": "Polymer/polymer#^1.4.0",
     "iron-collapse": "PolymerElements/iron-collapse#^1.2.1",
-    "bootstrap": "^3.3.7",
-    "nextprot-js": "nextprot#^0.0.87"
+    "nextprot-js": "nextprot#^0.0.88",
+    "shared-styles": "git://github.com/calipho-sib/nextprot-webcomponents.git#shared-styles",
+    "bootstrap": "^3.3.7"
   },
   "devDependencies": {
     "iron-component-page": "PolymerElements/iron-component-page#^1.0.0",
