@@ -1,7 +1,9 @@
 <link rel="import" href="../polymer/polymer.html">
 <link rel="import" href="../iron-collapse/iron-collapse.html">
-<script src="../nextprot-js/dist/nextprot.bundle.js"></script>
+<link rel="import" href="../paper-spinner/paper-spinner-lite.html">
+<link rel="import" href="../shared-styles/shared-styles.html">
 <link rel="stylesheet" type="text/css" href="../bootstrap/dist/css/bootstrap.min.css" async>
+<script src="../nextprot-js/dist/nextprot.bundle.js"></script>
 <!--
 `keywords-section`
 Keywords section present on function, medical, sequence, and structures pages.
@@ -9,84 +11,19 @@ Keywords section present on function, medical, sequence, and structures pages.
 -->
 <dom-module id="keywords-section">
   <template>
-    <style>
+    <style include="shared-styles">
       :host {
         display: block;
       }
-      hr:not(:last-child) {
-        margin:0px 50px 5px;
-      }
-      .blue-well {
-        background-color:rgba(91, 192, 222, 0.2);
-        margin:20px;
-      }
-      .category-header {
-        border-bottom: 1px solid #E7EAEC;
-        margin-bottom: 15px;
-        padding-bottom: 5px;
-      }
-      .category-title {
-        display:inline-block;
-        vertical-align:middle;
-      }
-      .category-main {
-        margin-top:20px;
-      }
-      .category-row {
-        border-bottom: 1px solid #E7EAEC;
-        margin: 15px 8px;
-        padding-bottom: 5px;
-      }
-      .badge-container {
-        display:inline-block;
-      }
-      .counter-badge {
-        border-radius:70%;
-        border: 2px solid black;
-        color:#C50063;
-        background-color:white;
-        padding:8px 8px;
-        margin-right:10px;
-        vertical-align:middle;
-        min-width:32px;
-      }
-      .annotation-category-title {
-        font-weight:200;
-        text-transform: uppercase;
-        margin-top:2px;
-      }
-      .annotation-category-title {
-        font-weight:200;
-        text-transform: uppercase;
-        margin-top:2px;
-      }
-      .annotation-row {
-        margin-bottom:5px;
-        margin-left:0px;
-      }
-      .annotation-title-container {
-        font-size:1em;
-        overflow:hidden;
-        text-overflow:ellipsis;
-      }
-      .annotation-title {
-        float: left;
-        padding:2px 20px 0px;
-        margin-bottom:0px;
-      }
-      .annotation-labels {
-        float: right;
-      }
-      .accession-code-link {
-        color: #C50063;
-        border: 1px solid #C50063;
-      }
     </style>
     <div id="keywords-header" class="category-header">
-      <div class="badge-container">
-        <span class="badge counter-badge">{{count}}</span>
-      </div>
+      <template is="dom-if" if="{{count}}">
+        <div class="badge-container">
+          <span class="badge counter-badge">{{count}}</span>
+        </div>
+      </template>
       <h4 id="{{title}}-title" class="category-title">Keywords</h4>
+      <paper-spinner-lite id="spinner" active></paper-spinner-lite>
     </div>
     <div class="category-main">
       <template is="dom-repeat" items="{{data}}" as="category">
@@ -127,7 +64,8 @@ Keywords section present on function, medical, sequence, and structures pages.
           type: Array
         },
         exceptions: {
-          type: Array
+          type: Array,
+          value: []
         }
       },
       created: function(){
@@ -137,6 +75,7 @@ Keywords section present on function, medical, sequence, and structures pages.
         nx.getAnnotationsByCategory(this.nxEntryName, "keyword")
           .then(function (data) {
             var keywordList = self.getKeywordsByView(data.annot);
+            self.$.spinner.active = false;
           }).catch(function (err) {
             // catch any error that happened so far
             console.log("Argh, broken: " + err.message);
