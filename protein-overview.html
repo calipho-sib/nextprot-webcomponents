@@ -1,8 +1,9 @@
 <link rel="import" href="../polymer/polymer.html">
 <link rel="import" href="../iron-collapse/iron-collapse.html">
+<link rel="import" href="../neon-animation/animations/scale-up-animation.html">
+<link rel="import" href="../neon-animation/neon-animation-runner-behavior.html">
 <link rel="stylesheet" type="text/css" href="../bootstrap/dist/css/bootstrap.min.css" async>
-<script src="../nextprot-js/dist/nextprot-vendor.js"></script>
-<script src="../nextprot-js/dist/nextprot.js"></script>
+<script src="../nextprot-js/dist/nextprot.bundle.js"></script>
 <!--
 `overview-section`
 Top page section present on every viewer
@@ -13,6 +14,7 @@ Top page section present on every viewer
     <style>
       :host {
         display: block;
+        animation-direction: reverse;
       }
       dd{
         margin-left:15px;
@@ -31,6 +33,7 @@ Top page section present on every viewer
         margin-top:-5px;
       }
       iron-collapse {
+        animation-direction: reverse;
         --iron-collapse-transition-duration: 150ms;
       }
     </style>
@@ -312,7 +315,20 @@ Top page section present on every viewer
   <script>
     Polymer({
       is: 'protein-overview',
-      properties: {},
+      behaviors: [Polymer.NeonAnimationRunnerBehavior],
+      properties: {
+        animationConfig: {
+          value: function(){
+            return {
+              'entry': {
+                name: "scale-up-animation",
+                node: this.$.collapseInfosFull,
+                transformOrigin: '0% 100%'
+              }
+            }
+          }
+        }
+      },
       created: function(){
         var nx = new Nextprot.Client("neXtprot overview loader", "Calipho Group");
         this.nxEntryName = nx.getEntryName();
@@ -385,7 +401,7 @@ Top page section present on every viewer
       },
       toggle: function(){
         this.async(function(){this.$.collapseInfosLess.toggle();},1);
-        this.async(function(){this.$.collapseInfosFull.toggle();},1);
+        this.async(function(){this.$.collapseInfosFull.toggle(); this.playAnimation("entry");},1);
       },
       _checkIfLast: function(array,index){
         if(array.length-1===index) return true;
