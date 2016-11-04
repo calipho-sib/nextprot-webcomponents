@@ -33,6 +33,9 @@ Top page section present on every viewer
       .paragraph {
         margin: 10px;
       }
+      .ec-link {
+        display: inline;
+      }
       #extender {
         float:right;
         margin-top:-5px;
@@ -50,10 +53,10 @@ Top page section present on every viewer
         <template is="dom-if" if="{{data.recommendedProteinName}}">
           <template is="dom-if" if="{{data.recommendedProteinName.EC.0}}">[
             <template is="dom-repeat" items="{{data.recommendedProteinName.EC}}" as="ec">
-              <div id="proteinTitle{{ec}}">{{_linkToEc("proteinTitle", ec)}}</div><span hidden$="[[!_checkIfLast(data.recommendedProteinName.EC,index)]]">,</span>
-            </template> ]
+              <div id="proteinTitle{{_removeDots(ec)}}" class="ec-link">{{_linkToEc("proteinTitle", ec)}}</div><template is="dom-if" if="[[!_checkIfLast(data.recommendedProteinName.EC,index)]]">,</template>
+            </template>]
           </template>
-          <template is="dom-if" if="{{data.recommendedProteinName.mainShortName}}">( {{data.recommendedProteinName.mainShortName}} ) </template>
+          <template is="dom-if" if="{{data.recommendedProteinName.mainShortName}}">({{data.recommendedProteinName.mainShortName}})</template>
         </template>
       </h3>
     </div>
@@ -67,7 +70,7 @@ Top page section present on every viewer
             <template is="dom-if" if="{{data.recommendedProteinName.mainSynonymName.synonym}}"> ({{data.recommendedProteinName.mainSynonymName.synonym}}) </template>
             <template is="dom-if" if="{{data.recommendedProteinName.others.0}}"> ; </template>
             <template is="dom-repeat" items="{{data.recommendedProteinName.others}}" as="others">
-              {{others.type}}{{_pluralize(others.names)}}:<template is="dom-repeat" items="{{others.names}}" as="nameArray"> {{nameArray.name}}<template is="dom-if" if="{{!_checkIfLast(others.names,index)}}">,</template></template>
+              {{others.type}}{{_pluralize(others.names)}}:<template is="dom-repeat" items="{{others.names}}" as="nameArray"> {{nameArray.name}}<template is="dom-if" if="[[!_checkIfLast(others.names,index)]]">,</template></template>
               <template is="dom-if" if="{{!_checkIfLast(others,index)}}">; </template>
             </template>
           </div>
@@ -151,7 +154,9 @@ Top page section present on every viewer
             <template is="dom-if" if="{{data.recommendedProteinName}}">
             <dd>{{data.recommendedProteinName.name}}
               <template is="dom-if" if="{{data.recommendedProteinName.EC.0}}">[
-                <template is="dom-repeat" items="{{data.recommendedProteinName.EC}}" as="ec"><div id="collapseInfosFull{{ec}}">{{_linkToEc("collapseInfosFull", ec)}}</div><template is="dom-if" if="{{!_checkIfLast(data.recommendedProteinName.EC,index)}}">,</template> </template> ] </template>
+                <template is="dom-repeat" items="{{data.recommendedProteinName.EC}}" as="ec"><div id="collapseInfosFull{{_removeDots(ec)}}"  class="ec-link">
+                  {{_linkToEc("collapseInfosFull", ec)}}</div><template is="dom-if" if="{{!_checkIfLast(data.recommendedProteinName.EC,index)}}">,</template>
+                </template>]</template>
               <template is="dom-if" if="{{data.recommendedProteinName.synonyms}}">
                 <template is="dom-if" if="{{data.recommendedProteinName.synonyms.short}}"><span><span  class="grey-x">Short: </span>
                   <template is="dom-repeat" items="{{data.recommendedProteinName.synonyms.short}}" as="short">{{short}}
@@ -168,9 +173,10 @@ Top page section present on every viewer
                 <dd> {{nameroot.name}}
                   <template is="dom-if" if="{{nameroot.synonyms}}">
                     <template is="dom-if" if="{{nameroot.synonyms.EC}}">[
-                      <template is="dom-repeat" items="{{nameroot.synonyms.EC}}" as="ec"><div id="collapseInfosFull{{ec}}">{{_linkToEc("collapseInfosFull", ec)}}</div>
+                      <template is="dom-repeat" items="{{nameroot.synonyms.EC}}" as="ec">
+                        <div id="collapseInfosFull{{_removeDots(ec)}}" class="ec-link">{{_linkToEc("collapseInfosFull", ec)}}</div>
                         <template is="dom-if" if="{{!_checkIfLast(nameroot.synonyms.EC,index)}}">,</template>
-                      </template> ]
+                      </template>]
                     </template>
                     <template is="dom-if" if="{{nameroot.synonyms.short}}"><span><span class="grey-x">Short: </span>
                       <template is="dom-repeat" items="{{nameroot.synonyms.short}}" as="short">{{short}}
@@ -188,9 +194,10 @@ Top page section present on every viewer
                 <template is="dom-repeat" items="{{functionalRegionName.names}}" as="regionName">
                   <dd> {{regionName.name}}
                     <template is="dom-repeat" items="{{regionName.synonyms}}" as="synonym">
-                      <template is="dom-if" if="{{synonym.EC}}">[<template is="dom-repeat" items="{{synonyms.EC}}" as="ec"><div id="collapseInfosFull{{ec}}">{{_linkToEc("collapseInfosFull", ec)}}</div>
+                      <template is="dom-if" if="{{synonym.EC}}">[<template is="dom-repeat" items="{{synonyms.EC}}" as="ec">
+                        <div id="collapseInfosFull{{_removeDots(ec)}}" class="ec-link">{{_linkToEc("collapseInfosFull", ec)}}</div>
                         <template is="dom-if" if="{{!_checkIfLast(synonym.EC,index)}}">,</template>
-                      </template> ]</template>
+                      </template>]</template>
                       <template is="dom-repeat" items="{{synonyms.full.0}}" as="full">
                         <span><span class="grey-x">Alternative name{{_pluralize(full)}}:</span>
                           <template is="dom-repeat" items="{{full}}" as="f">{{f}}
@@ -208,7 +215,8 @@ Top page section present on every viewer
                 <template is="dom-repeat" items="{{cleavage.names}}" as="cleavageName">
                   <dd>{{cleavageName.name}}
                     <template is="dom-repeat" items="{{cleavage.synonyms}}" as="synonym">
-                      <template is="dom-if" if="{{cleavage.EC}}">[<template is="dom-repeat" items="{{cleavage.EC}}" as="ec"><div id="collapseInfosFull{{ec}}">{{_linkToEc("collapseInfosFull", ec)}}</div>
+                      <template is="dom-if" if="{{cleavage.EC}}">[<template is="dom-repeat" items="{{cleavage.EC}}" as="ec">
+                        <div id="collapseInfosFull{{_removeDots(ec)}}" class="ec-link">{{_linkToEc("collapseInfosFull", ec)}}</div>
                         <template is="dom-if" if="{{!_checkIfLast(cleavage.EC,index)}}">,</template> </template> ]
                       </template>
                       <template is="dom-if" if="{{cleavage.full.0}}">
@@ -323,39 +331,57 @@ Top page section present on every viewer
         animationConfig: {
           value: function(){
             return {
-              'enterFullInfos': {
+              'enterFullInfos': [{
                 name: "scale-up-animation",
                 node: this.$.collapseInfosFull,
-                transformOrigin: '0% 100%'
-              },
-              'exitFullInfos': {
+                transformOrigin: '0% 100%',
+                timing: {
+                  duration: 400
+                }
+              }, {
+              name: "fade-in-animation",
+              node: this.$.collapseInfosFull,
+              timing: {
+                duration: 1200
+              }
+              }],
+              'exitFullInfos': [{
+                name: "fade-out-animation",
+                node: this.$.collapseInfosFull,
+                timing: {
+                  duration: 400
+                }
+              }, {
                 name: "scale-down-animation",
                 node: this.$.collapseInfosFull,
-              },
+                timing: {
+                  duration: 1200
+                }
+              }],
               'enterLessInfos': [{
                 name: "slide-from-left-animation",
                 node: this.$.collapseInfosLess,
                 timing: {
-                  duration: 200
+                  duration: 400
                 }
               }, {
                 name: "fade-in-animation",
                 node: this.$.collapseInfosLess,
                 timing: {
-                  duration: 600
+                  duration: 1200
                 }
               }],
               'exitLessInfos': [{
                 name: "fade-out-animation",
                 node: this.$.collapseInfosLess,
                 timing: {
-                  duration: 200
+                  duration: 400
                 }
               }, {
                 name: "slide-left-animation",
                 node: this.$.collapseInfosLess,
                 timing: {
-                  duration: 600
+                  duration: 1200
                 }
               }]
             }
@@ -436,17 +462,15 @@ Top page section present on every viewer
         };
       },
       toggle: function(){
-        this.async(function(){
-          if (this.$.collapseInfosLess.opened){
-            this.playAnimation("exitLessInfos");
-            this.playAnimation("enterFullInfos");
-          } else {
-            this.playAnimation("exitFullInfos");
-            this.playAnimation("enterLessInfos");
-          }
-          this.$.collapseInfosLess.toggle();
-          this.$.collapseInfosFull.toggle();
-        },1);
+        if (this.$.collapseInfosLess.opened){
+          this.playAnimation("exitLessInfos");
+          this.playAnimation("enterFullInfos");
+        } else {
+          this.playAnimation("exitFullInfos");
+          this.playAnimation("enterLessInfos");
+        }
+        this.$.collapseInfosLess.toggle();
+        this.$.collapseInfosFull.toggle();
       },
       _checkIfLast: function(array,index){
         if(array.length-1===index) return true;
@@ -454,18 +478,27 @@ Top page section present on every viewer
       },
       _linkToEc: function(sectionId, ec){
         var url = this.nxUrl + "/term/" + ec;
-        this.async(function(){this.$$("#"+sectionId+ec).innerHTML = "<a target='_blank' href='" + url + "'> EC " + ec + " </a>";},1);
+        this.async(function(){
+          this.$$("#"+sectionId+this._removeDots(ec)).innerHTML = "<a target='_blank' href='" + url + "'>EC "+ec+"</a>";
+        },1);
       },
       _linkToHistory: function(accession){
         var url = "http://www.uniprot.org/uniprot/" + accession.slice(3) + "?version=*";
-        this.async(function(){this.$$("#"+accession).innerHTML = "<a target='_blank' href='" + url + "' class='ext-link'>Complete UniProtKB history</a>";},1);
+        this.async(function(){
+          this.$$("#"+accession).innerHTML = "<a target='_blank' href='" + url + "' class='ext-link'>Complete UniProtKB history</a>";
+        },1);
       },
       _linkToTerm: function(sectionId, term){
         var url = this.nxUrl + "/term/" + term.accession;
-        this.async(function(){this.$$("#"+sectionId+term.accession).innerHTML = "<a target='_blank' href='" + url + "'>" + term.name + "</a>";},1);
+        this.async(function(){
+          this.$$("#"+sectionId+term.accession).innerHTML = "<a target='_blank' href='" + url + "'>" + term.name + "</a>";
+        },1);
       },
       _pluralize: function(item){
         return item.length > 1 ? "s" : "";
+      },
+      _removeDots: function(str){
+        return str.replace(/\./g, '');
       }
     });
   </script>
