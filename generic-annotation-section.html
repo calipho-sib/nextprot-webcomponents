@@ -1,8 +1,10 @@
 <link rel="import" href="../polymer/polymer.html">
+<link rel="import" href="../iron-icon/iron-icon.html">
 <link rel="import" href="../iron-collapse/iron-collapse.html">
 <link rel="import" href="../paper-spinner/paper-spinner-lite.html">
 <link rel="import" href="../evidence-item/evidence-item.html">
 <link rel="import" href="../quality-label/quality-label.html">
+<link rel="import" href="../shared-styles/shared-styles.html">
 <script src="../nextprot-js/dist/nextprot.bundle.js"></script>
 <link rel="stylesheet" type="text/css" href="../bootstrap/dist/css/bootstrap.min.css" async>
 <!--
@@ -12,121 +14,9 @@ Annotation section used in function, medical, and expression views.
 -->
 <dom-module id="generic-annotation-section">
   <template>
-    <style>
+    <style include="shared-styles">
       :host {
         display: block;
-        --paper-spinner-stroke-width: 2px;
-      }
-      paper-spinner-lite {
-        vertical-align: middle;
-        margin: 0 0 0 10px;
-        height: 24px;
-        width: 24px;
-      }
-      .category-header {
-        border-bottom: 1px solid #E7EAEC;
-        margin-bottom: 15px;
-        padding-bottom: 5px;
-      }
-      .category-title {
-        text-transform: capitalize;
-        display:inline-block;
-        vertical-align:middle;
-      }
-      .category-main {
-        margin-top:20px;
-      }
-      .category-row {
-        border-bottom: 1px solid #E7EAEC;
-        margin: 15px 8px;
-        padding-bottom: 5px;
-      }
-      .badge-container {
-        display:inline-block;
-      }
-      .counter-badge {
-        border-radius:70%;
-        border: 2px solid black;
-        color:#C50063;
-        background-color:white;
-        padding:8px 8px;
-        margin-right:10px;
-        vertical-align:middle;
-        min-width:32px;
-      }
-      .annotation-category-title {
-        font-weight:200;
-        text-transform: uppercase;
-        margin-top:2px;
-      }
-      .annotation-category-title {
-        font-weight:200;
-        text-transform: uppercase;
-        margin-top:2px;
-      }
-      .annotation-row {
-        margin-bottom:5px;
-        margin-left:0px;
-      }
-      .annotation-title-container {
-        font-size:1em;
-        overflow:hidden;
-        text-overflow:ellipsis;
-      }
-      .annotation-title {
-        float: left;
-        padding:2px 20px 0px;
-        margin-bottom:0px;
-      }
-      .annotation-labels {
-        float: right;
-      }
-      .reference-label-container {
-        display: inline;
-        float: left;
-        margin-left: 2px;
-      }
-      .reference-label {
-        clear: both;
-        float: left;
-        zoom:75%;
-        background-color:#dedede;
-        color:#999;margin: 2px;
-        padding: 2px 6px;
-        border-radius: 2px;
-      }
-      .show-references-button a {
-        float: left;
-        padding:5px 10px;
-        background-color:#dedede;
-      }
-      .show-references-button-counter {
-        color:#999;
-        padding:0px;
-        margin:0px;
-        font-size:1.5em;
-        font-weight:700;
-        line-height:1em
-      }
-      .show-references-button-label {
-        color:#999;
-        padding:0px 5px 0px;
-        margin:0px;
-        font-size:0.9em;
-        line-height:1em;
-      }
-      .blue-well {
-        background-color:rgba(91, 192, 222, 0.2);
-        margin:20px;
-      }
-      .text-align-right {
-        text-align: right;
-      }
-      .text-align-left {
-        text-align: left;
-      }
-      .grey-x {
-        color: #999;
       }
     </style>
     <div id="{{section}}-header" class="category-header">
@@ -139,6 +29,16 @@ Annotation section used in function, medical, and expression views.
       <paper-spinner-lite id="spinner" active></paper-spinner-lite>
     </div>
     <div class="category-main">
+      <button id="evidenceButton" class="btn btn-default" on-click="_toggleAllEvidences">
+        <template is="dom-if" if="{{!showEvidences}}">
+          <iron-icon icon="arrow-drop-down"></iron-icon>
+          show evidences
+        </template>
+        <template is="dom-if" if="{{showEvidences}}">
+          <iron-icon icon="arrow-drop-down"></iron-icon>
+          hide evidences
+        </template>
+      </button>
       <template is="dom-repeat" items="{{_toArray(data)}}" as="category">
         <div class="row category-row">
           <div class="col-lg-1 col-md-12 col-sm-12 col-xs-12">
@@ -225,6 +125,10 @@ Annotation section used in function, medical, and expression views.
         },
         section: {
             type: String
+        },
+        showEvidences: {
+          type: Boolean,
+          value: true
         }
       },
       attached: function(){
@@ -276,6 +180,23 @@ Annotation section used in function, medical, and expression views.
         });
         Object.keys(data).forEach(function(d){self.count+=data[d].length;});
         this.data = data;
+      },
+      _toggleAllEvidences: function(){
+        var evidenceContainers = Polymer.dom(this.root).querySelectorAll(".evidences-container");
+        var action = this.$.evidenceButton.innerHTML;
+        console.log(action);
+        for (var e in evidenceContainers){
+          if(action == "show evidences"){
+            evidenceContainers[e].parentNode.opened = true;
+          } else {
+            evidenceContainers[e].parentNode.opened = false;
+          }
+        }
+        if (action == "show evidences") {
+          this.$.evidenceButton.innerHTML = "hide evidences";
+        } else {
+          this.$.evidenceButton.innerHTML = "show evidences";
+        }
       },
       _getEvidence: function(ev, xrefs, publi){
         function getUrl(id){
