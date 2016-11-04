@@ -1,4 +1,6 @@
 <link rel="import" href="../polymer/polymer.html">
+<link rel="import" href="../paper-spinner/paper-spinner-lite.html">
+<link rel="import" href="../shared-styles/shared-styles.html">
 <script src="../nextprot-js/dist/nextprot.bundle.js"></script>
 <link rel="stylesheet" type="text/css" href="../bootstrap/dist/css/bootstrap.min.css" async>
 <link rel="stylesheet" type="text/css" href="../font-awesome/css/font-awesome.min.css" async>
@@ -9,100 +11,19 @@ Exteranl links section present in function, medical, expression, interactins, se
 -->
 <dom-module id="xrefs-section">
   <template>
-    <style>
+    <style include="shared-styles">
       :host {
         display: block;
-        font-family: "Lato", "Helvetica Neue", "Helvetica", sans-serif;
-      }
-      .category-header {
-        border-bottom: 1px solid #E7EAEC;
-        margin-bottom: 15px;
-        padding-bottom: 5px;
-      }
-      .category-title {
-        display:inline-block;
-        vertical-align:middle;
-      }
-      .category-main {
-        margin-top:20px;
-      }
-      .badge-container {
-        display:inline-block;
-      }
-      .counter-badge {
-        border-radius:70%;
-        border: 2px solid black;
-        color:#C50063;
-        background-color:white;
-        padding:8px 8px;
-        margin-right:10px;
-        vertical-align:middle;
-        min-width:32px;
-      }
-      .annotation-category-title {
-        font-weight: 500;
-        text-transform: uppercase;
-        margin-top: 8px;
-        color: #888888;
-        font-size: 14px;
-      }
-      .annotation-row {
-        margin-bottom:5px;
-        margin-left:0px;
-      }
-      .annotation-title-container {
-        font-size:1em;
-        overflow:hidden;
-        text-overflow:ellipsis;
-      }
-      .annotation-title {
-        float: left;
-        padding:2px 20px 0px;
-        margin-bottom:0px;
-      }
-      .prefix-label {
-        margin: 0px;
-        color: white;
-        border:1px solid #C50063;
-        background-color:rgba(197, 0, 99, 0.75);
-      }
-      .suffix-label {
-        margin: 0px;
-        font-weight: 300;
-        margin-left: 5px;
-        padding:1px 5px;
-        border-radius:0px 3px 3px 0px;
-        background-color: #f4f4f4;
-        color: #999;
-        border: 1px solid #999;
-        font-size: 12px;
-        line-height: 18px;
-      }
-      .extLink:after {
-        content: "\f08e";
-        font-family: "FontAwesome";
-        font-size: 11px;
-        margin-left: 5px;
-        vertical-align: middle;
-      }
-      .selectable {
-        -webkit-touch-callout: text; /* iOS Safari */
-        -webkit-user-select: text;   /* Chrome/Safari/Opera */
-        -khtml-user-select: text;    /* Konqueror */
-        -moz-user-select: text;      /* Firefox */
-        -ms-user-select: text;       /* IE/Edge */
-        user-select: text;           /* non-prefixed version, currently
-                                  not supported by any browser */
-      }
-      .no-padding {
-        padding: 0;
       }
     </style>
     <div id="xrefs-header" class="category-header">
-      <div class="badge-container">
-        <span class="badge counter-badge">{{count}}</span>
-      </div>
+      <template is="dom-if" if="{{count}}">
+        <div class="badge-container">
+          <span class="badge counter-badge">{{count}}</span>
+        </div>
+      </template>
       <h4 id="xrefs-title" class="category-title">Further external links</h4>
+      <paper-spinner-lite id="spinner" active></paper-spinner-lite>
     </div>
     <div class="category-main">
       <template is="dom-repeat" items="{{data}}" as="category">
@@ -124,7 +45,7 @@ Exteranl links section present in function, medical, expression, interactins, se
                     <template is="dom-if" if="{{xref.prefix}}">
                       <label class="btn btn-xs prefix-label">{{xref.prefix}}</label>
                     </template>
-                    <a class="btn btn-xs selectable extLink" href="{{xref.url}}" target="_blank">{{xref.accession}}</a>
+                    <a class="btn btn-xs selectable ext-link" href="{{xref.url}}" target="_blank">{{xref.accession}}</a>
                     <template is="dom-if" if="{{xref.sufix}}">
                       <label class="suffix-label">{{xref.suffix}}</label>
                     </template>
@@ -134,7 +55,7 @@ Exteranl links section present in function, medical, expression, interactins, se
                       <template is="dom-if" if="{{xref.prefix}}">
                         <label class="btn btn-xs prefix-label">{{xref.prefix}}</label>
                       </template>
-                      <a class="btn btn-xs selectable extLink" href="{{xref.url}}" target="_blank">{{xref.accession}}</a>
+                      <a class="btn btn-xs selectable ext-link" href="{{xref.url}}" target="_blank">{{xref.accession}}</a>
                       <template is="dom-if" if="{{xref.sufix}}">
                         <label class="suffix-label">{{xref.suffix}}</label>
                       </template>
@@ -168,6 +89,7 @@ Exteranl links section present in function, medical, expression, interactins, se
         nx.getAnnotationsByCategory(nxEntryName, "xref")
           .then(function (data) {
             var xrefList = self.getXrefByView(Object.keys(data.xrefs).map(function(k) { return data.xrefs[k] }));
+            self.$.spinner.active = false;
           }).catch(function (err) {
             // catch any error that happened so far
             console.log("Argh, broken: " + err.message);
