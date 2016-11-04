@@ -1,7 +1,11 @@
 <link rel="import" href="../polymer/polymer.html">
 <link rel="import" href="../iron-collapse/iron-collapse.html">
 <link rel="import" href="../neon-animation/animations/scale-up-animation.html">
+<link rel="import" href="../neon-animation/animations/scale-down-animation.html">
 <link rel="import" href="../neon-animation/animations/fade-in-animation.html">
+<link rel="import" href="../neon-animation/animations/fade-out-animation.html">
+<link rel="import" href="../neon-animation/animations/slide-from-left-animation.html">
+<link rel="import" href="../neon-animation/animations/slide-left-animation.html">
 <link rel="import" href="../neon-animation/neon-animation-runner-behavior.html">
 <link rel="import" href="../shared-styles/shared-styles.html">
 <link rel="stylesheet" type="text/css" href="../bootstrap/dist/css/bootstrap.min.css" async>
@@ -18,10 +22,13 @@ Top page section present on every viewer
         display: block;
       }
       iron-collapse {
-        --iron-collapse-transition-duration: 300ms;
+        --iron-collapse-transition-duration: 500ms;
       }
       dd{
         margin-left:15px;
+      }
+      .term-link {
+        display: inline;
       }
       .paragraph {
         margin: 10px;
@@ -114,18 +121,20 @@ Top page section present on every viewer
         <div id="family-less" class="row">
           <div class="col-md-3 col-xs-3 grey-x text-align-right">Family name :</div>
           <div class="col-md-6 col-xs-6">
-            <template is="dom-repeat" items="{{data.families}}" as="familyroot"><span>
-              <template is="dom-if" if="{{familyroot.superfamily}">
-                <div id="collapseInfosLess{{familyroot.superfamily.accession}}">{{_linkToTerm('collapseInfosLess', familyroot.superfamily)}}</div>
-              </template>
-              <template is="dom-if" if="{{familyroot.family}}">
-                <template is="dom-if" if="{{familyroot.superfamily}}"> >> </template>
-                <div id="collapseInfosLess{{familyroot.family.accession}}">{{_linkToTerm('collapseInfosLess', familyroot.family)}}</div>
-              </template>
-              <template is="dom-if" if="{{familyroot.subfamily}}">
-                <template is="dom-if" if="{{familyroot.family}}"> >> </template>
-                <div id="collapseInfosLess{{familyroot.subfamily.accession}}">{{_linkToTerm('collapseInfosLess', familyroot.subfamily)}}</div>
-              </template></span>
+            <template is="dom-repeat" items="{{data.families}}" as="familyroot">
+              <span>
+                <template is="dom-if" if="{{familyroot.superfamily}">
+                  <div id="collapseInfosLess{{familyroot.superfamily.accession}}" class="term-link">{{_linkToTerm('collapseInfosLess', familyroot.superfamily)}}</div>
+                </template>
+                <template is="dom-if" if="{{familyroot.family}}">
+                  <template is="dom-if" if="{{familyroot.superfamily}}"> >> </template>
+                  <div id="collapseInfosLess{{familyroot.family.accession}}" class="term-link">{{_linkToTerm('collapseInfosLess', familyroot.family)}}</div>
+                </template>
+                <template is="dom-if" if="{{familyroot.subfamily}}">
+                  <template is="dom-if" if="{{familyroot.family}}"> >> </template>
+                  <div id="collapseInfosLess{{familyroot.subfamily.accession}}" class="term-link">{{_linkToTerm('collapseInfosLess', familyroot.subfamily)}}</div>
+                </template>
+              </span>
             </template>
           </div>
         </div>
@@ -314,15 +323,41 @@ Top page section present on every viewer
         animationConfig: {
           value: function(){
             return {
-              'enterFull': {
+              'enterFullInfos': {
                 name: "scale-up-animation",
                 node: this.$.collapseInfosFull,
                 transformOrigin: '0% 100%'
               },
-              'enterLess': {
+              'exitFullInfos': {
+                name: "scale-down-animation",
+                node: this.$.collapseInfosFull,
+              },
+              'enterLessInfos': [{
+                name: "slide-from-left-animation",
+                node: this.$.collapseInfosLess,
+                timing: {
+                  duration: 200
+                }
+              }, {
                 name: "fade-in-animation",
-                node: this.$.collapseInfosLess
-              }
+                node: this.$.collapseInfosLess,
+                timing: {
+                  duration: 600
+                }
+              }],
+              'exitLessInfos': [{
+                name: "fade-out-animation",
+                node: this.$.collapseInfosLess,
+                timing: {
+                  duration: 200
+                }
+              }, {
+                name: "slide-left-animation",
+                node: this.$.collapseInfosLess,
+                timing: {
+                  duration: 600
+                }
+              }]
             }
           }
         }
@@ -401,8 +436,17 @@ Top page section present on every viewer
         };
       },
       toggle: function(){
-        this.async(function(){this.$.collapseInfosLess.toggle(); this.playAnimation("enterLess");},1);
-        this.async(function(){this.$.collapseInfosFull.toggle(); this.playAnimation("enterFull");},1);
+        this.async(function(){
+          if (this.$.collapseInfosLess.opened){
+            this.playAnimation("exitLessInfos");
+            this.playAnimation("enterFullInfos");
+          } else {
+            this.playAnimation("exitFullInfos");
+            this.playAnimation("enterLessInfos");
+          }
+          this.$.collapseInfosLess.toggle();
+          this.$.collapseInfosFull.toggle();
+        },1);
       },
       _checkIfLast: function(array,index){
         if(array.length-1===index) return true;
@@ -414,7 +458,7 @@ Top page section present on every viewer
       },
       _linkToHistory: function(accession){
         var url = "http://www.uniprot.org/uniprot/" + accession.slice(3) + "?version=*";
-        this.async(function(){this.$$("#"+accession).innerHTML = "<a target='_blank' href='" + url + "'>Complete UniProtKB history</a>";},1);
+        this.async(function(){this.$$("#"+accession).innerHTML = "<a target='_blank' href='" + url + "' class='ext-link'>Complete UniProtKB history</a>";},1);
       },
       _linkToTerm: function(sectionId, term){
         var url = this.nxUrl + "/term/" + term.accession;
