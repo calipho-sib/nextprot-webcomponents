@@ -1,7 +1,11 @@
 <link rel="import" href="../polymer/polymer.html">
 <link rel="import" href="../iron-collapse/iron-collapse.html">
-<link rel="stylesheet" type="text/css" href="../bootstrap/dist/css/bootstrap.min.css">
-<link rel="stylesheet" type="text/css" href="../font-awesome/css/font-awesome.min.css">
+<link rel="import" href="../neon-animation/animations/fade-in-animation.html">
+<link rel="import" href="../neon-animation/animations/fade-out-animation.html">
+<link rel="import" href="../neon-animation/neon-animation-runner-behavior.html">
+<link rel="import" href="../shared-styles/shared-styles.html">
+<link rel="stylesheet" type="text/css" href="../bootstrap/dist/css/bootstrap.min.css" async>
+<link rel="stylesheet" type="text/css" href="../font-awesome/css/font-awesome.min.css" async>
 <!--
 `publication-item`
 Block element representing a publication record
@@ -13,6 +17,9 @@ Block element representing a publication record
       :host {
         display: block;
       }
+      iron-collapse {
+        margin-top: 5px;
+      }
       p {
         margin: 0 0 5px;
       }
@@ -22,23 +29,10 @@ Block element representing a publication record
         margin-bottom: 15px;
         border-left:1px solid darkgray;
       }
-      .hyperlink-blue {
-        color:#337ab7;
-      }
-      .external-link:after {
-        content: "\f08e";
-        font-family: "FontAwesome";
-        font-size: 11px;
-        margin-left: 5px;
-        vertical-align: middle;
-      }
-      iron-collapse {
-        margin-top: 5px;
-      }
       button[pushed] .pubDisplayStatus:before {
          content:"Hide";
          display:inline-block;
-         width:31px;
+         width:29px;
        }
       button .pubDisplayStatus:before {
         content:"Show";
@@ -46,6 +40,9 @@ Block element representing a publication record
       #abstractHeader {
         color: #666;
         padding: 5px 0;
+      }
+      #collapseAbstract {
+        text-align: justify;
       }
     </style>
       <template is="dom-if" if="{{data}}">
@@ -55,7 +52,7 @@ Block element representing a publication record
         <template is="dom-if" if="{{!summary}}">
           <p><span class="hyperlink-blue"><template is="dom-repeat" items="{{data.authors}}" as="author">{{author.lastName}} {{author.initials}}. , </template></span></p>
           <p>{{data.journal}} {{data.journalResourceLocator.medAbbrev}}, <strong>{{data.volume}}</strong>, {{data.firstPage}} <template is="dom-if" if="{{data.lastPage}}">- {{data.lastPage}}</template> ({{data.publicationYear}})
-            <template is="dom-repeat" items="{{data.dbXrefs}}" as="xref">[{{_formatXrefLabel(xref.databaseName)}} : <a href="{{xref.resolvedUrl}}" class="external-link" target='_blank'>{{xref.accession}}</a>] </template></p>
+            <template is="dom-repeat" items="{{data.dbXrefs}}" as="xref">[{{_formatXrefLabel(xref.databaseName)}} : <a href="{{xref.resolvedUrl}}" class="ext-link" target='_blank'>{{xref.accession}}</a>] </template></p>
         </template>
         <template is="dom-if" if="{{summary}}">
           {{data.authors.0.lastName}} {{data.authors.0.initials}}. <template is="dom-if" if="{{data.authors.1}}"><i>et al.</i></template>
@@ -65,11 +62,13 @@ Block element representing a publication record
           <button id="collapseButton" class="btn btn-primary btn-xs" type="button" on-tap="_toggleAbstract">
             <span class="pubDisplayStatus"> </span>abstract
           </button>
-          <iron-collapse id="collapse{{data.publicationId}}" opened="{{showAbstract}}">
-            <div id="abstractHeader" hidden>Abstract</div>
-            {{data.abstractText}}
-          </iron-collapse>
         </template>
+        <iron-collapse id="collapseAbstract" opened="{{showAbstract}}">
+          <template is="dom-if" if="{{data.abstractText}}">
+            <div id="abstractHeader" hidden>Abstract</div>
+          </template>
+          {{data.abstractText}}
+        </iron-collapse>
         <template is="dom-if" if="{{!data.abstractText}}">
           No Abstract available
         </template>
@@ -79,6 +78,7 @@ Block element representing a publication record
   <script>
     Polymer({
       is: 'publication-item',
+      behaviors: [Polymer.NeonAnimationRunnerBehavior],
       properties: {
         data: {
           type: Object
@@ -90,22 +90,47 @@ Block element representing a publication record
         summary: {
           type: Boolean,
           value: false
+        },
+        animationConfig: {
+          value: function(){
+            return {
+              "showAbstract": {
+                name: "fade-in-animation",
+                node: this.$.collapseAbstract,
+                timing: {
+                  duration: 1200
+                }
+              },
+              "hideAbstract": {
+                name: "fade-out-animation",
+                node: this.$.collapseAbstract,
+                timing: {
+                  duration: 200
+                }
+              }
+            }
+          }
         }
       },
       attached: function () {
         if (this.showAbstract) {
           this.async(function(){
-            this.$$("#abstractHeader").removeAttribute("hidden");
-            this.$$("#collapseButton").remove();
+            if(this.$$("#abstractHeader")) this.$$("#abstractHeader").removeAttribute("hidden");
+            if(this.$$("#collapseButton")) this.$$("#collapseButton").hidden = true;
           },1);
         }
       },
       _toggleAbstract: function(){
-        this.$$("#collapse"+this.data.publicationId).toggle();
+        if (this.$$("#collapseAbstract").opened){
+          this.playAnimation("hideAbstract");
+        } else {
+          this.playAnimation("showAbstract");
+        }
+        this.$$("#collapseAbstract").toggle();
         this._toggleButton();
       },
       _toggleButton: function(){
-        if (this.$$("#collapse"+this.data.publicationId).opened){
+        if (this.$$("#collapseAbstract").opened){
           this.$$("#collapseButton").setAttribute("pushed", null);
         } else {
           this.$$("#collapseButton").removeAttribute("pushed");
