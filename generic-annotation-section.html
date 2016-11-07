@@ -131,11 +131,15 @@ Annotation section used in function, medical, and expression views.
         section: {
             type: String
         },
-        data: {
-          observer: "_toggleAllEvidences"
+        goldOnly: {
+          type: Boolean,
+          value: false
         },
         showEvidences: {
           type: Boolean
+        },
+        data: {
+          observer: "_toggleAllEvidences"
         }
       },
       attached: function(){
@@ -172,18 +176,19 @@ Annotation section used in function, medical, and expression views.
           if (a.cvTermName) a.cvTermName=a.cvTermName.charAt(0).toUpperCase()+a.cvTermName.slice(1);
           if (!data.hasOwnProperty(a.category)) data[a.category]=[];
           a.evidences.forEach(function(obj){if(obj.negativeEvidence==true) a.description = "<b>Not </b>"+a.description});
-
-          data[a.category].push({
-            id: a.annotationId,
-            description: a.description || a.cvTermName,
-            category: a.category.toUpperCase(),
-            cvTermAccessionCode: a.cvTermAccessionCode,
-            cvTermDescription: a.cvTermDescription,
-            parentXref: a.parentXref,
-            evidences: a.evidences ? self._getEvidence(a.evidences, data_xrefs, data_publi) : [],
-            evidenceSources: self._getUniqueListOfEvidenceSources(a.evidences),
-            qualityQualifier: a.qualityQualifier
-          });
+          if(a.qualityQualifier==="GOLD" || self.goldOnly===false){
+            data[a.category].push({
+              id: a.annotationId,
+              description: a.description || a.cvTermName,
+              category: a.category.toUpperCase(),
+              cvTermAccessionCode: a.cvTermAccessionCode,
+              cvTermDescription: a.cvTermDescription,
+              parentXref: a.parentXref,
+              evidences: a.evidences ? self._getEvidence(a.evidences, data_xrefs, data_publi) : [],
+              evidenceSources: self._getUniqueListOfEvidenceSources(a.evidences),
+              qualityQualifier: a.qualityQualifier
+            });
+          }
         });
         Object.keys(data).forEach(function(d){self.count+=data[d].length;});
         this.data = data;
