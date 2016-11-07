@@ -66,6 +66,10 @@ Keywords section present on function, medical, sequence, and structures pages.
         exceptions: {
           type: Array,
           value: []
+        },
+        count: {
+          type: Number,
+          notify: true
         }
       },
       created: function(){
@@ -80,6 +84,8 @@ Keywords section present on function, medical, sequence, and structures pages.
             // catch any error that happened so far
             console.log("Argh, broken: " + err.message);
             console.log("Error at line : " + err.stack);
+            self.$.spinner.active = false;
+            self.count = 0;
           });
       },
       getKeywordsByView: function(list){
