@@ -80,6 +80,10 @@ Exteranl links section present in function, medical, expression, interactins, se
       properties: {
         categories: {
           type: Array
+        },
+        count: {
+          type: Number,
+          notify: true
         }
       },
       created: function(){
@@ -94,6 +98,8 @@ Exteranl links section present in function, medical, expression, interactins, se
             // catch any error that happened so far
             console.log("Argh, broken: " + err.message);
             console.log("Error at line : " + err.stack);
+            self.$.spinner.active = false;
+            self.count = 0;
           });
       },
       getXrefByView: function(list) {
