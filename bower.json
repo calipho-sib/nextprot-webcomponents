@@ -16,7 +16,8 @@
   "dependencies": {
     "polymer": "Polymer/polymer#^1.4.0",
     "publication-item": "git://github.com/calipho-sib/nextprot-webcomponents.git#publication-item",
-    "quality-label": "git://github.com/calipho-sib/nextprot-webcomponents.git#quality-label"
+    "quality-label": "git://github.com/calipho-sib/nextprot-webcomponents.git#quality-label",
+    "shared-styles": "git://github.com/calipho-sib/nextprot-webcomponents.git#shared-styles"
   },
   "devDependencies": {
     "iron-component-page": "PolymerElements/iron-component-page#^1.0.0",
