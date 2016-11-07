@@ -465,9 +465,11 @@ Top page section present on every viewer
         if (this.$.collapseInfosLess.opened){
           this.playAnimation("exitLessInfos");
           this.playAnimation("enterFullInfos");
+          this.$.extender.innerHTML = "Collapse overview";
         } else {
           this.playAnimation("exitFullInfos");
           this.playAnimation("enterLessInfos");
+          this.$.extender.innerHTML = "Extend overview";
         }
         this.$.collapseInfosLess.toggle();
         this.$.collapseInfosFull.toggle();
