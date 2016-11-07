@@ -19,6 +19,7 @@
     "generic-annotation-section": "git://github.com/calipho-sib/nextprot-webcomponents.git#generic-annotation-section",
     "keywords-section": "git://github.com/calipho-sib/nextprot-webcomponents.git#keywords-section",
     "xrefs-section": "git://github.com/calipho-sib/nextprot-webcomponents.git#xrefs-section",
+    "shared-styles": "git://github.com/calipho-sib/nextprot-webcomponents.git#shared-styles",
     "bootstrap": "^3.3.7"
   },
   "devDependencies": {
