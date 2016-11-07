@@ -18,6 +18,9 @@ Annotation section used in function, medical, and expression views.
       :host {
         display: block;
       }
+      #evidenceButton {
+        padding: 0px 5px 0px 0px;
+      }
     </style>
     <div id="{{section}}-header" class="category-header">
       <template is="dom-if" if="{{count}}">
@@ -29,16 +32,18 @@ Annotation section used in function, medical, and expression views.
       <paper-spinner-lite id="spinner" active></paper-spinner-lite>
     </div>
     <div class="category-main">
-      <button id="evidenceButton" class="btn btn-default" on-click="_toggleAllEvidences">
-        <template is="dom-if" if="{{!showEvidences}}">
-          <iron-icon icon="arrow-drop-down"></iron-icon>
-          show evidences
-        </template>
-        <template is="dom-if" if="{{showEvidences}}">
-          <iron-icon icon="arrow-drop-down"></iron-icon>
-          hide evidences
-        </template>
-      </button>
+      <template is="dom-if" if="{{data}}">
+        <button id="evidenceButton" class="btn btn-default" on-click="_toggleAllEvidences">
+          <template is="dom-if" if="{{evidencesShown}}">
+            <iron-icon icon="arrow-drop-up"></iron-icon>
+            hide evidences
+          </template>
+          <template is="dom-if" if="{{!evidencesShown}}">
+            <iron-icon icon="arrow-drop-down"></iron-icon>
+            show evidences
+          </template>
+        </button>
+      </template>
       <template is="dom-repeat" items="{{_toArray(data)}}" as="category">
         <div class="row category-row">
           <div class="col-lg-1 col-md-12 col-sm-12 col-xs-12">
@@ -126,9 +131,11 @@ Annotation section used in function, medical, and expression views.
         section: {
             type: String
         },
+        data: {
+          observer: "_toggleAllEvidences"
+        },
         showEvidences: {
-          type: Boolean,
-          value: true
+          type: Boolean
         }
       },
       attached: function(){
@@ -182,21 +189,19 @@ Annotation section used in function, medical, and expression views.
         this.data = data;
       },
       _toggleAllEvidences: function(){
-        var evidenceContainers = Polymer.dom(this.root).querySelectorAll(".evidences-container");
-        var action = this.$.evidenceButton.innerHTML;
-        console.log(action);
-        for (var e in evidenceContainers){
-          if(action == "show evidences"){
-            evidenceContainers[e].parentNode.opened = true;
-          } else {
-            evidenceContainers[e].parentNode.opened = false;
+        this.async(function() {
+          this.evidencesShown=true;
+          var evidenceContainers = Polymer.dom(this.root).querySelectorAll(".evidences-container");
+          for (var e in evidenceContainers) {
+            if (this.showEvidences == true) {
+              evidenceContainers[e].parentNode.opened = true;
+            } else {
+              evidenceContainers[e].parentNode.opened = false;
+            }
           }
-        }
-        if (action == "show evidences") {
-          this.$.evidenceButton.innerHTML = "hide evidences";
-        } else {
-          this.$.evidenceButton.innerHTML = "show evidences";
-        }
+          this.evidencesShown = this.showEvidences;
+          this.showEvidences = !this.showEvidences;
+        }, 1);
       },
       _getEvidence: function(ev, xrefs, publi){
         function getUrl(id){
