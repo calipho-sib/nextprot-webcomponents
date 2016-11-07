@@ -39,7 +39,7 @@ Keywords section present on function, medical, sequence, and structures pages.
                   <div class="annotation-title-container">
                     <p class="annotation-title">{{annotation.cvTermName}}</p>
                     <div class="annotation-labels col-md-6 col-sm-6 col-xs-6">
-                      <button id="{{annotation.cvTermAccessionCode}}-button" class="btn btn-sm btn-info" on-click="toggle">Definition</button>
+                      <button id="{{annotation.cvTermAccessionCode}}-button" class="btn btn-info" on-click="toggle">Definition</button>
                       <a class="accession-code-link btn btn-sm selectable" href="/db/term/{{annotation.cvTermAccessionCode}}">{{annotation.cvTermAccessionCode}}</a>
                     </div>
                   </div>
@@ -66,6 +66,10 @@ Keywords section present on function, medical, sequence, and structures pages.
         exceptions: {
           type: Array,
           value: []
+        },
+        count: {
+          type: Number,
+          notify: true
         }
       },
       created: function(){
@@ -80,6 +84,8 @@ Keywords section present on function, medical, sequence, and structures pages.
             // catch any error that happened so far
             console.log("Argh, broken: " + err.message);
             console.log("Error at line : " + err.stack);
+            self.$.spinner.active = false;
+            self.count = 0;
           });
       },
       getKeywordsByView: function(list){
