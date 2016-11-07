@@ -25,15 +25,14 @@ Annotation section used in function, medical, and expression views.
         padding: 0px 5px 0px 0px;
       }
     </style>
-    <div id="{{section}}-header" class="category-header">
-      <template is="dom-if" if="{{count}}">
+    <template is="dom-if" if="{{count}}">
+      <div id="{{section}}-header" class="category-header">
         <div class="badge-container">
           <span class="badge counter-badge">{{count}}</span>
         </div>
-      </template>
-      <h4 id="{{section}}-title" class="category-title">{{section}}</h4>
-      <paper-spinner-lite id="spinner" active></paper-spinner-lite>
-    </div>
+        <h4 id="{{section}}-title" class="category-title">{{section}}</h4>
+      </div>
+    </template>
     <div class="category-main">
       <template is="dom-if" if="{{data}}">
         <button id="evidenceButton" class="btn btn-default" on-click="_toggleAllEvidences">
@@ -47,6 +46,7 @@ Annotation section used in function, medical, and expression views.
           </template>
         </button>
       </template>
+      <paper-spinner-lite id="spinner" active></paper-spinner-lite>
       <template is="dom-repeat" items="{{_toArray(data)}}" as="category">
         <div class="row category-row">
           <div class="col-lg-1 col-md-12 col-sm-12 col-xs-12">
@@ -159,6 +159,7 @@ Annotation section used in function, medical, and expression views.
             // catch any error that happened so far
             console.log("Argh, broken: " + err.message);
             console.log("Error at line : " + err.stack);
+            self.$.spinner.removeAttribute('active');
           });
       },
       getAnnotationsByView: function(){
