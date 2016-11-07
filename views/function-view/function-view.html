@@ -13,6 +13,7 @@ View listing protein function annotations.
 <link rel="import" href="../generic-annotation-section/generic-annotation-section.html">
 <link rel="import" href="../keywords-section/keywords-section.html">
 <link rel="import" href="../xrefs-section/xrefs-section.html">
+<link rel="import" href="../shared-styles/shared-styles.html">
 <link rel="stylesheet" type="text/css" href="../bootstrap/dist/css/bootstrap.min.css" async>
 <!--
 `function-view`
@@ -28,74 +29,67 @@ View listing protein function annotations.
         background:#ECF0F1;
         overflow-y: auto;
       }
-      body{
-      }
-      .row {
-        margin: 0px 20px 15px;
-      }
-      #nx-overview {
-        background:#fff;
-        margin-top:10px;
-        margin-bottom:10px;
-        border: 1px solid #cfd9db;
-        border-radius:4px;
-      }
-      #nx-refs {
-        background-color:white;
-        margin-bottom:20px;
-      }
-      #nx-annotations {
-        background:#fff;
-        padding:5px 15px;
-        border: 1px solid #cfd9db;
-        border-radius:4px;
-      }
-      #nx-keywords {
-        background:#fff;
-        padding:5px 15px;
-        border: 1px solid #cfd9db;
-        border-radius:4px;
-      }
-      #nx-xrefs {
-        background:#fff;
-        padding:5px 15px;
-        border: 1px solid #cfd9db;
-        border-radius:4px;
-      }
     </style>
     <div class="row">
-      <div id="nx-overview" class="col-md-12">
+      <div id="nxOverview" class="col-md-12">
         <protein-overview></protein-overview>
       </div>
     </div>
     <div class="row">
-      <div id="nx-annotations" class="col-md-12">
-        <generic-annotation-section section="function"
+      <div id="nxAnnotations" class="col-md-12">
+        <generic-annotation-section id="annotationElement" section="function"
                                     categories='["FUNCTION-INFO", "CATALYTIC-ACTIVITY", "COFACTOR",
                                     "ENZYME-REGULATION", "GO-MOLECULAR-FUNCTION", "GO-BIOLOGICAL-PROCESS",
-                                    "PATHWAY", "ALLERGEN", "CAUTION", "MISCELLANEOUS"]'>
+                                    "PATHWAY", "ALLERGEN", "CAUTION", "MISCELLANEOUS"]' count="{{annotationsCount}}">
         </generic-annotation-section>
       </div>
     </div>
     <div class="row">
-      <div id="nx-keywords" class="col-md-12">
+      <div id="nxKeywords" class="col-md-12">
         <keywords-section categories='["Biological process","Molecular function", "Technical term"]'
-                          exceptions='["KW-0002", "KW-0181", "KW-0903", "KW-0374", "KW-0582"]'>
+                          exceptions='["KW-0002", "KW-0181", "KW-0903", "KW-0374", "KW-0582"]' count="{{keywordsCount}}">
         </keywords-section>
       </div>
     </div>
     <div class="row">
-      <div id="nx-xrefs" class="col-md-12">
+      <div id="nxXrefs" class="col-md-12">
         <xrefs-section categories='["BRENDA", "CAZy", "KEGGPathway", "MEROPS", "PeroxiBase",
           "BioCyc", "Reactome","Pathway_Interaction_DB", "REBASE", "TCDB", "GeneWiki", "SABIO-RK",
-          "GenomeRNAi", "GuidetoPHARMACOLOGY", "PRO","MoonProt","ESTHER"]'>
+          "GenomeRNAi", "GuidetoPHARMACOLOGY", "PRO","MoonProt","ESTHER"]' count="{{xrefsCount}}">
         </xrefs-section>
       </div>
     </div>
   </template>
   <script>
     Polymer({
-      is: 'function-view'
+      is: 'function-view',
+      properties: {
+        annotationsCount: {
+          type: Number,
+          observer: "_checkAnnotations"
+        },
+        keywordsCount: {
+          type: Number,
+          observer: "_checkKeywords"
+        },
+        xrefsCount: {
+          type: Number,
+          observer: "_checkXrefs"
+        }
+      },
+      _checkAnnotations: function(){
+        if (this.annotationsCount===0) {
+          this.$.nxAnnotations.innerHTML="<div class='alert alert-warning noData'>There is no function information available in neXtProt for "+
+          this.$.annotationElement.nxEntry+
+          ". Suggestions for updates are welcome! Please <a href='mailto:support@nextprot.org'>contact us</a>.</div>";
+        }
+      },
+      _checkKeywords: function(){
+        if (this.keywordsCount===0) this.$.nxKeywords.hidden=true;
+      },
+      _checkXrefs: function(){
+        if (this.xrefsCount===0) this.$.nxXrefs.hidden=true;
+      }
     });
   </script>
 </dom-module>
