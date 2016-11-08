@@ -18,9 +18,6 @@ Annotation section used in function, medical, and expression views.
       :host {
         display: block;
       }
-      .btn-info {
-        padding: 0 2px;
-      }
       #evidenceButton {
         padding: 0px 5px 0px 0px;
       }
@@ -77,6 +74,16 @@ Annotation section used in function, medical, and expression views.
                     </template>
                     <template is="dom-if" if="{{!_checkIfContainsAccessionOrXref(annotation.value)}}">
                       <p class="annotation-title">{{annotation.value.description}}</p>
+                      <template is="dom-if" if="{{annotation.value.geneName}}">
+                        <p class="annotation-title col-lg-12 col-md-12 col-sm-12 col-xs-12">
+                          <template is="dom-if" if="{{annotation.value.proteinName}}">
+                            <a href="{{annotation.value.url}}">{{annotation.value.geneName}}</a> >> {{annotation.value.proteinName}}
+                          </template>
+                          <template is="dom-if" if="{{!annotation.value.proteinName}}">
+                            {{annotation.value.geneName}} >> {{annotation.value.database}}: <a href="{{annotation.value.url}}" class="ext-link">{{annotation.value.accession}}</a>
+                          </template>
+                          <quality-label quality="{{annotation.value.qualityQualifier}}"></quality-label></p>
+                      </template>
                     </template>
                   </div>
                   <iron-collapse id="description-container-{{annotation.value.id}}">
@@ -110,13 +117,13 @@ Annotation section used in function, medical, and expression views.
                   </div>
                 </div>
               </div>
-            <iron-collapse id="evidences-container-sm-{{annotation.value.id}}" opened>
-              <div class="evidence-container hidden-lg hidden-md">
-                <template is="dom-repeat" items="{{annotation.value.evidences}}" as="evidence">
-                  <evidence-item data="{{evidence}}" index="{{index+1}}"></evidence-item>
-                </template>
-              </div>
-            </iron-collapse>
+              <iron-collapse id="evidences-container-sm-{{annotation.value.id}}" opened>
+                <div class="evidence-container hidden-lg hidden-md">
+                  <template is="dom-repeat" items="{{annotation.value.evidences}}" as="evidence">
+                    <evidence-item data="{{evidence}}" index="{{_getIndex(index)}}"></evidence-item>
+                  </template>
+                </div>
+              </iron-collapse>
             </template>
           </div>
         </div>
@@ -131,8 +138,12 @@ Annotation section used in function, medical, and expression views.
         categories: {
           type: Array
         },
+        categoryTitles: {
+          type: Object,
+          value: {}
+        },
         section: {
-            type: String
+          type: String
         },
         goldOnly: {
           type: Boolean,
@@ -143,23 +154,30 @@ Annotation section used in function, medical, and expression views.
         },
         data: {
           observer: "_toggleAllEvidences"
+        },
+        count: {
+          type: Number,
+          notify: true
         }
       },
       attached: function(){
         var nx = new Nextprot.Client("neXtprot annotation loader", "Calipho Group");
         var apiCall = [];
-        this.categories.forEach(function(a){apiCall.push(nx.getAnnotationsByCategory(nx.getEntryName(), a))});
+        this.nxEntry = nx.getEntryName();
+        this.categories.forEach(function(a){apiCall.push(nx.getAnnotationsByCategory(this.nxEntry, a))});
         var self = this;
         Promise.all(apiCall)
-          .then(function (categories) {
-            self.annotationsByCategory = categories;
-            self.getAnnotationsByView();
-            self.$.spinner.removeAttribute('active');
-          }).catch(function (err) {
-            // catch any error that happened so far
-            console.log("Argh, broken: " + err.message);
-            console.log("Error at line : " + err.stack);
-          });
+                .then(function (categories) {
+                  self.annotationsByCategory = categories;
+                  self.getAnnotationsByView();
+                  self.$.spinner.removeAttribute('active');
+                }).catch(function (err) {
+                  // catch any error that happened so far
+                  console.log("Argh, broken: " + err.message);
+                  console.log("Error at line : " + err.stack);
+                  self.$.spinner.removeAttribute('active');
+                  self.count = 0;
+                });
       },
       getAnnotationsByView: function(){
         var data_xrefs = [];
@@ -174,9 +192,16 @@ Annotation section used in function, medical, and expression views.
         data = {};
         var self = this;
         data_annot.forEach(function (a) {
-          if (a.category=="function") a.category="overview";
+          if(Object.keys(self.categoryTitles).indexOf(a.category)!=-1) a.category = self.categoryTitles[a.category];
           if (a.description) a.description=a.description.charAt(0).toUpperCase()+ a.description.slice(1);
           if (a.cvTermName) a.cvTermName=a.cvTermName.charAt(0).toUpperCase()+a.cvTermName.slice(1);
+          if (a.bioObject) {
+            a.geneName=a.bioObject.properties["gene name"];
+            a.proteinName=a.bioObject.properties["protein name"];
+            a.url=a.bioObject.properties.url;
+            a.database=a.bioObject.database;
+            a.accession=a.bioObject.accession;
+          }
           if (!data.hasOwnProperty(a.category)) data[a.category]=[];
           a.evidences.forEach(function(obj){if(obj.negativeEvidence==true) a.description = "<b>Not </b>"+a.description});
           if(a.qualityQualifier==="GOLD" || self.goldOnly===false){
@@ -186,6 +211,11 @@ Annotation section used in function, medical, and expression views.
               category: a.category.toUpperCase(),
               cvTermAccessionCode: a.cvTermAccessionCode,
               cvTermDescription: a.cvTermDescription,
+              geneName: a.geneName,
+              proteinName: a.proteinName,
+              accession: a.accession,
+              url: a.url,
+              database: a.database,
               parentXref: a.parentXref,
               evidences: a.evidences ? self._getEvidence(a.evidences, data_xrefs, data_publi) : [],
               evidenceSources: self._getUniqueListOfEvidenceSources(a.evidences),
