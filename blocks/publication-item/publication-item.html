@@ -23,19 +23,19 @@ Block element representing a publication record
       p {
         margin: 0 0 5px;
       }
+      button[pushed] .pubDisplayStatus:before {
+        content:"Hide";
+        display:inline-block;
+        width:29px;
+      }
+      button .pubDisplayStatus:before {
+        content:"Show";
+      }
       .publication-container {
         padding-left: 15px;
         margin-top: 5px;
         margin-bottom: 15px;
         border-left:1px solid darkgray;
-      }
-      button[pushed] .pubDisplayStatus:before {
-         content:"Hide";
-         display:inline-block;
-         width:29px;
-       }
-      button .pubDisplayStatus:before {
-        content:"Show";
       }
       #abstractHeader {
         color: #666;
@@ -50,31 +50,40 @@ Block element representing a publication record
           <p><a href="/publication/{{data.publicationId}}"  target='_parent'>{{data.title}}</a></p>
         </template>
         <template is="dom-if" if="{{!summary}}">
-          <p><span class="hyperlink-blue"><template is="dom-repeat" items="{{data.authors}}" as="author">{{author.lastName}} {{author.initials}}. , </template></span></p>
-          <p>{{data.journal}} {{data.journalResourceLocator.medAbbrev}}, <strong>{{data.volume}}</strong>, {{data.firstPage}} <template is="dom-if" if="{{data.lastPage}}">- {{data.lastPage}}</template> ({{data.publicationYear}})
-            <template is="dom-repeat" items="{{data.dbXrefs}}" as="xref">[{{_formatXrefLabel(xref.databaseName)}} : <a href="{{xref.resolvedUrl}}" class="ext-link" target='_blank'>{{xref.accession}}</a>] </template></p>
+          <p><span class="hyperlink-blue">
+            <template is="dom-repeat" items="{{data.authors}}" as="author">
+              <a href="/publications/search?query=author:{{author.lastName}} {{author.foreName}}">{{author.lastName}} {{author.initials}}.</a> ,
+            </template>
+          </span></p>
+          <p>{{data.journal}} {{data.journalResourceLocator.medAbbrev}}, <strong>{{data.volume}}</strong>, {{data.firstPage}}
+            <template is="dom-if" if="{{data.lastPage}}">- {{data.lastPage}}</template> ({{data.publicationYear}})
+            <template is="dom-repeat" items="{{data.dbXrefs}}" as="xref">[{{_formatXrefLabel(xref.databaseName)}} :
+              <a href="{{xref.resolvedUrl}}" class="ext-link" target='_blank'>{{xref.accession}}</a>]
+            </template>
+          </p>
         </template>
         <template is="dom-if" if="{{summary}}">
           {{data.authors.0.lastName}} {{data.authors.0.initials}}. <template is="dom-if" if="{{data.authors.1}}"><i>et al.</i></template>
-          , {{data.journal}} {{data.journalResourceLocator.medAbbrev}}, <strong>{{data.volume}}</strong>, {{data.firstPage}} <template is="dom-if" if="{{data.lastPage}}">- {{data.lastPage}}</template> ({{data.publicationYear}})</template>
-        </template>
-        <template is="dom-if" if="{{data.abstractText}}">
-          <button id="collapseButton" class="btn btn-primary btn-xs" type="button" on-tap="_toggleAbstract">
-            <span class="pubDisplayStatus"> </span>abstract
-          </button>
-        </template>
-        <iron-collapse id="collapseAbstract" opened="{{showAbstract}}">
-          <template is="dom-if" if="{{data.abstractText}}">
-            <div id="abstractHeader" hidden>Abstract</div>
-          </template>
-          {{data.abstractText}}
-        </iron-collapse>
-        <template is="dom-if" if="{{!data.abstractText}}">
-          No Abstract available
+          , {{data.journal}} {{data.journalResourceLocator.medAbbrev}}, <strong>{{data.volume}}</strong>, {{data.firstPage}}
+          <template is="dom-if" if="{{data.lastPage}}">- {{data.lastPage}}</template> ({{data.publicationYear}})
         </template>
       </template>
+      <template is="dom-if" if="{{data.abstractText}}">
+        <button id="collapseButton" class="btn btn-primary btn-xs" type="button" on-tap="_toggleAbstract">
+          <span class="pubDisplayStatus"> </span>abstract
+        </button>
+      </template>
+      <iron-collapse id="collapseAbstract" opened="{{showAbstract}}">
+        <template is="dom-if" if="{{data.abstractText}}">
+          <div id="abstractHeader" hidden>Abstract</div>
+        </template>
+        {{data.abstractText}}
+      </iron-collapse>
+      <template is="dom-if" if="{{!data.abstractText}}">
+        No Abstract available
+      </template>
+    </template>
   </template>
-
   <script>
     Polymer({
       is: 'publication-item',
@@ -121,20 +130,15 @@ Block element representing a publication record
         }
       },
       _toggleAbstract: function(){
-        if (this.$$("#collapseAbstract").opened){
-          this.playAnimation("hideAbstract");
-        } else {
-          this.playAnimation("showAbstract");
-        }
+        this.$$("#collapseAbstract").opened ?
+          this.playAnimation("hideAbstract") : this.playAnimation("showAbstract");
         this.$$("#collapseAbstract").toggle();
         this._toggleButton();
       },
       _toggleButton: function(){
-        if (this.$$("#collapseAbstract").opened){
-          this.$$("#collapseButton").setAttribute("pushed", null);
-        } else {
+        this.$$("#collapseAbstract").opened ?
+          this.$$("#collapseButton").setAttribute("pushed", null) :
           this.$$("#collapseButton").removeAttribute("pushed");
-        }
       },
       _formatXrefLabel: function(name){
         return name.replace("DOI", "Full text");
