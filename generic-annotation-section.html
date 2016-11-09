@@ -204,6 +204,7 @@ Annotation section used in function, medical, and expression views.
           }
           if (!data.hasOwnProperty(a.category)) data[a.category]=[];
           a.evidences.forEach(function(obj){if(obj.negativeEvidence==true) a.description = "<b>Not </b>"+a.description});
+          if(a.annotationId===0) a.annotationId=data_annot.indexOf(a);
           if(a.qualityQualifier==="GOLD" || self.goldOnly===false){
             data[a.category].push({
               id: a.annotationId,
@@ -250,6 +251,8 @@ Annotation section used in function, medical, and expression views.
         }
         var self = this;
         return ev.map(function(e){
+          e.assignedBy=e.assignedBy.replace('NextProt', 'neXtProt');
+          e.assignedBy=e.assignedBy.replace('Uniprot', 'UniProt');
           return {
             "evidenceCodeName": e.evidenceCodeName,
             "resourceAccession": e.resourceAccession,
