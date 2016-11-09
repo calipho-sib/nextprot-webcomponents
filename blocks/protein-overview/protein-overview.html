@@ -1,4 +1,5 @@
 <link rel="import" href="../polymer/polymer.html">
+<link rel="import" href="../iron-icon/iron-icon.html">
 <link rel="import" href="../iron-collapse/iron-collapse.html">
 <link rel="import" href="../neon-animation/animations/scale-up-animation.html">
 <link rel="import" href="../neon-animation/animations/scale-down-animation.html">
@@ -43,7 +44,14 @@ Top page section present on every viewer
       }
     </style>
     <div id="proteinTitle">
-      <button id="extender" class="btn btn-default" on-click="toggle">Extend overview</button>
+      <button id="extender" class="btn btn-default" on-click="toggle">
+        <template is="dom-if" if="{{extended}}">
+          <iron-icon icon="arrow-drop-up"></iron-icon>Collapse overview
+        </template>
+        <template is="dom-if" if="{{!extended}}">
+          <iron-icon icon="arrow-drop-down"></iron-icon>Extend overview
+        </template>
+      </button>
       <h3>
         <template is="dom-if" if="{{data.geneName}}">
           <template is="dom-if" if="{{data.geneName.0.name}}">
@@ -61,7 +69,7 @@ Top page section present on every viewer
         </template>
       </h3>
     </div>
-    <iron-collapse id="collapseInfosLess" opened>
+    <iron-collapse id="collapseInfosLess" opened="{{!extended}}">
     <div id="infos-less">
       <template is="dom-if" if="{{data.recommendedProteinName.mainSynonymName}}">
         <div id="synonym-less" class="row">
@@ -145,7 +153,7 @@ Top page section present on every viewer
       </template>
     </div>
     </iron-collapse>
-    <iron-collapse id="collapseInfosFull">
+    <iron-collapse id="collapseInfosFull" opened="{{extended}}">
     <div id="infos-full">
       <div id="protein-full" class="row">
         <div class="col-md-1 col-xs-2 text-uppercase grey-x">Protein</div>
@@ -329,6 +337,10 @@ Top page section present on every viewer
       is: 'protein-overview',
       behaviors: [Polymer.NeonAnimationRunnerBehavior],
       properties: {
+        extended: {
+          type: Boolean,
+          value: false
+        },
         animationConfig: {
           value: function(){
             return {
@@ -337,26 +349,26 @@ Top page section present on every viewer
                 node: this.$.collapseInfosFull,
                 transformOrigin: '0% 100%',
                 timing: {
-                  duration: 400
+                  duration: 600
                 }
               }, {
               name: "fade-in-animation",
               node: this.$.collapseInfosFull,
               timing: {
-                duration: 1200
+                duration: 1000
               }
               }],
               'exitFullInfos': [{
                 name: "fade-out-animation",
                 node: this.$.collapseInfosFull,
                 timing: {
-                  duration: 400
+                  duration: 600
                 }
               }, {
                 name: "scale-down-animation",
                 node: this.$.collapseInfosFull,
                 timing: {
-                  duration: 1200
+                  duration: 1000
                 }
               }],
               'enterLessInfos': [{
@@ -369,7 +381,7 @@ Top page section present on every viewer
                 name: "fade-in-animation",
                 node: this.$.collapseInfosLess,
                 timing: {
-                  duration: 1200
+                  duration: 1600
                 }
               }],
               'exitLessInfos': [{
@@ -463,17 +475,18 @@ Top page section present on every viewer
         };
       },
       toggle: function(){
-        if (this.$.collapseInfosLess.opened){
-          this.playAnimation("exitLessInfos");
-          this.playAnimation("enterFullInfos");
-          this.$.extender.innerHTML = "Collapse overview";
-        } else {
+        if (this.extended){
           this.playAnimation("exitFullInfos");
           this.playAnimation("enterLessInfos");
-          this.$.extender.innerHTML = "Extend overview";
+          this.$.collapseInfosLess.toggle();
+          this.$.collapseInfosFull.toggle();
+        } else {
+          this.playAnimation("exitLessInfos");
+          this.playAnimation("enterFullInfos");
+          this.$.collapseInfosFull.toggle();
+          this.$.collapseInfosLess.toggle();
         }
-        this.$.collapseInfosLess.toggle();
-        this.$.collapseInfosFull.toggle();
+        this.extended = !this.extended;
       },
       _checkIfLast: function(array,index){
         if(array.length-1===index) return true;
