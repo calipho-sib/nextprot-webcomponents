@@ -56,7 +56,9 @@ Annotation section used in function, medical, and expression views.
                 <div class="col-lg-10 col-md-10 col-sm-9 col-xs-9">
                   <div class="annotation-title-container">
                     <template is="dom-if" if="{{_isNewPathwayCategory(category.name, annotation.value.evidenceSources)}}">
-                      <div class="grey-x">According to {{_formatEvidenceSourceName(annotation.value.evidenceSources)}}, this protein belongs to following pathway:</div>
+                      <div class="grey-x">According to {{_formatEvidenceSourceName(annotation.value.evidenceSources)}}, this protein belongs to following
+                        pathway<template is="dom-if" if="{{_checkIfNextAnnotHasTheSameSource(category.value, index)}}">s</template>:
+                      </div>
                     </template>
                     <template is="dom-if" if="{{annotation.value.cvTermAccessionCode}}">
                       <p class="annotation-title col-lg-9 col-sm-7 col-xs-6" inner-h-t-m-l="{{_boldPattern(annotation.value.description, 'Contributes to')}}"></p>
@@ -74,6 +76,9 @@ Annotation section used in function, medical, and expression views.
                     </template>
                     <template is="dom-if" if="{{!_checkIfContainsAccessionOrXref(annotation.value)}}">
                       <p class="annotation-title">{{annotation.value.description}}</p>
+                      <template is="dom-if" if="{{annotation.value.selfInteraction}}">
+                        <p class="annotation-title col-lg-12 col-md-12 col-sm-12 col-xs-12">Self</p>
+                      </template>
                       <template is="dom-if" if="{{annotation.value.geneName}}">
                         <p class="annotation-title col-lg-12 col-md-12 col-sm-12 col-xs-12">
                           <template is="dom-if" if="{{annotation.value.proteinName}}">
@@ -202,8 +207,10 @@ Annotation section used in function, medical, and expression views.
             a.database=a.bioObject.database;
             a.accession=a.bioObject.accession;
           }
+          a.selfInteraction = a.propertiesMap.selfInteraction ? a.propertiesMap.selfInteraction[0].value : false;
           if (!data.hasOwnProperty(a.category)) data[a.category]=[];
           a.evidences.forEach(function(obj){if(obj.negativeEvidence==true) a.description = "<b>Not </b>"+a.description});
+          if(a.annotationId===0) a.annotationId=data_annot.indexOf(a);
           if(a.qualityQualifier==="GOLD" || self.goldOnly===false){
             data[a.category].push({
               id: a.annotationId,
@@ -211,6 +218,7 @@ Annotation section used in function, medical, and expression views.
               category: a.category.toUpperCase(),
               cvTermAccessionCode: a.cvTermAccessionCode,
               cvTermDescription: a.cvTermDescription,
+              selfInteraction: a.selfInteraction=="true",
               geneName: a.geneName,
               proteinName: a.proteinName,
               accession: a.accession,
@@ -250,6 +258,8 @@ Annotation section used in function, medical, and expression views.
         }
         var self = this;
         return ev.map(function(e){
+          e.assignedBy=e.assignedBy.replace('NextProt', 'neXtProt');
+          e.assignedBy=e.assignedBy.replace('Uniprot', 'UniProt');
           return {
             "evidenceCodeName": e.evidenceCodeName,
             "resourceAccession": e.resourceAccession,
@@ -323,6 +333,12 @@ Annotation section used in function, medical, and expression views.
       },
       _formatEvidenceSourceName: function(name){
         return new String(name).split('_')[0];
+      },
+      _checkIfNextAnnotHasTheSameSource: function(categoryObj, index){
+        var firstAnnotCat = categoryObj[index]['evidenceSources'][0];
+        var secondAnnotCat = categoryObj[index+1] ?
+          categoryObj[index+1]['evidenceSources'][0] : undefined;
+        return firstAnnotCat===secondAnnotCat;
       }
     });
   </script>
