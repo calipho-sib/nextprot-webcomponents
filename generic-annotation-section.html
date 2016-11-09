@@ -76,6 +76,9 @@ Annotation section used in function, medical, and expression views.
                     </template>
                     <template is="dom-if" if="{{!_checkIfContainsAccessionOrXref(annotation.value)}}">
                       <p class="annotation-title">{{annotation.value.description}}</p>
+                      <template is="dom-if" if="{{annotation.value.selfInteraction}}">
+                        <p class="annotation-title col-lg-12 col-md-12 col-sm-12 col-xs-12">Self</p>
+                      </template>
                       <template is="dom-if" if="{{annotation.value.geneName}}">
                         <p class="annotation-title col-lg-12 col-md-12 col-sm-12 col-xs-12">
                           <template is="dom-if" if="{{annotation.value.proteinName}}">
@@ -204,6 +207,7 @@ Annotation section used in function, medical, and expression views.
             a.database=a.bioObject.database;
             a.accession=a.bioObject.accession;
           }
+          a.selfInteraction = a.propertiesMap.selfInteraction ? a.propertiesMap.selfInteraction[0].value : false;
           if (!data.hasOwnProperty(a.category)) data[a.category]=[];
           a.evidences.forEach(function(obj){if(obj.negativeEvidence==true) a.description = "<b>Not </b>"+a.description});
           if(a.annotationId===0) a.annotationId=data_annot.indexOf(a);
@@ -214,6 +218,7 @@ Annotation section used in function, medical, and expression views.
               category: a.category.toUpperCase(),
               cvTermAccessionCode: a.cvTermAccessionCode,
               cvTermDescription: a.cvTermDescription,
+              selfInteraction: a.selfInteraction=="true",
               geneName: a.geneName,
               proteinName: a.proteinName,
               accession: a.accession,
