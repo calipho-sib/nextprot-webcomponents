@@ -77,7 +77,7 @@ Annotation section used in function, medical, and expression views.
                     <template is="dom-if" if="{{!_checkIfContainsAccessionOrXref(annotation.value)}}">
                       <p class="annotation-title">{{annotation.value.description}}</p>
                       <template is="dom-if" if="{{annotation.value.selfInteraction}}">
-                        <p class="annotation-title col-lg-12 col-md-12 col-sm-12 col-xs-12">Self</p>
+                        <p class="annotation-title col-lg-12 col-md-12 col-sm-12 col-xs-12">Itself</p>
                       </template>
                       <template is="dom-if" if="{{annotation.value.geneName}}">
                         <p class="annotation-title col-lg-12 col-md-12 col-sm-12 col-xs-12">
