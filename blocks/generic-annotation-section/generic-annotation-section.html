@@ -21,6 +21,13 @@ Annotation section used in function, medical, and expression views.
       #evidenceButton {
         padding: 0px 5px 0px 0px;
       }
+      .xeno-label {
+        color: #999;
+        border: 1px solid;
+        border-radius: 2px;
+        padding: 0px 2px;
+        margin-left: 5px;
+      }
     </style>
     <div id="{{section}}-header" class="category-header">
       <template is="dom-if" if="{{count}}">
@@ -77,7 +84,7 @@ Annotation section used in function, medical, and expression views.
                     <template is="dom-if" if="{{!_checkIfContainsAccessionOrXref(annotation.value)}}">
                       <p class="annotation-title">{{annotation.value.description}}</p>
                       <template is="dom-if" if="{{annotation.value.selfInteraction}}">
-                        <p class="annotation-title col-lg-12 col-md-12 col-sm-12 col-xs-12">Self</p>
+                        <p class="annotation-title col-lg-12 col-md-12 col-sm-12 col-xs-12">Itself</p>
                       </template>
                       <template is="dom-if" if="{{annotation.value.geneName}}">
                         <p class="annotation-title col-lg-12 col-md-12 col-sm-12 col-xs-12">
@@ -87,6 +94,7 @@ Annotation section used in function, medical, and expression views.
                           <template is="dom-if" if="{{!annotation.value.proteinName}}">
                             {{annotation.value.geneName}} >> {{annotation.value.database}}: <a href="{{annotation.value.url}}" class="ext-link">{{annotation.value.accession}}</a>
                           </template>
+                          <template is="dom-if" if="{{annotation.value.xeno}}"><span class="xeno-label">Xeno</span></template>
                           <quality-label quality="{{annotation.value.qualityQualifier}}"></quality-label></p>
                       </template>
                     </template>
@@ -208,6 +216,7 @@ Annotation section used in function, medical, and expression views.
             a.accession=a.bioObject.accession;
           }
           a.selfInteraction = a.propertiesMap.selfInteraction ? a.propertiesMap.selfInteraction[0].value : false;
+          a.xeno = a.database!="neXtProt" ? true : false;
           if (!data.hasOwnProperty(a.category)) data[a.category]=[];
           a.evidences.forEach(function(obj){if(obj.negativeEvidence==true) a.description = "<b>Not </b>"+a.description});
           if(a.annotationId===0) a.annotationId=data_annot.indexOf(a);
@@ -219,6 +228,7 @@ Annotation section used in function, medical, and expression views.
               cvTermAccessionCode: a.cvTermAccessionCode,
               cvTermDescription: a.cvTermDescription,
               selfInteraction: a.selfInteraction=="true",
+              xeno: a.xeno,
               geneName: a.geneName,
               proteinName: a.proteinName,
               accession: a.accession,
