@@ -44,22 +44,32 @@ Block element representing an evidence record.
             .border-left {
                 border-left: 1px solid #ddd;
             }
+            .experiments-line {
+                color: #999;
+            }
         </style>
         <template is="dom-if" if="{{data.evidenceCodeName}}">
             <div class="evidence-container">
                 <div class="evidence-arrow">&#10549;</div>  Evidence {{index}}:
                 <span class="colored-label evidence-code-name">{{data.evidenceCodeName}}</span><span class="colored-label evidence-source">{{_getSource()}}</span>
                 <quality-label quality={{data.qualityQualifier}}></quality-label>
-                <template id="menu" is="dom-if" if="{{data.resourceAccession}}">
-                    <div class="evidence-accession border-left">
-                        <p><a href="{{data.url}}" class="ext-link" target='_blank'>{{data.resourceAccession}}</a></p>
-                    </div>
-                </template>
-                <template id="menu" is="dom-if" if="{{data.publication}}">
-                    <div class="evidence-publication border-left">
-                        <publication-item data="{{data.publication}}"></publication-item>
-                    </div>
-                </template>
+                <div class="border-left">
+                    <template is="dom-if" if="{{data.properties.numberOfExperiments}}">
+                        <div class="evidence-accession">
+                            <p class="experiments-line">Number of experiments: {{data.properties.numberOfExperiments}}</p>
+                        </div>
+                    </template>
+                    <template is="dom-if" if="{{data.resourceAccession}}">
+                        <div class="evidence-accession">
+                            <p><a href="{{data.url}}" class="ext-link" target='_blank'>{{data.resourceAccession}}</a></p>
+                        </div>
+                    </template>
+                    <template is="dom-if" if="{{data.publication}}">
+                        <div class="evidence-publication">
+                            <publication-item data="{{data.publication}}"></publication-item>
+                        </div>
+                    </template>
+                </div>
             </div>
         </template>
     </template>
