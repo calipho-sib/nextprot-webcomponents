@@ -270,6 +270,7 @@ Annotation section used in function, medical, and expression views.
         return ev.map(function(e){
           e.assignedBy=e.assignedBy.replace('NextProt', 'neXtProt');
           e.assignedBy=e.assignedBy.replace('Uniprot', 'UniProt');
+          e.numberOfExperiments = e.properties.numberOfExperiments ? e.properties.numberOfExperiments : undefined;
           return {
             "evidenceCodeName": e.evidenceCodeName,
             "resourceAccession": e.resourceAccession,
@@ -277,6 +278,7 @@ Annotation section used in function, medical, and expression views.
             "resourceDb": e.resourceDb,
             "negative": e.negativeEvidence,
             qualityQualifier: e.qualityQualifier,
+            "numberOfExperiments": e.numberOfExperiments,
             "url": getUrl(e.resourceId),
             "publication": self._getPublication(publi[e.publicationMD5])
           }
