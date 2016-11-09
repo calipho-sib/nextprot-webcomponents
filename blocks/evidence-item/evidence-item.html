@@ -54,9 +54,9 @@ Block element representing an evidence record.
                 <span class="colored-label evidence-code-name">{{data.evidenceCodeName}}</span><span class="colored-label evidence-source">{{_getSource()}}</span>
                 <quality-label quality={{data.qualityQualifier}}></quality-label>
                 <div class="border-left">
-                    <template is="dom-if" if="{{data.properties.numberOfExperiments}}">
+                    <template is="dom-if" if="{{data.numberOfExperiments}}">
                         <div class="evidence-accession">
-                            <p class="experiments-line">Number of experiments: {{data.properties.numberOfExperiments}}</p>
+                            <p class="experiments-line">Number of experiments: {{data.numberOfExperiments}}</p>
                         </div>
                     </template>
                     <template is="dom-if" if="{{data.resourceAccession}}">
