@@ -20,6 +20,7 @@
   <body>
     <div class="vertical-section-container centered">
       <h3>Basic generic-annotation-section demo</h3>
+      <h4><span><label>Gold only</label><input type="checkbox" onchange="toggleGoldOnly()" style="margin-left: 20px;"></span></h4>
       <demo-snippet>
         <template>
           <generic-annotation-section section="function" categories='[
@@ -37,6 +38,15 @@
         </template>
       </demo-snippet>
     </div>
-
+    <script>
+      function toggleGoldOnly(){
+        var element = document.querySelector("generic-annotation-section");
+        if(element.hasAttribute("gold-only")){
+          element.removeAttribute("gold-only");
+        } else{
+          element.setAttribute("gold-only","true");
+        }
+      }
+    </script>
   </body>
 </html>
