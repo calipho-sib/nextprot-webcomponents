@@ -21,12 +21,22 @@
 
     <div class="vertical-section-container centered">
       <h3>Basic interactions-view Demo</h3>
+      <h4><span><label>Gold only</label><input type="checkbox" onchange="toggleGoldOnly()" style="margin-left: 20px;"></span></h4>
       <demo-snippet>
         <template>
           <interactions-view></interactions-view>
         </template>
       </demo-snippet>
     </div>
-
+    <script>
+      function toggleGoldOnly(){
+        var element = document.querySelector("generic-annotation-section");
+        if(element.hasAttribute("gold-only")){
+          element.removeAttribute("gold-only");
+        } else{
+          element.setAttribute("gold-only","true");
+        }
+      }
+    </script>
   </body>
 </html>

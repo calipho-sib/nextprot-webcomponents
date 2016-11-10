@@ -21,7 +21,7 @@
     "xrefs-section": "git://github.com/calipho-sib/nextprot-webcomponents.git#xrefs-section",
     "shared-styles": "git://github.com/calipho-sib/nextprot-webcomponents.git#shared-styles",
     "bootstrap": "^3.3.7"
-  }
+  },
   "devDependencies": {
     "iron-component-page": "PolymerElements/iron-component-page#^1.0.0",
     "iron-demo-helpers": "PolymerElements/iron-demo-helpers#^1.0.0",
