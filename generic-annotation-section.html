@@ -72,6 +72,7 @@ Annotation section used in function, medical, and expression views.
                         <p class="annotation-title col-lg-12 col-md-12 col-sm-12 col-xs-12" style="text-transform: capitalize">
                           {{annotation.value.chemicalName}}
                           <a href="https://www.ebi.ac.uk/chebi/searchId.do?chebiId={{annotation.value.accession}}" class="ext-link" target="_blank">{{annotation.value.accession}}</a>
+                          <quality-label quality="{{annotation.value.qualityQualifier}}"></quality-label>
                         </p>
                       </template>
                     </template>
@@ -90,7 +91,11 @@ Annotation section used in function, medical, and expression views.
                       </div>
                     </template>
                     <template is="dom-if" if="{{!_checkIfContainsAccessionOrXref(annotation.value)}}">
-                      <p class="annotation-title">{{annotation.value.description}}</p>
+                      <p class="annotation-title">{{annotation.value.description}}
+                        <template is="dom-if" if="{{!_isBinaryInteractionOrCofactor(annotation.value.category)}}">
+                          <quality-label quality="{{annotation.value.qualityQualifier}}"></quality-label>
+                        </template>
+                      </p>
                       <template is="dom-if" if="{{annotation.value.selfInteraction}}">
                         <p class="annotation-title col-lg-12 col-md-12 col-sm-12 col-xs-12">Itself</p>
                       </template>
@@ -377,6 +382,9 @@ Annotation section used in function, medical, and expression views.
       },
       _checkIfChebi: function(databaseName){
         return databaseName.toLowerCase()==="chebi";
+      },
+      _isBinaryInteractionOrCofactor: function (category){
+        return (category==="BINARY INTERACTIONS" || category==="COFACTOR");
       }
     });
   </script>
