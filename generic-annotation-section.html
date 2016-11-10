@@ -96,10 +96,13 @@ Annotation section used in function, medical, and expression views.
                       </template>
                       <template is="dom-if" if="{{annotation.value.geneName}}">
                         <p class="annotation-title col-lg-12 col-md-12 col-sm-12 col-xs-12">
-                          <template is="dom-if" if="{{annotation.value.proteinName}}">
-                            <a href="{{annotation.value.url}}">{{annotation.value.geneName}}</a> >> {{annotation.value.proteinName}}
+                          <template is="dom-if" if="{{_checkIfNextprot(annotation.value.database)}}">
+                            <a href="{{annotation.value.url}}">{{annotation.value.geneName}}</a>
+                            <template is="dom-if" if="{{annotation.value.proteinName}}">
+                              >> {{annotation.value.proteinName}}
+                            </template>
                           </template>
-                          <template is="dom-if" if="{{!annotation.value.proteinName}}">
+                          <template is="dom-if" if="{{!_checkIfNextprot(annotation.value.database)}}">
                             {{annotation.value.geneName}} >> {{annotation.value.database}}: <a href="{{annotation.value.url}}" class="ext-link">{{annotation.value.accession}}</a>
                           </template>
                           <template is="dom-if" if="{{annotation.value.xeno}}"><span class="xeno-label">Xeno</span></template>
@@ -365,8 +368,11 @@ Annotation section used in function, medical, and expression views.
           categoryObj[index+1]['evidenceSources'][0] : undefined;
         return firstAnnotCat===secondAnnotCat;
       },
+      _checkIfNextprot: function(databaseName){
+        return databaseName.toLowerCase()==="nextprot";
+      },
       _checkIfChebi: function(databaseName){
-        return databaseName==="ChEBI";
+        return databaseName.toLowerCase()==="chebi";
       }
     });
   </script>
