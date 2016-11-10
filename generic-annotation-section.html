@@ -364,6 +364,9 @@ Annotation section used in function, medical, and expression views.
         var secondAnnotCat = categoryObj[index+1] ?
           categoryObj[index+1]['evidenceSources'][0] : undefined;
         return firstAnnotCat===secondAnnotCat;
+      },
+      _checkIfChebi: function(databaseName){
+        return databaseName==="ChEBI";
       }
     });
   </script>
