@@ -67,6 +67,14 @@ Annotation section used in function, medical, and expression views.
                         pathway<template is="dom-if" if="{{_checkIfNextAnnotHasTheSameSource(category.value, index)}}">s</template>:
                       </div>
                     </template>
+                    <template is="dom-if" if="{{annotation.value.chemicalName}}">
+                      <template is="dom-if" if="{{_checkIfChebi(annotation.value.database)}}">
+                        <p class="annotation-title col-lg-12 col-md-12 col-sm-12 col-xs-12" style="text-transform: capitalize">
+                          {{annotation.value.chemicalName}}
+                          <a href="https://www.ebi.ac.uk/chebi/searchId.do?chebiId={{annotation.value.accession}}" class="ext-link" target="_blank">{{annotation.value.accession}}</a>
+                        </p>
+                      </template>
+                    </template>
                     <template is="dom-if" if="{{annotation.value.cvTermAccessionCode}}">
                       <p class="annotation-title col-lg-9 col-sm-7 col-xs-6" inner-h-t-m-l="{{_boldPattern(annotation.value.description, 'Contributes to')}}"></p>
                       <div class="annotation-labels col-lg-3 col-md-4 col-sm-5 col-xs-6">
@@ -205,6 +213,10 @@ Annotation section used in function, medical, and expression views.
         data = {};
         var self = this;
         data_annot.forEach(function (a) {
+          if(a.category=="cofactor") {
+            a.chemicalName = a.bioObject.properties["chemical name"] ?
+              a.bioObject.properties["chemical name"] : undefined;
+          }
           if(Object.keys(self.categoryTitles).indexOf(a.category)!=-1) a.category = self.categoryTitles[a.category];
           if (a.description) a.description=a.description.charAt(0).toUpperCase()+ a.description.slice(1);
           if (a.cvTermName) a.cvTermName=a.cvTermName.charAt(0).toUpperCase()+a.cvTermName.slice(1);
@@ -232,6 +244,7 @@ Annotation section used in function, medical, and expression views.
               geneName: a.geneName,
               proteinName: a.proteinName,
               accession: a.accession,
+              chemicalName: a.chemicalName,
               url: a.url,
               database: a.database,
               parentXref: a.parentXref,
