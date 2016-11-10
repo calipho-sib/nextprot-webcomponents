@@ -26,15 +26,15 @@ Exteranl links section present in function, medical, expression, interactins, se
       <paper-spinner-lite id="spinner" active></paper-spinner-lite>
     </div>
     <div class="category-main">
-      <template is="dom-repeat" items="{{data}}" as="category">
+      <template is="dom-repeat" items="{{_toArray(data)}}" as="category">
+      <template is="dom-repeat" items="{{_toArray(category.value)}}" as="annotations">
       <div class="row">
         <div class="col-lg-4 col-md-2 col-sm-12 col-xs-12">
-          <h4 class="hidden-sm hidden-xs annotation-category-title text-align-right"> {{_getKeys(category)}}</h4>
-          <h4 class="hidden-lg hidden-md annotation-category-title text-align-left"> {{_getKeys(category)}}</h4>
+          <h4 class="hidden-sm hidden-xs annotation-category-title text-align-right"> {{annotations.name}}</h4>
+          <h4 class="hidden-lg hidden-md annotation-category-title text-align-left"> {{annotations.name}}</h4>
         </div>
         <div class="col-lg-8 col-md-10 col-sm-12 col-xs-12">
-          <template is="dom-repeat" items="{{_getValues(category)}}" as="annotations">
-            <template is="dom-repeat" items="{{annotations}}" as="annotation">
+            <template is="dom-repeat" items="{{annotations.value}}" as="annotation">
               <div class="row annotation-row">
                 <div class="col-md-3 col-sm-3 col-xs-4 annotation-title-container">
                   <p class="annotation-title">{{annotation.name}}</p>
@@ -288,13 +288,17 @@ Exteranl links section present in function, medical, expression, interactins, se
         var textB = Object.keys(b)[0].toUpperCase();
         return (textA < textB) ? -1 : (textA > textB) ? 1 : 0;
       },
-      _getKeys: function(obj){
-        return Object.keys(obj);
+      _toArray: function(obj) {
+        if (typeof obj === 'object') {
+          return Object.keys(obj).map(function(key) {
+            return {
+              name: key,
+              value: obj[key]
+            };
+          });
+        }
+        return null;
       },
-      _getValues: function(obj){
-        return Object.values(obj);
-      },
-
       _checkIfLast: function(array,index){
         if(array.length-1===index) return true;
         return false;
