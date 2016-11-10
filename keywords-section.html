@@ -26,15 +26,15 @@ Keywords section present on function, medical, sequence, and structures pages.
       <paper-spinner-lite id="spinner" active></paper-spinner-lite>
     </div>
     <div class="category-main">
-      <template is="dom-repeat" items="{{data}}" as="category">
+      <template is="dom-repeat" items="{{_toArray(data)}}" as="category">
+        <template is="dom-repeat" items="{{_toArray(category.value)}}" as="annotations">
         <div class="row category-row">
           <div class="col-lg-2 col-md-2 col-sm-12 col-xs-12">
-            <h4 class="hidden-sm hidden-xs annotation-category-title text-align-right"> {{_getKeys(category)}}</h4>
-            <h4 class="hidden-lg hidden-md annotation-category-title text-align-left"> {{_getKeys(category)}}</h4>
+            <h4 class="hidden-sm hidden-xs annotation-category-title text-align-right"> {{annotations.name}}</h4>
+            <h4 class="hidden-xl hidden-lg hidden-md annotation-category-title text-align-left"> {{annotation.name}}</h4>
           </div>
           <div class="col-lg-10 col-md-10 col-sm-12 col-xs-12">
-            <template is="dom-repeat" items="{{_getValues(category)}}" as="annotations">
-              <template is="dom-repeat" items="{{annotations}}" as="annotation">
+              <template is="dom-repeat" items="{{annotations.value}}" as="annotation">
                 <div class="row annotation-row">
                   <div class="annotation-title-container">
                     <p class="annotation-title">{{annotation.cvTermName}}</p>
@@ -50,9 +50,9 @@ Keywords section present on function, medical, sequence, and structures pages.
                   </div>
                 </iron-collapse>
               </template>
-            </template>
           </div>
         </div>
+        </template>
       </template>
     </div>
   </template>
@@ -114,12 +114,17 @@ Keywords section present on function, medical, sequence, and structures pages.
       toggle: function(mouseEvent){
         this.$$("#"+mouseEvent.srcElement.id.replace('button','container')).toggle();
       },
-      _getKeys: function(obj){
-        return Object.keys(obj);
+      _toArray: function(obj) {
+        if (typeof obj === 'object') {
+          return Object.keys(obj).map(function(key) {
+            return {
+              name: key,
+              value: obj[key]
+            };
+          });
+        }
+        return null;
       },
-      _getValues: function(obj){
-        return Object.values(obj);
-      }
     });
   </script>
 </dom-module>
