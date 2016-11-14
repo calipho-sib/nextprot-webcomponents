@@ -29,16 +29,8 @@ Annotation section used in function, medical, and expression views.
         margin-left: 5px;
       }
     </style>
-    <div id="{{section}}-header" class="category-header">
-      <template is="dom-if" if="{{count}}">
-        <div class="badge-container">
-          <span class="badge counter-badge">{{count}}</span>
-        </div>
-      </template>
-      <h4 id="{{section}}-title" class="category-title">{{section}}</h4>
-      <paper-spinner-lite id="spinner" active></paper-spinner-lite>
-    </div>
     <div class="category-main">
+      <paper-spinner-lite id="spinner" active></paper-spinner-lite>
       <template is="dom-if" if="{{data}}">
         <button id="evidenceButton" class="btn btn-default" on-click="_toggleAllEvidences">
           <template is="dom-if" if="{{evidencesShown}}">
@@ -54,19 +46,14 @@ Annotation section used in function, medical, and expression views.
       <template is="dom-repeat" items="{{_toArray(data)}}" as="category">
         <div class="row category-row">
           <div class="col-lg-1 col-md-12 col-sm-12 col-xs-12">
-            <h4 class="hidden-sm hidden-xs annotation-category-title text-align-right"> {{category.name}}</h4>
-            <h4 class="hidden-lg hidden-md annotation-category-title text-align-left"> {{category.name}}</h4>
+            <h4 class="hidden-sm hidden-xs annotation-category-title"> {{category.name}}</h4>
+            <h4 class="hidden-lg hidden-md annotation-category-title"> {{category.name}}</h4>
           </div>
           <div class="col-lg-11 col-md-10 col-sm-12 col-xs-12">
             <template is="dom-repeat" items="{{_toArray(category.value)}}" as="annotation">
               <div class="row annotation-row">
                 <div class="col-lg-10 col-md-10 col-sm-9 col-xs-9">
                   <div class="annotation-title-container">
-                    <template is="dom-if" if="{{_isNewPathwayCategory(category.name, annotation.value.evidenceSources)}}">
-                      <div class="grey-x">According to {{_formatEvidenceSourceName(annotation.value.evidenceSources)}}, this protein belongs to following
-                        pathway<template is="dom-if" if="{{_checkIfNextAnnotHasTheSameSource(category.value, index)}}">s</template>:
-                      </div>
-                    </template>
                     <template is="dom-if" if="{{annotation.value.chemicalName}}">
                       <template is="dom-if" if="{{_checkIfChebi(annotation.value.database)}}">
                         <p class="annotation-title col-lg-12 col-md-12 col-sm-12 col-xs-12" style="text-transform: capitalize">
@@ -77,8 +64,8 @@ Annotation section used in function, medical, and expression views.
                       </template>
                     </template>
                     <template is="dom-if" if="{{annotation.value.cvTermAccessionCode}}">
-                      <p class="annotation-title col-lg-9 col-sm-7 col-xs-6" inner-h-t-m-l="{{_boldPattern(annotation.value.description, 'Contributes to')}}"></p>
-                      <div class="annotation-labels col-lg-3 col-md-4 col-sm-5 col-xs-6">
+                      <p class="annotation-title" inner-h-t-m-l="{{_boldPattern(annotation.value.description, 'Contributes to')}}"></p>
+                      <div class="annotation-labels">
                         <button id="description-button-{{annotation.value.id}}" class="btn btn-sm btn-info" type="button" on-click="_toggle">Definition</button>
                         <a class="accession-code-link btn btn-sm selectable" href="/term/{{annotation.value.cvTermAccessionCode}}">{{annotation.value.cvTermAccessionCode}}</a>
                         <quality-label quality="{{annotation.value.qualityQualifier}}"></quality-label>
@@ -132,15 +119,15 @@ Annotation section used in function, medical, and expression views.
                   <div class="show-references-button">
                     <a id="evidences-button-{{annotation.value.id}}" class="btn hidden-xs hidden-sm" on-click="_toggle">
                       <p class="show-references-button-counter">{{_countItems(annotation.value.evidences)}}</p>
-                      <p class="show-references-button-label">ref</p>
+                      <p class="show-references-button-label">ev</p>
                     </a>
                     <a id="evidences-button-sm-{{annotation.value.id}}" class="btn hidden-xl hidden-lg hidden-md" on-click="_toggle">
                       <p class="show-references-button-counter">{{_countItems(annotation.value.evidences)}}</p>
-                      <p class="show-references-button-label">ref</p>
+                      <p class="show-references-button-label">ev</p>
                     </a>
                     <div class="reference-label-container">
                       <template is="dom-repeat" items="{{annotation.value.evidenceSources}}" as="source">
-                        <div class="reference-label">{{source}}</div>
+                        <div class="reference-label">{{_formatEvidenceSourceName(source)}}</div>
                       </template>
                     </div>
                   </div>
@@ -226,6 +213,7 @@ Annotation section used in function, medical, and expression views.
             a.chemicalName = a.bioObject.properties["chemical name"] ?
               a.bioObject.properties["chemical name"] : undefined;
           }
+          if(a.category=="pathway") a.category=self._formatEvidenceSourceName(self._getUniqueListOfEvidenceSources(a.evidences))+" pathways";
           if(Object.keys(self.categoryTitles).indexOf(a.category)!=-1) a.category = self.categoryTitles[a.category];
           if (a.description) a.description=a.description.charAt(0).toUpperCase()+ a.description.slice(1);
           if (a.cvTermName) a.cvTermName=a.cvTermName.charAt(0).toUpperCase()+a.cvTermName.slice(1);
@@ -317,6 +305,7 @@ Annotation section used in function, medical, and expression views.
             title: pub.title,
             authors: pub.authors,
             journalResourceLocator: pub.journalResourceLocator,
+            volume: pub.volume,
             firstPage: pub.firstPage,
             lastPage: pub.lastPage,
             publicationYear: pub.publicationYear,
