@@ -29,16 +29,8 @@ Annotation section used in function, medical, and expression views.
         margin-left: 5px;
       }
     </style>
-    <div id="{{section}}-header" class="category-header">
-      <template is="dom-if" if="{{count}}">
-        <div class="badge-container">
-          <span class="badge counter-badge">{{count}}</span>
-        </div>
-      </template>
-      <h4 id="{{section}}-title" class="category-title">{{section}}</h4>
-      <paper-spinner-lite id="spinner" active></paper-spinner-lite>
-    </div>
     <div class="category-main">
+      <paper-spinner-lite id="spinner" active></paper-spinner-lite>
       <template is="dom-if" if="{{data}}">
         <button id="evidenceButton" class="btn btn-default" on-click="_toggleAllEvidences">
           <template is="dom-if" if="{{evidencesShown}}">
@@ -317,6 +309,7 @@ Annotation section used in function, medical, and expression views.
             title: pub.title,
             authors: pub.authors,
             journalResourceLocator: pub.journalResourceLocator,
+            volume: pub.volume,
             firstPage: pub.firstPage,
             lastPage: pub.lastPage,
             publicationYear: pub.publicationYear,
