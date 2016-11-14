@@ -20,6 +20,7 @@ Annotation section used in function, medical, and expression views.
       }
       #evidenceButton {
         padding: 0px 5px 0px 0px;
+        margin-bottom: 10px;
       }
       .xeno-label {
         color: #999;
@@ -30,7 +31,6 @@ Annotation section used in function, medical, and expression views.
       }
     </style>
     <div class="category-main">
-      <paper-spinner-lite id="spinner" active></paper-spinner-lite>
       <template is="dom-if" if="{{data}}">
         <button id="evidenceButton" class="btn btn-default" on-click="_toggleAllEvidences">
           <template is="dom-if" if="{{evidencesShown}}">
@@ -43,6 +43,7 @@ Annotation section used in function, medical, and expression views.
           </template>
         </button>
       </template>
+      <paper-spinner-lite id="spinner" active></paper-spinner-lite>
       <template is="dom-repeat" items="{{_toArray(data)}}" as="category">
         <div class="row category-row">
           <div class="col-lg-1 col-md-12 col-sm-12 col-xs-12">
@@ -66,8 +67,8 @@ Annotation section used in function, medical, and expression views.
                     <template is="dom-if" if="{{annotation.value.cvTermAccessionCode}}">
                       <p class="annotation-title" inner-h-t-m-l="{{_boldPattern(annotation.value.description, 'Contributes to')}}"></p>
                       <div class="annotation-labels">
+                        <a class="accession-code-link" href="/term/{{annotation.value.cvTermAccessionCode}}">{{annotation.value.cvTermAccessionCode}}</a>
                         <button id="description-button-{{annotation.value.id}}" class="btn btn-sm btn-info" type="button" on-click="_toggle">Definition</button>
-                        <a class="accession-code-link btn btn-sm selectable" href="/term/{{annotation.value.cvTermAccessionCode}}">{{annotation.value.cvTermAccessionCode}}</a>
                         <quality-label quality="{{annotation.value.qualityQualifier}}"></quality-label>
                       </div>
                     </template>
