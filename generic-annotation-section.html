@@ -67,8 +67,8 @@ Annotation section used in function, medical, and expression views.
                     <template is="dom-if" if="{{annotation.value.cvTermAccessionCode}}">
                       <p class="annotation-title" inner-h-t-m-l="{{_boldPattern(annotation.value.description, 'Contributes to')}}"></p>
                       <div class="annotation-labels">
+                        <a class="accession-code-link" href="/term/{{annotation.value.cvTermAccessionCode}}">{{annotation.value.cvTermAccessionCode}}</a>
                         <button id="description-button-{{annotation.value.id}}" class="btn btn-sm btn-info" type="button" on-click="_toggle">Definition</button>
-                        <a class="accession-code-link btn btn-sm selectable" href="/term/{{annotation.value.cvTermAccessionCode}}">{{annotation.value.cvTermAccessionCode}}</a>
                         <quality-label quality="{{annotation.value.qualityQualifier}}"></quality-label>
                       </div>
                     </template>
