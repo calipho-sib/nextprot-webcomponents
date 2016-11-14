@@ -52,19 +52,20 @@ Block element representing a publication record
         <template is="dom-if" if="{{!summary}}">
           <p><span class="hyperlink-blue">
             <template is="dom-repeat" items="{{data.authors}}" as="author">
-              <a href="/publications/search?query=author:{{author.lastName}} {{author.foreName}}">{{author.lastName}} {{author.initials}}.</a> ,
+              <a href="/publications/search?query=author:{{author.lastName}} {{author.foreName}}">
+                {{author.lastName}} {{author.initials}}</a><template is="dom-if" if="{{!_checkIfLast(data.authors,index)}}">,</template>
             </template>
           </span></p>
-          <p>{{data.journal}} {{data.journalResourceLocator.medAbbrev}}, <strong>{{data.volume}}</strong>, {{data.firstPage}}
+          <p>{{data.journal}} {{data.journalResourceLocator.abbrev}}, <strong>{{data.volume}}</strong>, {{data.firstPage}}
             <template is="dom-if" if="{{data.lastPage}}">- {{data.lastPage}}</template> ({{data.publicationYear}})
-            <template is="dom-repeat" items="{{data.dbXrefs}}" as="xref">[{{_formatXrefLabel(xref.databaseName)}} :
+            <template is="dom-repeat" items="{{data.dbXrefs}}" as="xref">[{{_formatXrefLabel(xref.databaseName)}}:
               <a href="{{xref.resolvedUrl}}" class="ext-link" target='_blank'>{{xref.accession}}</a>]
             </template>
           </p>
         </template>
         <template is="dom-if" if="{{summary}}">
-          {{data.authors.0.lastName}} {{data.authors.0.initials}}. <template is="dom-if" if="{{data.authors.1}}"><i>et al.</i></template>
-          , {{data.journal}} {{data.journalResourceLocator.medAbbrev}}, <strong>{{data.volume}}</strong>, {{data.firstPage}}
+          {{data.authors.0.lastName}} {{data.authors.0.initials}}. <template is="dom-if" if="{{data.authors.1}}">
+          <i>et al.</i></template>, {{data.journal}} {{data.journalResourceLocator.medAbbrev}}, <strong>{{data.volume}}</strong>, {{data.firstPage}}
           <template is="dom-if" if="{{data.lastPage}}">- {{data.lastPage}}</template> ({{data.publicationYear}})
         </template>
       </template>
@@ -142,6 +143,10 @@ Block element representing a publication record
       },
       _formatXrefLabel: function(name){
         return name.replace("DOI", "Full text");
+      },
+      _checkIfLast: function(array,index){
+        if(array.length-1===index) return true;
+        return false;
       }
     });
   </script>
