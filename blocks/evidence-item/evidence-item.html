@@ -25,13 +25,13 @@ Block element representing an evidence record.
             .evidence-code-name {
                 background-color:#7cba0f;
                 color:white;
-                border-radius:2px 0px 0px 2px;
+                border-radius: 2px;
                 margin-left: 5px;
             }
             .evidence-source {
                 background-color: #dedede;
                 color: #999;
-                border-radius: 0px 2px 2px 0px;
+                border-radius: 2px;
             }
             .evidence-accession {
                 margin-top: 5px;
@@ -51,7 +51,8 @@ Block element representing an evidence record.
         <template is="dom-if" if="{{data.evidenceCodeName}}">
             <div class="evidence-container">
                 <div class="evidence-arrow">&#10549;</div>  Evidence {{index}}:
-                <span class="colored-label evidence-code-name">{{data.evidenceCodeName}}</span><span class="colored-label evidence-source">{{_getSource()}}</span>
+                <span class="colored-label evidence-code-name">{{data.evidenceCodeName}}</span>
+                <span class="colored-label evidence-source">{{_getSource()}}</span>
                 <quality-label quality={{data.qualityQualifier}}></quality-label>
                 <div class="border-left">
                     <template is="dom-if" if="{{data.numberOfExperiments}}">
