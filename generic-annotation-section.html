@@ -127,7 +127,7 @@ Annotation section used in function, medical, and expression views.
                     </a>
                     <div class="reference-label-container">
                       <template is="dom-repeat" items="{{annotation.value.evidenceSources}}" as="source">
-                        <div class="reference-label">{{_formatEvidenceSourceName(source)}}</div>
+                        <div class="reference-label">{{source}}</div>
                       </template>
                     </div>
                   </div>
@@ -213,7 +213,7 @@ Annotation section used in function, medical, and expression views.
             a.chemicalName = a.bioObject.properties["chemical name"] ?
               a.bioObject.properties["chemical name"] : undefined;
           }
-          if(a.category=="pathway") a.category=self._formatEvidenceSourceName(self._getUniqueListOfEvidenceSources(a.evidences))+" pathways";
+          if(a.category=="pathway") a.category=self._getUniqueListOfEvidenceSources(a.evidences)+" pathways";
           if(Object.keys(self.categoryTitles).indexOf(a.category)!=-1) a.category = self.categoryTitles[a.category];
           if (a.description) a.description=a.description.charAt(0).toUpperCase()+ a.description.slice(1);
           if (a.cvTermName) a.cvTermName=a.cvTermName.charAt(0).toUpperCase()+a.cvTermName.slice(1);
@@ -283,6 +283,8 @@ Annotation section used in function, medical, and expression views.
         return ev.map(function(e){
           e.assignedBy=e.assignedBy.replace('NextProt', 'neXtProt');
           e.assignedBy=e.assignedBy.replace('Uniprot', 'UniProt');
+          e.assignedBy=e.assignedBy.replace('GO_central', 'RefGenome');
+          e.assignedBy=e.assignedBy.replace('KEGG_PTW', 'KEGG');
           e.numberOfExperiments = e.properties ? e.properties.numberOfExperiments : undefined;
           return {
             "evidenceCodeName": e.evidenceCodeName,
@@ -356,9 +358,6 @@ Annotation section used in function, medical, and expression views.
           return true;
         }
         return false;
-      },
-      _formatEvidenceSourceName: function(name){
-        return new String(name).split('_')[0];
       },
       _checkIfNextAnnotHasTheSameSource: function(categoryObj, index){
         var firstAnnotCat = categoryObj[index]['evidenceSources'][0];
