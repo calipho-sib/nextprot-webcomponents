@@ -10,6 +10,7 @@
 <link rel="import" href="../neon-animation/neon-animation-runner-behavior.html">
 <link rel="import" href="../shared-styles/shared-styles.html">
 <link rel="stylesheet" type="text/css" href="../bootstrap/dist/css/bootstrap.min.css" async>
+<link rel="stylesheet" type="text/css" href="../font-awesome/css/font-awesome.min.css" async>
 <script src="../nextprot-js/dist/nextprot.bundle.js"></script>
 <!--
 `overview-section`
@@ -62,7 +63,8 @@ Top page section present on every viewer
         <template is="dom-if" if="{{data.recommendedProteinName}}">
           <template is="dom-if" if="{{data.recommendedProteinName.EC.0}}">[
             <template is="dom-repeat" items="{{data.recommendedProteinName.EC}}" as="ec">
-              <div id="proteinTitle{{_removeDots(ec)}}" class="ec-link">{{_linkToEc("proteinTitle", ec)}}</div><template is="dom-if" if="[[!_checkIfLast(data.recommendedProteinName.EC,index)]]">,</template>
+              <div class="ec-link">
+                <a href="{{nxUrl}}/term/{{ec}}">EC {{ec}}</a></div><template is="dom-if" if="[[!_checkIfLast(data.recommendedProteinName.EC,index)]]">,</template>
             </template>]
           </template>
           <template is="dom-if" if="{{data.recommendedProteinName.mainShortName}}">({{data.recommendedProteinName.mainShortName}})</template>
@@ -77,9 +79,12 @@ Top page section present on every viewer
           <div class="col-md-9 col-xs-9">
             {{data.recommendedProteinName.mainSynonymName.name}}
             <template is="dom-if" if="{{data.recommendedProteinName.mainSynonymName.synonym}}"> ({{data.recommendedProteinName.mainSynonymName.synonym}}) </template>
-            <template is="dom-if" if="{{data.recommendedProteinName.others.0}}"> ; </template>
+            <template is="dom-if" if="{{data.recommendedProteinName.others.0}}">; </template>
             <template is="dom-repeat" items="{{data.recommendedProteinName.others}}" as="others">
-              {{others.type}}{{_pluralize(others.names)}}:<template is="dom-repeat" items="{{others.names}}" as="nameArray"> {{nameArray.name}}<template is="dom-if" if="[[!_checkIfLast(others.names,index)]]">,</template></template>
+              {{others.type}}{{_pluralize(others.names)}}:
+              <template is="dom-repeat" items="{{others.names}}" as="nameArray">
+                {{nameArray.name}}<template is="dom-if" if="[[!_checkIfLast(others.names,index)]]">,</template>
+              </template>
               <template is="dom-if" if="{{!_checkIfLast(others,index)}}">; </template>
             </template>
           </div>
@@ -92,8 +97,8 @@ Top page section present on every viewer
             <div class="col-md-9 col-xs-9">
               <template is="dom-repeat" items="{{recommendedProteinName.others}}" as="others">
                 {{others.type}}{{_pluralize(others.names)}}:
-                <template is="dom-repeat" items="{{others.names}}" as="nameArray">{{nameArray.name}}
-                  <template is="dom-if" if="{{!_checkIfLast(others.names,index)}}">,</template>
+                <template is="dom-repeat" items="{{others.names}}" as="nameArray">
+                  {{nameArray.name}}<template is="dom-if" if="{{!_checkIfLast(others.names,index)}}">,</template>
                 </template>
                 <template is="dom-if" if="{{!_checkIfLast(others,index)}}">; </template>
               </template>
@@ -136,15 +141,21 @@ Top page section present on every viewer
             <template is="dom-repeat" items="{{data.families}}" as="familyroot">
               <span>
                 <template is="dom-if" if="{{familyroot.superfamily}">
-                  <div id="collapseInfosLess{{familyroot.superfamily.accession}}" class="term-link">{{_linkToTerm('collapseInfosLess', familyroot.superfamily)}}</div>
+                  <div id="collapseInfosLess{{familyroot.superfamily.accession}}" class="term-link">
+                    <a href="{{nxUrl}}/term/{{familyroot.superfamily.accession}}">{{familyroot.superfamily.name}}</a>
+                    </div>
                 </template>
                 <template is="dom-if" if="{{familyroot.family}}">
                   <template is="dom-if" if="{{familyroot.superfamily}}"> >> </template>
-                  <div id="collapseInfosLess{{familyroot.family.accession}}" class="term-link">{{_linkToTerm('collapseInfosLess', familyroot.family)}}</div>
+                  <div id="collapseInfosLess{{familyroot.family.accession}}" class="term-link">
+                    <a href="{{nxUrl}}/term/{{familyroot.family.accession}}">{{familyroot.family.name}}</a>
+                  </div>
                 </template>
                 <template is="dom-if" if="{{familyroot.subfamily}}">
                   <template is="dom-if" if="{{familyroot.family}}"> >> </template>
-                  <div id="collapseInfosLess{{familyroot.subfamily.accession}}" class="term-link">{{_linkToTerm('collapseInfosLess', familyroot.subfamily)}}</div>
+                  <div id="collapseInfosLess{{familyroot.subfamily.accession}}" class="term-link">
+                    <a href="{{nxUrl}}/term/{{familyroot.subfamily.accession}}">{{familyroot.subfamily.name}}</a>
+                  </div>
                 </template>
               </span>
             </template>
@@ -163,13 +174,15 @@ Top page section present on every viewer
             <template is="dom-if" if="{{data.recommendedProteinName}}">
             <dd>{{data.recommendedProteinName.name}}
               <template is="dom-if" if="{{data.recommendedProteinName.EC.0}}">[
-                <template is="dom-repeat" items="{{data.recommendedProteinName.EC}}" as="ec"><div id="collapseInfosFull{{_removeDots(ec)}}"  class="ec-link">
-                  {{_linkToEc("collapseInfosFull", ec)}}</div><template is="dom-if" if="{{!_checkIfLast(data.recommendedProteinName.EC,index)}}">,</template>
-                </template>]</template>
+                <template is="dom-repeat" items="{{data.recommendedProteinName.EC}}" as="ec">
+                  <div class="ec-link">
+                    <a href="{{nxUrl}}/term/{{ec}}">EC {{ec}}</a></div><template is="dom-if" if="{{!_checkIfLast(data.recommendedProteinName.EC,index)}}">,</template>
+                </template>]
+              </template>
               <template is="dom-if" if="{{data.recommendedProteinName.synonyms}}">
                 <template is="dom-if" if="{{data.recommendedProteinName.synonyms.short}}"><span><span  class="grey-x">Short: </span>
-                  <template is="dom-repeat" items="{{data.recommendedProteinName.synonyms.short}}" as="short">{{short}}
-                    <template is="dom-if" if="{{!_checkIfLast(data.recommendedProteinName.synonyms.short,index)}}">,</template>
+                  <template is="dom-repeat" items="{{data.recommendedProteinName.synonyms.short}}" as="short">
+                    {{short}}<template is="dom-if" if="{{!_checkIfLast(data.recommendedProteinName.synonyms.short,index)}}">,</template>
                   </template></span>
                 </template>
               </template>
@@ -183,13 +196,13 @@ Top page section present on every viewer
                   <template is="dom-if" if="{{nameroot.synonyms}}">
                     <template is="dom-if" if="{{nameroot.synonyms.EC}}">[
                       <template is="dom-repeat" items="{{nameroot.synonyms.EC}}" as="ec">
-                        <div id="collapseInfosFull{{_removeDots(ec)}}" class="ec-link">{{_linkToEc("collapseInfosFull", ec)}}</div>
-                        <template is="dom-if" if="{{!_checkIfLast(nameroot.synonyms.EC,index)}}">,</template>
+                        <div class="ec-link">
+                          <a href="{{nxUrl}}/term/{{ec}}">EC {{ec}}</a></div><template is="dom-if" if="{{!_checkIfLast(nameroot.synonyms.EC,index)}}">,</template>
                       </template>]
                     </template>
                     <template is="dom-if" if="{{nameroot.synonyms.short}}"><span><span class="grey-x">Short: </span>
-                      <template is="dom-repeat" items="{{nameroot.synonyms.short}}" as="short">{{short}}
-                        <template is="dom-if" if="{{!_checkIfLast(nameroot.synonyms.short,index)}}">,</template>
+                      <template is="dom-repeat" items="{{nameroot.synonyms.short}}" as="short">
+                        {{short}}<template is="dom-if" if="{{!_checkIfLast(nameroot.synonyms.short,index)}}">,</template>
                       </template></span>
                     </template>
                   </template>
@@ -204,13 +217,13 @@ Top page section present on every viewer
                   <dd> {{regionName.name}}
                     <template is="dom-repeat" items="{{regionName.synonyms}}" as="synonym">
                       <template is="dom-if" if="{{synonym.EC}}">[<template is="dom-repeat" items="{{synonyms.EC}}" as="ec">
-                        <div id="collapseInfosFull{{_removeDots(ec)}}" class="ec-link">{{_linkToEc("collapseInfosFull", ec)}}</div>
-                        <template is="dom-if" if="{{!_checkIfLast(synonym.EC,index)}}">,</template>
+                        <div class="ec-link">
+                          <a href="{{nxUrl}}/term/{{ec}}">EC {{ec}}</a></div><template is="dom-if" if="{{!_checkIfLast(synonym.EC,index)}}">,</template>
                       </template>]</template>
-                      <template is="dom-repeat" items="{{synonyms.full.0}}" as="full">
+                    <template is="dom-repeat" items="{{synonyms.full.0}}" as="full">
                         <span><span class="grey-x">Alternative name{{_pluralize(full)}}:</span>
-                          <template is="dom-repeat" items="{{full}}" as="f">{{f}}
-                            <template is="dom-if" if="{{!_checkIfLast(full.f,index)}}"> ; </template>
+                          <template is="dom-repeat" items="{{full}}" as="f">
+                            {{f}}<template is="dom-if" if="{{!_checkIfLast(full.f,index)}}">; </template>
                           </template></span>
                       </template>
                     </template>
@@ -225,13 +238,15 @@ Top page section present on every viewer
                   <dd>{{cleavageName.name}}
                     <template is="dom-repeat" items="{{cleavage.synonyms}}" as="synonym">
                       <template is="dom-if" if="{{cleavage.EC}}">[<template is="dom-repeat" items="{{cleavage.EC}}" as="ec">
-                        <div id="collapseInfosFull{{_removeDots(ec)}}" class="ec-link">{{_linkToEc("collapseInfosFull", ec)}}</div>
-                        <template is="dom-if" if="{{!_checkIfLast(cleavage.EC,index)}}">,</template> </template> ]
+                        <div class="ec-link">
+                          <a href="{{nxUrl}}/term/{{ec}}">EC {{ec}}</a>
+                        </div>
+                        <template is="dom-if" if="{{!_checkIfLast(cleavage.EC,index)}}">,</template></template>]
                       </template>
                       <template is="dom-if" if="{{cleavage.full.0}}">
                         <span><span class="grey-x">Alternative name{{_pluralize(cleavage.full)}}:</span>
                         <template is="dom-repeat" items="{{cleavage.full}}" as="full">{{full}}
-                          <template is="dom-if" if="{{!_checkIfLast(cleavage.full,index)}}"> ; </template>
+                          <template is="dom-if" if="{{!_checkIfLast(cleavage.full,index)}}">; </template>
                         </template></span>
                       </template>
                     </template>
@@ -245,7 +260,9 @@ Top page section present on every viewer
                 <dd>{{isoform.name}}
                   <template is="dom-if" if="{{isoform.synonyms.0}}">
                     <span class="grey-x"> Alternative name{{_pluralize(isoform.synonyms)}}: </span>
-                    <template is="dom-repeat" items="{{isoform.synonyms}}" as="synonym">{{synonym.name}}<template is="dom-if" if="{{!_checkIfLast(isoform.synonyms,index)}}"> ; </template></template>
+                    <template is="dom-repeat" items="{{isoform.synonyms}}" as="synonym">
+                      {{synonym.name}}<template is="dom-if" if="{{!_checkIfLast(isoform.synonyms,index)}}">; </template>
+                    </template>
                   </template></dd>
               </template>
             </template>
@@ -294,15 +311,21 @@ Top page section present on every viewer
             <template is="dom-repeat" items="{{data.families}}" as="familyroot">
               <template is="dom-if" if="{{familyroot.superfamily}}">
                 <dt>Superfamily</dt>
-                <dd><div id="collapseInfosFull{{familyroot.superfamily.accession}}">{{_linkToTerm("collapseInfosFull", familyroot.superfamily)}}</div></dd>
+                <dd><div id="collapseInfosFull{{familyroot.superfamily.accession}}">
+                  <a href="{{nxUrl}}/term/{{familyroot.superfamily.accession}}">{{familyroot.superfamily.name}}</a>
+                </div></dd>
               </template>
               <template is="dom-if" if="{{familyroot.family}}">
                 <dt>Family</dt>
-                <dd><div id="collapseInfosFull{{familyroot.family.accession}}">{{_linkToTerm("collapseInfosFull", familyroot.family)}}</div></dd>
+                <dd><div id="collapseInfosFull{{familyroot.family.accession}}">
+                  <a href="{{nxUrl}}/term/{{familyroot.family.accession}}">{{familyroot.family.name}}</a>
+                </div></dd>
               </template>
               <template is="dom-if" if="{{familyroot.subfamily}}">
                 <dt>Subfamily</dt>
-                <dd><div id="collapseInfosFull{{familyroot.subfamily.accession}}">{{_linkToTerm("collapseInfosFull", familyroot.subfamily)}}</div></dd>
+                <dd><div id="collapseInfosFull{{familyroot.subfamily.accession}}">
+                  <a href="{{nxUrl}}/term/{{familyroot.subfamily.accession}}">{{familyroot.subfamily.name}}</a>
+                </div></dd>
               </template>
             </template>
           </dl>
@@ -324,7 +347,9 @@ Top page section present on every viewer
               <dd>Last sequence update {{data.lastSeqUpdate}}</dd>
             </template>
             <dd>Sequence version {{data.seqVersion}}</dd>
-            <dd><template is="dom-if" if="{{data.accessionNumber}}"><div id="{{data.accessionNumber}}">{{_linkToHistory(data.accessionNumber)}}</div></template></dd>
+            <dd><template is="dom-if" if="{{data.accessionNumber}}"><div id="{{data.accessionNumber}}">
+              <a href="{{_linkToHistory(data.accessionNumber)}}" class="ext-link" target="_blank" >Complete UniProtKB history</a></div>
+            </template></dd>
           </dl>
         </div>
       </div>
@@ -401,7 +426,7 @@ Top page section present on every viewer
           }
         }
       },
-      created: function(){
+      attached: function(){
         var nx = new Nextprot.Client("neXtprot overview loader", "Calipho Group");
         this.nxEntryName = nx.getEntryName();
         this.nxUrl = nx.getNeXtProtUrl();
@@ -492,29 +517,11 @@ Top page section present on every viewer
         if(array.length-1===index) return true;
         return false;
       },
-      _linkToEc: function(sectionId, ec){
-        var url = this.nxUrl + "/term/" + ec;
-        this.async(function(){
-          this.$$("#"+sectionId+this._removeDots(ec)).innerHTML = "<a target='_blank' href='" + url + "'>EC "+ec+"</a>";
-        },1);
-      },
       _linkToHistory: function(accession){
-        var url = "http://www.uniprot.org/uniprot/" + accession.slice(3) + "?version=*";
-        this.async(function(){
-          this.$$("#"+accession).innerHTML = "<a target='_blank' href='" + url + "' class='ext-link'>Complete UniProtKB history</a>";
-        },1);
-      },
-      _linkToTerm: function(sectionId, term){
-        var url = this.nxUrl + "/term/" + term.accession;
-        this.async(function(){
-          this.$$("#"+sectionId+term.accession).innerHTML = "<a target='_blank' href='" + url + "'>" + term.name + "</a>";
-        },1);
+        return "http://www.uniprot.org/uniprot/" + accession.slice(3) + "?version=*";
       },
       _pluralize: function(item){
         return item.length > 1 ? "s" : "";
-      },
-      _removeDots: function(str){
-        return str.replace(/\./g, '');
       }
     });
   </script>
