@@ -1,4 +1,5 @@
 <link rel="import" href="../polymer/polymer.html">
+<import type="script" src="import" href="../jquery/dist/jquery.min.js">
 <!--
 `isoform-selector`
 Widget visualizing isoform sequence coverage, allows switching between isoforms.
@@ -61,7 +62,7 @@ Widget visualizing isoform sequence coverage, allows switching between isoforms.
       is: 'isoform-selector',
       properties: {},
       ready: function(){
-        toggleIsoformMap();
+        this.init();
       },
       toggleIsoformMap: function() {
         $(function () {
@@ -70,6 +71,69 @@ Widget visualizing isoform sequence coverage, allows switching between isoforms.
           });
           this.$$("#isoformDisplayed #isoContainer").hide();
         });
+      },
+      isoform: function () {
+        $(".isoformNames").click(function () {
+          isoName = $(this).text();
+          getInfoForIsoform.reload(isoName);
+          var svgIsoBlock = d3.select("#isoContainer");
+          svgIsoBlock.selectAll("rect").style("fill","#C2DEC8");
+          svgIsoBlock.selectAll("."+isoName +"Rect").style("fill","#74EB78");
+        });
+        $("#moreIsoforms a").click(function () {
+          var parentThis = $(this).text();
+          $("#extendIsoformChoice").text(parentThis);
+        });
+      },
+      init: function (oneData,metaData) {
+        isoforms=oneData[0];
+        nxIsoformChoice(oneData[0]);
+
+        iFrameWidth =$("#visuContainer").width();
+
+        for (var i=1; i<oneData.length-1;i++) {
+          var feat = NXUtils.convertMappingsToIsoformMap(oneData[i],metaData[i].name,metaData[i].filter, "");
+
+          featuresByIsoform.push(feat);
+          var featForViewer = NXViewerUtils.convertNXAnnotations(feat,metaData[i]);
+          featuresForViewer.push(featForViewer);
+        }
+        isoformMapping = testAlgoObject(oneData[oneData.length-1]);
+        displayIsoform(isoformMapping,"#isoformDisplayed",isoName);
+        toggleIsoformMap();
+
+
+        addFiltering();
+        createSVG(isoforms,isoName);
+        addFeatures(isoName);
+        fillTable(isoName);
+        tvSelection();
+        eventTV();
+        toggleFiltering();
+      },
+      reload: function (isoID) {
+        $("#chart svg").remove();
+        ft.clearInstance();
+        createSVG(isoforms,isoID);
+        addFeatures(isoID);
+        fillTable(isoID);
+        applyFiltering();
+        tvSelection();
+        eventTV();
+//            displayIsoform(isoformMapping,"#isoformDisplayed",isoID);
+        if ($(".zoomUnit").length) $(".zoomUnit").text("1");
+        d3.selectAll('div.selectedRect').remove();
+        //toggleIsoformMap();
+      },
+      reloadSVG: function(isoID) {
+        $("#chart svg").remove();
+        ft.clearInstance();
+        createSVG(isoforms,isoID);
+        addFeatures(isoID);
+        if ($(".zoomUnit").length) $(".zoomUnit").text("1");
+        d3.selectAll('div.selectedRect').remove();
+        //tvSelection();
+        eventTV();
       },
       displayIsoform: function(array,divIsoform,isoIdentifier) {
         this.$$(divIsoform + " #isoContainer").html("");
