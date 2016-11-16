@@ -1,16 +1,18 @@
 <!doctype html>
+
 <html>
   <head>
     <title>publication-item demo</title>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, minimum-scale=1.0, initial-scale=1, user-scalable=yes">
+
     <script src="../../webcomponentsjs/webcomponents-lite.js"></script>
+    <script src="../../nextprot-js/dist/nextprot.bundle.js"></script>
 
     <link rel="import" href="../../iron-demo-helpers/demo-pages-shared-styles.html">
     <link rel="import" href="../../iron-demo-helpers/demo-snippet.html">
-
     <link rel="import" href="../publication-item.html">
-
+    
     <style is="custom-style" include="demo-pages-shared-styles">
       .vertical-section-container {
         max-width: 80%;
@@ -21,28 +23,58 @@
 
     <div class="vertical-section-container centered">
       <h3>Basic publication-item demo</h3>
+      <span>
+         Load another publication by id via the API: 
+          <input id="publication_id" type="text" value="42847044"></input>
+          <select id="nxenv_selector">
+            <option value="dev" selected>API dev</option>
+            <option value="prod">API PROD</option>
+            <option value="localhost">API localhost</option>
+          </select>
+          <button onclick="getPublication()">Get it</button>
+      </span>
+
       <demo-snippet>
         <template>
           <h4>Detailed mode (deafult)</h4><hr>
-          <publication-item></publication-item>
+          <publication-item ></publication-item>
         </template>
       </demo-snippet>
+
       <demo-snippet>
         <template>
           <h4>Summary mode</h4><hr>
-          <publication-item summary></publication-item>
+          <publication-item  summary></publication-item>
         </template>
       </demo-snippet>
+
       <demo-snippet>
         <template>
           <h4>Detailed with displayed abstract</h4><hr>
           <publication-item show-abstract></publication-item>
         </template>
       </demo-snippet>
+
       <demo-snippet>
         <template>
           <h4>Data binding</h4><hr>
           <script>
+
+            function getPublication() {
+              var pubId = document.querySelector("#publication_id").value;
+              var nx = new Nextprot.Client("neXtprot publication component demo", "Calipho Group");
+              var nxEnv = document.querySelector("#nxenv_selector").value;
+              if (nxEnv=='prod') nx.setApiBaseUrl("https://api.nextprot.org");
+              if (nxEnv=='dev') nx.setApiBaseUrl("https://dev-api.nextprot.org");
+              if (nxEnv=='localhost') nx.setApiBaseUrl("http://localhost:8080/dev-api.nextprot.org");
+
+              nx.getPublicationById(pubId).then(function(data) { 
+                var elements = document.querySelectorAll("publication-item");
+                for(var i in elements) elements[i].data = data;            
+              });
+            }
+
+            // default content for demo snipets
             var elements = document.querySelectorAll("publication-item");
             var data={
               "md5": "3f63e416a0b2d9c437323fc68f29dde8",

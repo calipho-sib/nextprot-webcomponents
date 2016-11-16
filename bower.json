@@ -19,7 +19,8 @@
     "neon-animation": "PolymerElements/neon-animation#^1.2.4",
     "shared-styles": "git://github.com/calipho-sib/nextprot-webcomponents.git#shared-styles",
     "bootstrap": "^3.3.7",
-    "font-awesome": "font-awsome#^4.6.3"
+    "font-awesome": "font-awsome#^4.6.3",
+    "nextprot-js": "nextprot#^0.0.89"
   },
   "devDependencies": {
     "iron-component-page": "PolymerElements/iron-component-page#^1.0.0",
