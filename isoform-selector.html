@@ -1,5 +1,10 @@
 <link rel="import" href="../polymer/polymer.html">
-<import type="script" src="import" href="../jquery/dist/jquery.min.js">
+<link rel="import" href="../iron-collapse/iron-collapse.html">
+<script src="../nextprot-js/dist/nextprot.bundle.js"></script>
+<script src="../d3/d3.min.js"></script>
+<script src="../bootstrap/js/tooltip.js"></script>
+<script src="../bootstrap/js/tab.js"></script>
+<link rel="stylesheet" type="text/css" href="../bootstrap/dist/css/bootstrap.min.css" async>
 <!--
 `isoform-selector`
 Widget visualizing isoform sequence coverage, allows switching between isoforms.
@@ -34,111 +39,241 @@ Widget visualizing isoform sequence coverage, allows switching between isoforms.
       padding-top: 8px;
     }
   </style>
+    <div id="nx-isoformChoice" class="col-md-12" style="margin-bottom: -5px;">
     <div role="tab-panel">
       <div class="navbar-brand">Isoforms</div>
       <ul class="nav nav-tabs" role="tablist">
-        <template id="menu" is="dom-if" if="{{isoforms.visible}}">
-          <li role="presentation"><a class="isoformNames" href="#{{uniqueName}}" role="tab" data-toggle="tab" title="{{mainEntityName.value}}">{{uniqueName}}</a></li>
-        </template>
+          <template is="dom-repeat" items="{{isoforms.visible}}" as="isoform">
+            <li role="presentation">
+              <a class="isoformNames" href="#{{isoform.uniqueName}}" role="tab" data-toggle="tab" title="{{isoform.mainEntityName.value}}">{{isoform.uniqueName}}</a>
+            </li>
+          </template>
         <template id="menu" is="dom-if" if="{{isoforms.more}}">
           <li role="presentation" class="dropdown">
-            <a class="dropdown-toggle" data-toggle="dropdown" href="#" role="button" aria-expanded="false"><span
-                    id="extendIsoformChoice">More</span><span style="margin-left:5px;" class="caret"></span></a>
+            <a class="dropdown-toggle" data-toggle="dropdown" href="#" role="button" aria-expanded="false">
+              <span id="extendIsoformChoice">More</span><span style="margin-left:5px;" class="caret"></span>
+            </a>
           </li>
           <ul id="moreIsoforms" class="dropdown-menu" role="menu">
             <li role="presentation"><p id="otherIsoformsTab" href="#" role="tab" data-toggle="tab">Others
               Isoforms</p></li>
             <template id="menu" is="dom-repeat" items="{{isoforms.more}}">
-              <li role="presentation"><a class="isoformNames" href="#{{uniqueName}}" role="tab" data-toggle="tab" title="{{mainEntityName.value}}">{{uniqueName}}</a></li>
+              <li role="presentation">
+                <a class="isoformNames" href="#{{uniqueName}}" role="tab" data-toggle="tab" title="{{mainEntityName.value}}">{{uniqueName}}</a>
+              </li>
             </template>
           </ul>
         </template>
-        <li><a id="isoformMap" href="javascript:;">See isoforms</a></li>
+        <li><a id="isoformMap" on-tap="toggleIsoformMap">See isoforms</a></li>
       </ul>
+    </div>
+    </div>
+    <div class="row" style="margin: 0px 20px;">
+      <div id="visuContainer" class="col-md-12">
+        <iron-collapse id="isoformMapContainer" opened="{{showIsoformMap}}">
+          <div id="isoformDisplayed"></div>
+        </iron-collapse>
+        <div id="chart"></div>
+      </div>
     </div>
   </template>
   <script>
     Polymer({
       is: 'isoform-selector',
-      properties: {},
-      ready: function(){
-        this.init();
+      properties: {
+        isoforms: {
+          type: Object
+        },
+        sequences: {
+          type: Object
+        },
+        isoformMapping: {
+          type: Object
+        },
+        isoName: {
+          type: String
+        },
+        /*featuresForViewer: {
+          type: Array,
+          value: []
+        },
+        featuresByIsoform: {
+          type: Array,
+          value: []
+        },
+        ft:{
+          value: {
+            onFeatureSelected: function(callback) {
+              $(".featPosition").click(function() {
+                var currentId = $(this).parent().parent().attr("id");
+                var idParsed = currentId.split("_").slice(1).map(Number);
+                var position = {
+                  start: idParsed[0],
+                  end: idParsed[1]
+                }
+                callback(position);
+              });
+            }
+          }
+        },*/
+        showIsoformMap: {
+          type: Boolean
+        }
       },
-      toggleIsoformMap: function() {
-        $(function () {
-          this.$$("#isoformMap").click(function () {
-            this.$$("#isoformDisplayed #isoContainer").toggle("slow");
-          });
-          this.$$("#isoformDisplayed #isoContainer").hide();
+      created: function(){
+        var nx = new Nextprot.Client("neXtprot isoform selector", "Calipho Group");
+        var nxEntry = nx.getEntryName();
+        this.isoName = nxEntry+"-1";
+        var self=this;
+        nx.getIsoformMapping(nxEntry).then(
+          function(data){
+            self.isoforms=data;
+            self.isoformMapping = self.testAlgoObject(data);
+          }
+        ).catch(function (err) {
+          // catch any error that happened so far
+          console.log("Argh, broken: " + err.message);
+          console.log("Error at line : " + err.stack);
         });
-      },
-      isoform: function () {
-        $(".isoformNames").click(function () {
-          isoName = $(this).text();
-          getInfoForIsoform.reload(isoName);
-          var svgIsoBlock = d3.select("#isoContainer");
-          svgIsoBlock.selectAll("rect").style("fill","#C2DEC8");
-          svgIsoBlock.selectAll("."+isoName +"Rect").style("fill","#74EB78");
+        nx.getProteinSequence(nxEntry).then(
+          function (data) {
+            self.sequences = data;
+            self.initialize();
+          }
+        ).catch(function (err) {
+          // catch any error that happened so far
+          console.log("Argh, broken: " + err.message);
+          console.log("Error at line : " + err.stack);
         });
-        $("#moreIsoforms a").click(function () {
-          var parentThis = $(this).text();
-          $("#extendIsoformChoice").text(parentThis);
-        });
-      },
-      init: function (oneData,metaData) {
-        isoforms=oneData[0];
-        nxIsoformChoice(oneData[0]);
 
+      },
+      initialize: function () {
+        this.nxIsoformChoice(this.sequences[0]);
         iFrameWidth =$("#visuContainer").width();
-
-        for (var i=1; i<oneData.length-1;i++) {
-          var feat = NXUtils.convertMappingsToIsoformMap(oneData[i],metaData[i].name,metaData[i].filter, "");
-
+        for (var i=1; i<this.sequences.length-1;i++) {
+          var feat = NXUtils.convertMappingsToIsoformMap(this.sequences[i],metaData[i].name,metaData[i].filter, "");
           featuresByIsoform.push(feat);
           var featForViewer = NXViewerUtils.convertNXAnnotations(feat,metaData[i]);
-          featuresForViewer.push(featForViewer);
+          this.featuresForViewer.push(featForViewer);
         }
-        isoformMapping = testAlgoObject(oneData[oneData.length-1]);
-        displayIsoform(isoformMapping,"#isoformDisplayed",isoName);
-        toggleIsoformMap();
-
-
-        addFiltering();
-        createSVG(isoforms,isoName);
-        addFeatures(isoName);
-        fillTable(isoName);
-        tvSelection();
-        eventTV();
-        toggleFiltering();
+        this.displayIsoform(this.isoformMapping,"#isoformDisplayed",this.isoName);
+        //lines below go to triple viewer
+        //this.addFiltering();
+        //this.createSVG();
+        //this.addFeatures();
+        //this.fillTable();
+        //this.tvSelection();
+        //this.eventTV();
+        //this.toggleFiltering();
       },
       reload: function (isoID) {
-        $("#chart svg").remove();
-        ft.clearInstance();
-        createSVG(isoforms,isoID);
-        addFeatures(isoID);
-        fillTable(isoID);
-        applyFiltering();
-        tvSelection();
-        eventTV();
-//            displayIsoform(isoformMapping,"#isoformDisplayed",isoID);
-        if ($(".zoomUnit").length) $(".zoomUnit").text("1");
-        d3.selectAll('div.selectedRect').remove();
-        //toggleIsoformMap();
+        //$("#chart svg").remove();
+        //this.ft.clearInstance();
+        //this.createSVG(this.isoforms,isoID);
+        //this.addFeatures(isoID);
+        //this.fillTable(isoID);
+        //this.applyFiltering();
+        //this.tvSelection();
+        //this.eventTV();
+        this.displayIsoform(this.isoformMapping,"#isoformDisplayed",isoID);
+
+        // this goes to feature viewer
+        //if ($(".zoomUnit").length) $(".zoomUnit").text("1");
+        //d3.selectAll('div.selectedRect').remove();
       },
-      reloadSVG: function(isoID) {
-        $("#chart svg").remove();
-        ft.clearInstance();
-        createSVG(isoforms,isoID);
-        addFeatures(isoID);
-        if ($(".zoomUnit").length) $(".zoomUnit").text("1");
-        d3.selectAll('div.selectedRect').remove();
-        //tvSelection();
-        eventTV();
+      nxIsoformChoice: function() {
+        var self=this;
+        if ($("#nx-isoformChoice").length > 0) {
+          var datas = {
+            "isoforms": (function () {
+              var listIsoforms = {
+                "visible": [],
+                "more": []
+              };
+              self.sequences.sort(function (a, b) {
+                return parseInt(a.uniqueName.split("-")[1]) - parseInt(b.uniqueName.split("-")[1])
+              }).forEach(function (o, index) {
+                if (index <= 3) listIsoforms.visible.push(o);
+                else listIsoforms.more.push(o);
+              });
+              return listIsoforms;
+            }())
+          };
+          this.isoName = datas.isoforms.visible[0].uniqueName;
+          this.isoforms = datas.isoforms;
+          /////////// EventListener to change isoform
+          this.isoform;
+
+          $(document).ready(function(){
+            $('.isoformNames').tooltip({trigger: "hover"});
+          });
+          $("#nx-isoformChoice li:first-child").addClass("active");
+        }
+      },
+      testAlgoObject: function(isoformsMap) {
+
+        var isoformsMapping = Object.assign({}, isoformsMap);
+
+
+        var positions=[];
+        var decalage=[];
+        // GET All positions x & y into new array positions
+        for (var iso in isoformsMapping) {
+          isoformsMapping[iso].positions.forEach(function (o) {
+            positions.push(o.first, o.second);
+          })
+        }
+        //delete double in list of positions
+        positions = positions.filter(function(elem, index, self) {
+          return index == self.indexOf(elem);});
+        // sort positions
+        positions.sort(function(a,b) {return a-b});
+
+        //for each interval between position, check if there is something in isoforms
+        //if not, add the empty interval to array decalage
+        for (var i=0;i<positions.length-1;i++) {
+          var presence = false;
+          for (var j in this.isoforms) {
+            for (var k in isoformsMapping[j].positions) {
+              if (isoformsMapping[j].positions[k].first > positions[i+1]) break;
+              else if (isoformsMapping[j].positions[k].first<= positions[i] && isoformsMapping[j].positions[k].second >= positions[i+1]) {
+                presence=true;
+                break;
+              }
+            }
+            if (presence === true) break;
+          }
+          if (presence === false) decalage.push({x:positions[i],length:positions[i+1]-positions[i]});
+        }
+        ////For each "hole", apply a shift by adding the length of the hole to the values after the hole
+        ////In the same time, if i[y] == i+1[x] merge those two
+        for (var i=decalage.length-1;i>=0;i--) {
+          for (var j in isoformsMapping) {
+            for (var k=isoformsMapping[j].positions.length-1;k>=0;k--) {
+              if (isoformsMapping[j].positions[k].first < decalage[i].x) {
+                if (k !=isoformsMapping[j].positions.length-1 && i===0 && isoformsMapping[j].positions[k+1].first === isoformsMapping[j].positions[k].second) {
+                  isoformsMapping[j].positions[k].second = isoformsMapping[j].positions[k+1].second;
+                  isoformsMapping[j].positions.splice(k+1,1);
+                }
+                break;
+              } else {
+                isoformsMapping[j].positions[k].first -= decalage[i].length;
+                isoformsMapping[j].positions[k].second -= decalage[i].length;
+              }
+              if (k !=isoformsMapping[j].positions.length-1 && isoformsMapping[j].positions[k+1].first === isoformsMapping[j].positions[k].second) {
+                isoformsMapping[j].positions[k].second = isoformsMapping[j].positions[k+1].second;
+                isoformsMapping[j].positions.splice(k+1,1);
+              }
+            }
+          }
+        }
+        return isoformsMapping;
       },
       displayIsoform: function(array,divIsoform,isoIdentifier) {
-        this.$$(divIsoform + " #isoContainer").html("");
-        if (!this.$$('#isoContainer').length > 0) {
-          this.$$(divIsoform).append("<div id=\"isoContainer\"></div>");
+        var isoContainer = this.$$(divIsoform + " #isoContainer")
+        if(isoContainer) isoContainer.innerHTML="";
+        if (!$('#isoContainer').length > 0) {
+          $(divIsoform).append("<div id=\"isoContainer\"></div>");
         }
         function getMax(array) {
           var max = 0;
@@ -169,12 +304,12 @@ Widget visualizing isoform sequence coverage, allows switching between isoforms.
                 width = iFrameWidth - margin.left - margin.right - 17,
                 height = 200 - margin.top - margin.bottom;
         var coverageLength = 33000;
-        var scaling = d3.scale.linear()
+        var scaling = d3.scaleLinear()
                 .domain([min, max])
                 .range([0, width]);
 
-        var line = d3.svg.line()
-                .interpolate("linear")
+        var line = d3.line()
+                .curve(d3.curveLinear)
                 .x(function (d) {
                   return scaling(d.x);
                 })
@@ -191,8 +326,9 @@ Widget visualizing isoform sequence coverage, allows switching between isoforms.
                 .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
 
         var selectIsoform = function (iso) {
-
         };
+
+        var self=this;
 
         function fillSVGIsoform(data) {
           var rectHeight = 12;
@@ -234,7 +370,7 @@ Widget visualizing isoform sequence coverage, allows switching between isoforms.
                   .on("click", function () {
                     svgIsoform.selectAll("rect").style("fill", "#C2DEC8");
                     d3.selectAll("." + data.isoformAc + "Rect").style("fill", "#74EB78");
-                    getInfoForIsoform.reload(data.isoformAc);
+                    //self.reload(data.isoformAc);
                     var isoSelection = $('#nx-isoformChoice a[href=#' + data.isoformAc + ']').tab('show');
                     if (isoSelection.parent().parent().is("#moreIsoforms")) $("#extendIsoformChoice").text(data.isoformAc);
 
@@ -263,7 +399,7 @@ Widget visualizing isoform sequence coverage, allows switching between isoforms.
         for (var name in array) {
           fillSVGIsoform(array[name], name);
         }
-        this.$$(window).resize(function () {
+        $(window).resize(function () {
           updateIsoSVG();
         });
 
@@ -292,9 +428,30 @@ Widget visualizing isoform sequence coverage, allows switching between isoforms.
 
         svgIso.attr("height", position + 10 + "px");
       },
-      createSVG: function(sequences,isoName) {
-        sequences.forEach(function (o) {
-          if (o.uniqueName === isoName) {
+      toggleIsoformMap: function() {
+        this.$.isoformMapContainer.toggle();
+      }
+      /* should go to feature viewer
+      addFiltering: function() {
+      $("#chart").append("<div class=\"filter-block\" class=\"row\" style=\"margin:0px 20px;float:left;\"></div>");
+      this.activeFiltering = {
+        filters: {}
+      };
+      for (var i=0;i<this.featuresForViewer.length;i++) {
+        if (Object.keys(this.featuresForViewer[i]).length !== 0) {
+          var filter = this.featuresForViewer[i][Object.keys(this.featuresForViewer[i])[0]].filter;
+          if (filter !== "none" && (!activeFiltering.filters[filter.split(" ").join("_")])) {
+            var filterMin = filter.split(" ").join("_");
+            this.activeFiltering.filters[filterMin]=filter;
+            filterOptions[filterMin]=true;
+          }
+        }
+      }
+      },*/
+      /* This should go to sequence viewer
+      createSVG: function() {
+        this.sequences.forEach(function (o) {
+          if (o.uniqueName === this.isoName) {
             currentSeq = o.sequence;
             ft = new FeatureViewer(currentSeq, "#chart", {
               showAxis: true,
@@ -306,7 +463,7 @@ Widget visualizing isoform sequence coverage, allows switching between isoforms.
               zoomMax:10,
               toolbarTemplate: 2
             });
-            seqView = new Sequence(currentSeq, isoName);
+            seqView = new Sequence(currentSeq, this.isoName);
             seqView.render('#seqViewer', {
               'showLineNumbers': true,
               'wrapAminoAcids': true,
@@ -323,83 +480,151 @@ Widget visualizing isoform sequence coverage, allows switching between isoforms.
             });
 
             //Customize Sequence viewer - raw version
-            this.$$(".fasta-link").attr("href","https://old.nextprot.org/db/entry/" + isoName.split("-")[0] + "/fasta?isoform=" + isoName.slice(3));
-            this.$$("#seqViewer").prepend("<div class='seqHeader'></div>");
+            this.$$(".fasta-link").addAttribute("href","https://old.nextprot.org/db/entry/" + this.isoName.split("-")[0] + "/fasta?isoform=" + this.isoName.slice(3));
+            $("#seqViewer").prepend("<div class='seqHeader'></div>");
             this.$$(".seqHeader").append("<div class=''><div class=''><strong>Isoform :</strong> " + o.mainEntityName.name + "</div></div>");
             this.$$(".seqHeader").append("<div class=''><div class=''> " + o.sequence.length + " aa</div></div>");
             this.$$(".seqHeader").append("<div class=''><div class=''><strong>Mass :</strong> " + o.massAsString + " Da</div></div>");
             this.$$(".seqHeader").append("<div class=''><div class=''><strong>pI :</strong> " + o.isoelectricPointAsString + "</div></div>");
 
             $("#seqViewer .inputSearchSeq").attr("placeholder","Search in sequence...");
-            this.$$("#seqViewer .inputSearchSeq").attr("data-toggle","tooltip");
-            this.$$("#seqViewer .inputSearchSeq").attr("data-placement","top");
-            this.$$("#seqViewer .inputSearchSeq").attr("title","Regex supported");
+            $("#seqViewer .inputSearchSeq").attr("data-toggle","tooltip");
+            $("#seqViewer .inputSearchSeq").attr("data-placement","top");
+            $("#seqViewer .inputSearchSeq").attr("title","Regex supported");
 
             $('#seqViewer [data-toggle="tooltip"]').tooltip();
           }
         });
-      },
-      testAlgoObject: function(isoformsMapping) {
-        var positions=[];
-        var decalage=[];
-        // GET All positions x & y into new array positions
-        for (var iso in isoformsMapping) {
-          isoformsMapping[iso].positions.forEach(function (o) {
-            positions.push(o.first, o.second);
+      },*/
+      /* move to triple viewer
+      addFeatures: function() {
+        for (var i=0;i<this.featuresForViewer.length;i++) {
+          if (Object.keys(this.featuresForViewer[i]).length !== 0 && this.featuresForViewer[i].hasOwnProperty(isoName) && filterOptions[this.featuresForViewer[i][this.isoName].filter.split(" ").join("_")] === true) {
+            var feature = jQuery.extend({}, this.featuresForViewer[i][this.isoName]);
+            ft.addFeature(feature);
+          }
+        }
+      },*/
+      /*
+      // move this to feature table
+      fillTable: function() {
+        function toggleEvidenceInfos() {
+          $(".evidenceNumber").click(function () {
+            $(this).parent().parent().next().toggle();
           })
         }
-        //delete double in list of positions
-        positions = positions.filter(function(elem, index, self) {
-          return index == self.indexOf(elem);});
-        // sort positions
-        positions.sort(function(a,b) {return a-b});
 
-        //for each interval between position, check if there is something in isoforms
-        //if not, add the empty interval to array decalage
-        for (var i=0;i<positions.length-1;i++) {
-          var presence = false;
-          for (var j in isoforms) {
-            for (var k in isoformsMapping[j].positions) {
-              if (isoformsMapping[j].positions[k].first > positions[i+1]) break;
-              else if (isoformsMapping[j].positions[k].first<= positions[i] && isoformsMapping[j].positions[k].second >= positions[i+1]) {
-                presence=true;
-                break;
-              }
-            }
-            if (presence === true) break;
-          }
-          if (presence === false) decalage.push({x:positions[i],length:positions[i+1]-positions[i]});
-        }
-        ////For each "hole", apply a shift by adding the length of the hole to the values after the hole
-        ////In the same time, if i[y] == i+1[x] merge those two
-        for (var i=decalage.length-1;i>=0;i--) {
-          for (var j in isoformsMapping) {
-            for (var k=isoformsMapping[j].positions.length-1;k>=0;k--) {
-              if (isoformsMapping[j].positions[k].first < decalage[i].x) {
-                if (k !=isoformsMapping[j].positions.length-1 && i===0 && isoformsMapping[j].positions[k+1].first === isoformsMapping[j].positions[k].second) {
-                  isoformsMapping[j].positions[k].second = isoformsMapping[j].positions[k+1].second;
-                  isoformsMapping[j].positions.splice(k+1,1);
-                }
-                break;
+        if ($("#featuresTable").length > 0) {
+          var number = 0;
+          var features = {};
+          this.featuresByIsoform.forEach( function (d) { if (d.hasOwnProperty(this.isoName)) {
+            if(d[this.isoName]) {
+              var group = d[this.isoName][0].group;
+              if(Object.keys(features).indexOf(group)<0) {
+                features[group] = {'group': group, 'features': [d[this.isoName]]};
               } else {
-                isoformsMapping[j].positions[k].first -= decalage[i].length;
-                isoformsMapping[j].positions[k].second -= decalage[i].length;
-              }
-              if (k !=isoformsMapping[j].positions.length-1 && isoformsMapping[j].positions[k+1].first === isoformsMapping[j].positions[k].second) {
-                isoformsMapping[j].positions[k].second = isoformsMapping[j].positions[k+1].second;
-                isoformsMapping[j].positions.splice(k+1,1);
+                features[group]['features'].push(d[this.isoName]);
               }
             }
+          }});
+
+          for (feat in this.featuresByIsoform) if(this.featuresByIsoform[feat].hasOwnProperty(this.isoName)) {
+            number += this.featuresByIsoform[feat][this.isoName].length;
+            for (var i=0;i<this.featuresByIsoform[feat][this.isoName].length;i++) if(this.featuresByIsoform[feat][this.isoName][i].source) {
+              this.featuresByIsoform[feat][this.isoName][i].evidenceSources = getUniqueListOfEvidenceSources(this.featuresByIsoform[feat][this.isoName][i].source);
+            }
           }
+          var datas = {
+            groupedFeatures: features,
+            featuresLength: number
+          };
+          toggleEvidenceInfos();
         }
-        return isoformsMapping;
       },
-      onIsoformChange: function(callback){
-        this.$$(".isoformNames").click(function () {
-          isoName = $(this).text();
-          callback(isoName);
+      tvSelection: function() {
+        $(".featPosition").click(function() {
+          $(".tableHighlight").removeClass("tableHighlight");
+          $(this).parent().parent().addClass("tableHighlight");
+          var currentId = $(this).parent().parent().attr("id");
+          var position = currentId.split("_").slice(1).map(Number);
+          if (position.length === 1) position.push(position[0]);
+            var svgId = "#" + "f" + currentId;
+
+          position[0]-=1;
+          seqView.selection(position[0],position[1],"#C50063");
+          this.ft.addRectSelection(svgId);
+
+          scrollAuto(".stringSelected", ".scroller",200);
+        })
+      },
+      fvSelection: function(d) {
+        seqView.selection(d.start - 1,d.end,"#C50063");
+        var featSelectedID = "#" + d.id;
+        $(".tableHighlight").removeClass("tableHighlight");
+        $(featSelectedID).addClass("tableHighlight");
+
+        scrollAuto(featSelectedID, "#featTableScroller",70);
+        scrollAuto(".stringSelected", ".scroller",200);
+      },
+      eventTV: function() {
+        this.ft.onFeatureSelected(function(d){
+          this.fvSelection(d.detail);
         });
-      }
+      }*/
+      /* goes to triple viewer
+      toggleFiltering: function() {
+        $("#filtering label").mouseover(function(){
+          var type=$(this).children("input").attr("id");
+          ft.showFilteredFeature(type, "#795B42", document.location.href);
+        });
+        $("#filtering label").mouseout(function(){
+          var type=$(this).children("input").attr("id");
+          ft.hideFilteredFeature(type);
+        });
+        $("#allFilters").click(function(){
+          if ($("#filtering").hasClass("all-filters")){
+
+            $("#filtering input[type=checkbox]").prop("checked", false);
+
+            console.log("has class all-filters");
+            for(var key in filterOptions) {
+              filterOptions[key] = false;
+            }
+            $("#filtering").removeClass("all-filters");
+          }
+          else {
+
+            $("#filtering input[type=checkbox]").prop("checked", true);
+
+            for(var key in filterOptions) {
+              filterOptions[key] = true;
+            }
+            $("#filtering").addClass("all-filters");
+          }
+          applyFiltering();
+          getInfoForIsoform.reloadSVG(isoName);
+
+        })
+        $("#filtering input:checkbox").on("change", function() {
+          console.log("count the number of checkbox not checked : ");
+          console.log($("#filtering input:checkbox:not(:checked)").length);
+
+          if (!$("#filtering input:checkbox:not(:checked)").length) {
+            console.log("all checkbox are checked");
+            $("#filtering").addClass("all-filters");
+          }
+          else if (!$("#filtering input:checkbox:checked").length) {
+            console.log("all checkbox are unchecked");
+            $("#filtering").removeClass("all-filters");
+          }
+          else {
+            $("#filtering").removeClass("all-filters");
+          }filterOptions["none"] = true;
+          applyFiltering();
+          getInfoForIsoform.reloadSVG(isoName);
+        });
+
+      }*/
     });
   </script>
 </dom-module>

@@ -13,15 +13,11 @@
     <link rel="import" href="../isoform-selector.html">
 
     <style is="custom-style" include="demo-pages-shared-styles">
-      .vertical-section-container {
-        max-width: 80%;
-      }
     </style>
   </head>
   <body>
     <div class="vertical-section-container centered">
       <h3>Basic isoform-selector demo</h3>
-      <demo-snippet>
         <template>
           <isoform-selector></isoform-selector>
         </template>

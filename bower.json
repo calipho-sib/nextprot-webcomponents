@@ -3,7 +3,8 @@
   "description": "Widget visualizing isoform sequence coverage, allows switching between isoforms.",
   "main": "isoform-selector.html",
   "dependencies": {
-    "polymer": "Polymer/polymer#^1.4.0"
+    "polymer": "Polymer/polymer#^1.4.0",
+    "d3": "^4.3.0"
   },
   "devDependencies": {
     "iron-component-page": "PolymerElements/iron-component-page#^1.0.0",
