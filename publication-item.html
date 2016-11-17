@@ -58,8 +58,8 @@ Block element representing a publication record
           </span></p>
           <p>{{data.journal}} {{data.journalResourceLocator.abbrev}}, <strong>{{data.volume}}</strong>, {{data.firstPage}}
             <template is="dom-if" if="{{data.lastPage}}">- {{data.lastPage}}</template> ({{data.publicationYear}})
-            <template is="dom-repeat" items="{{data.dbXrefs}}" as="xref">[{{_formatXrefLabel(xref.databaseName)}}:
-              <a href="{{xref.resolvedUrl}}" class="ext-link" target='_blank'>{{xref.accession}}</a>]
+            <template is="dom-repeat" items="{{data.dbXrefs}}" as="xref">[{{_formatXrefLabel(xref.databaseName)}}:<a href="{{xref.resolvedUrl}}" class="ext-link" target='_blank'>{{xref.accession}}</a>]
+              
             </template>
           </p>
         </template>
