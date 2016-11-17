@@ -11,86 +11,82 @@ View listing protein interaction annotations.
 @demo demo/index.html 
 -->
 <dom-module id="interactions-view">
-  <template>
-    <style include="shared-styles">
-      :host {
-        display: block;
-        background:#ECF0F1;
-        overflow-y: auto;
-      }
-    </style>
-    <div class="row">
-      <div id="nxOverview" class="col-md-12">
-        <protein-overview></protein-overview>
-      </div>
-    </div>
-    <div id="noDataWarning" class='alert alert-warning noData' hidden>There is no interaction information available in neXtProt for {{nxEntry}}.
-      Suggestions for updates are welcome! Please <a href='mailto:support@nextprot.org'>contact us</a>.
-    </div>
-    <div class="row">
-      <div id="nxAnnotations" class="col-md-12">
-        <generic-annotation-section section="interactions" goldOnly="{{goldOnly}}" nx-entry="{{nxEntry}}" count="{{annotationsCount}}"
-                                    categories='["INTERACTION-INFO", "ENZYME-REGULATION", "COFACTOR", "BINARY-INTERACTION"]'
-                                    category-titles='{"subunit": "overview", "BinaryInteraction": "Binary Interactions"}'>
-        </generic-annotation-section>
-        <!--filterAnnot:{annot-> (annot.getAnnotationCategory() == AnnotationCategory.MISCELLANEOUS &&
+    <template>
+        <style include="shared-styles">
+            :host {
+                display: block;
+                background: #ECF0F1;
+                overflow-y: auto;
+            }
+        </style>
+        <div class="row">
+            <div id="nxOverview" class="col-md-12">
+                <protein-overview></protein-overview>
+            </div>
+        </div>
+        <div id="noDataWarning" class='alert alert-warning noData' hidden>There is no interaction information available in neXtProt for {{nxEntry}}. Suggestions for updates are welcome! Please <a href='mailto:support@nextprot.org'>contact us</a>.
+        </div>
+        <div class="row">
+            <div id="nxAnnotations" class="col-md-12">
+                <generic-annotation-section section="interactions" goldOnly="{{goldOnly}}" nx-entry="{{nxEntry}}" count="{{annotationsCount}}" categories='["INTERACTION-INFO", "ENZYME-REGULATION", "COFACTOR", "BINARY-INTERACTION"]' category-titles='{"subunit": "overview", "BinaryInteraction": "Binary Interactions"}'>
+                </generic-annotation-section>
+                <!--filterAnnot:{annot-> (annot.getAnnotationCategory() == AnnotationCategory.MISCELLANEOUS &&
         !annot.getMiscellaneousSubCategory().equals('interaction'))? false:true;-->
-      </div>
-    </div>
-    <div class="row">
-      <div id="nxKeywords" class="col-md-12">
-        <keywords-section categories='["Ligand"]' count="{{keywordsCount}}">
-        </keywords-section>
-      </div>
-    </div>
-    <div class="row">
-      <div id="nxXrefs" class="col-md-12">
-        <xrefs-section categories='["BindingDB","DIP","IntAct","MINT","STRING","SignaLink","BioGrid"]' count="{{xrefsCount}}">
-        </xrefs-section>
-      </div>
-    </div>
-  </template>
-  </template>
+            </div>
+        </div>
+        <div class="row">
+            <div id="nxKeywords" class="col-md-12">
+                <keywords-section categories='["Ligand"]' count="{{keywordsCount}}">
+                </keywords-section>
+            </div>
+        </div>
+        <div class="row">
+            <div id="nxXrefs" class="col-md-12">
+                <xrefs-section categories='["BindingDB","DIP","IntAct","MINT","STRING","SignaLink","BioGrid"]' count="{{xrefsCount}}">
+                </xrefs-section>
+            </div>
+        </div>
+    </template>
 
-  <script>
-    Polymer({
-      is: 'interactions-view',
-      properties: {
-        nxEntry: {
-          type: String
-        },
-        goldOnly: {
-          type: Boolean,
-          value: false
-        },
-        annotationsCount: {
-          type: Number,
-          observer: "_checkAnnotations"
-        },
-        keywordsCount: {
-          type: Number,
-          observer: "_checkKeywords"
-        },
-        xrefsCount: {
-          type: Number,
-          observer: "_checkXrefs"
-        }
-      },
-      _checkAnnotations: function(){
-        if(this.annotationsCount===0){
-          this.$.nxAnnotations.hidden=true;
-          this.$.noDataWarning.hidden=false;
-        } else {
-          this.$.nxAnnotations.hidden=false;
-          this.$.noDataWarning.hidden=true;
-        }
-      },
-      _checkKeywords: function(){
-        this.keywordsCount===0 ? this.$.nxKeywords.hidden=true : this.$.nxKeywords.hidden=false;
-      },
-      _checkXrefs: function(){
-        this.xrefsCount===0 ? this.$.nxXrefs.hidden=true : this.$.nxXrefs.hidden=false;
-      }
-    });
-  </script>
+    <script>
+        Polymer({
+            is: 'interactions-view',
+            properties: {
+                nxEntry: {
+                    type: String
+                },
+                goldOnly: {
+                    type: Boolean,
+                    value: false
+                },
+                annotationsCount: {
+                    type: Number,
+                    observer: "_checkAnnotations"
+                },
+                keywordsCount: {
+                    type: Number,
+                    observer: "_checkKeywords"
+                },
+                xrefsCount: {
+                    type: Number,
+                    observer: "_checkXrefs"
+                }
+            },
+            _checkAnnotations: function () {
+                if (this.annotationsCount === 0) {
+                    this.$.nxAnnotations.hidden = true;
+                    this.$.noDataWarning.hidden = false;
+                } else {
+                    this.$.nxAnnotations.hidden = false;
+                    this.$.noDataWarning.hidden = true;
+                }
+            },
+            _checkKeywords: function () {
+                this.keywordsCount === 0 ? this.$.nxKeywords.hidden = true : this.$.nxKeywords.hidden = false;
+            },
+            _checkXrefs: function () {
+                this.xrefsCount === 0 ? this.$.nxXrefs.hidden = true : this.$.nxXrefs.hidden = false;
+            }
+        });
+    </script>
 </dom-module>
